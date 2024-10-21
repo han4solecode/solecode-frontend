@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React JSX type shi</title>
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  </head>
+  <body>
+    <h1>React JSX in HTML</h1>
+    <div id="title"></div>
+    <div id="menu"></div>
+    <div id="grade"></div>
+    <div id="coffee"></div>
+    <div id="table"></div>
+  </body>
+  <script type="text/babel">
+    const coffeeType = (
+      <>
+        <h2>Coffee Menu</h2>
+        <ul>
+          <li>
+            <a href="https://id.wikipedia.org/wiki/Espreso">Espresso</a>
+          </li>
+          <li>
+            <a href="https://id.wikipedia.org/wiki/Kapucino">Cappuccino</a>
+          </li>
+          <li>
+            <a href="https://id.wikipedia.org/wiki/Moka">Moccacino</a>
+          </li>
+        </ul>
+      </>
+    );
+
+    ReactDOM.createRoot(document.getElementById("menu")).render(coffeeType);
+
+    let myText = "Belajar React";
+
+    const myElement = (
+      <>
+        <h1 style={{ color: "violet", backgroundColor: "black" }}>{myText}</h1>
+        <p>10 + 5 = {10 + 5}</p>
+        <span title={myText}>React Uncover</span>
+      </>
+    );
+
+    ReactDOM.createRoot(document.getElementById("title")).render(myElement);
+
+    let nilai = 80;
+
+    const myGrade = (
+      <h3>
+        {nilai >= 70 ? "Selamat, Anda lolos!" : "Maaf, silakan coba lagi"}
+      </h3>
+    );
+
+    ReactDOM.createRoot(document.getElementById("grade")).render(myGrade);
+
+    let kopis = ["Espresso", "Cappuccino", "Moccacino"];
+
+    const myCoffees = (
+      <ul>
+        {kopis.map((kopi) => (
+          <li key={kopi}>{kopi}</li>
+        ))}
+      </ul>
+    );
+
+    ReactDOM.createRoot(document.getElementById("coffee")).render(myCoffees);
+
+    const students = [
+      { nama: "Eka", umur: 19, jurusan: "Teknik Informatika" },
+      { nama: "Lisa", umur: 18, jurusan: "Sistem Informasi" },
+      { nama: "Rudi", umur: 19, jurusan: "Teknik Elektro" },
+    ];
+
+    const studentTable = (
+      <table>
+        <tr>
+          <th>Nama</th>
+          <th>Umur</th>
+          <th>Jurusan</th>
+        </tr>
+        {students.map((student) => (
+          <tr>
+            <td>{student.nama}</td>
+            <td>{student.umur}</td>
+            <td>{student.jurusan}</td>
+          </tr>
+        ))}
+      </table>
+    );
+
+    ReactDOM.createRoot(document.getElementById("table")).render(studentTable);
+  </script>
+  <style>
+    table,
+    th,
+    td {
+      border: 1px solid black;
+    }
+  </style>
+</html>
