@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Javascript</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <button onclick="renderData()">Display Students Data</button>
+  </body>
+  <script>
+    {
+      var foo = "Belajar Javascript";
+      let bar = "Belajar React";
+    }
+
+    const a = "Javascript";
+    const b = "React";
+
+    const kuadrat = (a) => a * a;
+
+    const generateRandom = (start = 1, end = 10) => {
+      return Math.floor(Math.random() * (end - start + 1)) + start;
+    };
+
+    console.log(foo);
+    // console.log(bar);
+    console.log(`Belajar ${a} dan ${b}`);
+    console.log(kuadrat(5));
+    console.log(generateRandom());
+
+    // classless object
+    let mahasiswa = {
+      nama: "Eka",
+      umur: 19,
+      jurusan: "Teknik Informatika",
+    };
+
+    for (prop in mahasiswa) {
+      console.log(`Data ${prop}: ${mahasiswa[prop]}`);
+    }
+    console.log(Object.keys(mahasiswa));
+    console.log(Object.values(mahasiswa));
+    console.log(Object.entries(mahasiswa));
+
+    // array and object destructuring
+    let names = ["Andi", "Lisa", "Eko"];
+    let [x, y, z] = names;
+
+    console.log(x);
+    console.log(y);
+    console.log(z);
+
+    let { nama, umur } = mahasiswa;
+    console.log(nama);
+    console.log(umur);
+
+    const dataMahasiswa = () => {
+      return { nama: "Samir", umur: 22, jurusan: "Teknik Komputer" };
+    };
+
+    let { nama: namaMahasiswa, umur: umurMahasiswa } = dataMahasiswa();
+
+    console.log(namaMahasiswa);
+    console.log(umurMahasiswa);
+
+    // spread operator for array
+    let arr1 = [10, 20, 30];
+    let arr2 = [100, 200, 300];
+    let arr3 = [...arr1, ...arr2];
+    console.log(arr3);
+
+    let arr4 = [...arr1, 40, 50];
+    console.log(arr4);
+
+    let arr5 = [30, 40, 50, ...arr1];
+    console.log(arr5);
+
+    // spread operator for object
+    let mhsw = {
+      nama: "Tera",
+      umur: 18,
+      jurusan: "Teknik Memancing",
+    };
+
+    let mhsw1 = {
+      ...mhsw,
+      umur: 20,
+      tempatLahir: "Jakarta",
+    };
+
+    console.log(mhsw1);
+
+    // rest parameter
+    function rest(...args) {
+      return args;
+    }
+
+    console.log(rest(1, 2, 3));
+    console.log(rest(3, 5, 7, 9));
+    console.log(rest(5, 10, 15, 20, 25, 30));
+
+    function tambah(...args) {
+      let total = 0;
+      for (let num of args) {
+        total += num;
+      }
+      return total;
+    }
+
+    console.log(tambah(1, 2, 3)); // 6
+    console.log(tambah(3, 5, 7, 9)); // 24
+    console.log(tambah(5, 10, 15, 20, 25, 30)); // 105
+
+    // array forEach() and map method
+    let arr = [10, 20, 30, 40];
+
+    arr.forEach((val, key) =>
+      console.log(`Nilai array di index-${key} adalah ${val}`)
+    );
+
+    let arrKuadrat = arr.map((val) => val * val);
+    console.log(arrKuadrat);
+
+    // array map() to object
+    const students = [
+      { nama: "Eka", umur: 19, jurusan: "Teknik Informatika" },
+      { nama: "Lisa", umur: 18, jurusan: "Sistem Informasi" },
+      { nama: "Rudi", umur: 19, jurusan: "Teknik Elektro" },
+    ];
+
+    const prosesMahasiswa = (students) =>
+      `<p>${students.nama} (${students.umur} tahun), ${students.jurusan}</p>`;
+
+    const formatMahasiswas = students.map(prosesMahasiswa);
+
+    console.log(formatMahasiswas);
+
+    const renderData = () => {
+      document.getElementById("root").innerHTML = formatMahasiswas.join("");
+    };
+  </script>
+</html>
