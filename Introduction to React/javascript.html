@@ -140,5 +140,35 @@
     const renderData = () => {
       document.getElementById("root").innerHTML = formatMahasiswas.join("");
     };
+
+    // asynchronous javascript: promise()
+    const getUser = () => {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          //   resolve("Rudi");
+          reject("Something is wrong...");
+        }, 2000);
+      });
+    };
+
+    console.log("Start...");
+    getUser()
+      .then((userName) => console.log(userName))
+      .catch((err) => console.log(err));
+    console.log("Finish");
+
+    // asynchronous javascript: async - await
+    const tryGetName = async () => {
+      try {
+        let userName = await getUser();
+        console.log(userName);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    console.log("Start...");
+    tryGetName();
+    console.log("Finish");
   </script>
 </html>
