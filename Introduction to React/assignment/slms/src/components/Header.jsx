@@ -19,7 +19,7 @@ function Header() {
             href="/"
             className="mb-3 mb-md-0 me-md-auto text-decoration-none h2"
           >
-            <span>Simple Library Management System</span>
+            <span>SLMS</span>
           </a>
           <span className="d-flex align-items-center h4 mb-3 mb-md-0">
             {getDate()}

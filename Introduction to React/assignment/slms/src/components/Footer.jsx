@@ -1,25 +1,33 @@
 function Footer() {
+  // array desctructuring
+  let menus = ["Home", "About", "Contact Us"];
+  let [x, y, z] = menus;
+
+  let currentYear = new Date().getFullYear();
+  // template literal
+  let copyrightText = `© ${currentYear} Solecode, Inc`;
+
   return (
     <>
-      <footer className="footer fixed-bottom p-3 bg-dark text-white">
+      <footer className="footer p-3 bg-dark text-white mt-auto">
         <div className="container d-flex align-items-center">
           <div className="col d-flex align-items-center">
             <a
               href="https://www.solecode.id/"
               className="mb-3 mb-md-0 text-decoration-none text-secondary"
             >
-              © 2024 Solecode, Inc
+              {copyrightText}
             </a>
           </div>
           <ul className="nav col justify-content-end">
             <li className="ms-3">
               <a href="/" className="text-decoration-none text-secondary">
-                Home
+                {x}
               </a>
             </li>
             <li className="ms-3">
               <a href="#" className="text-decoration-none text-secondary">
-                About
+                {y}
               </a>
             </li>
             <li className="ms-3">
@@ -27,7 +35,7 @@ function Footer() {
                 href="https://www.solecode.id/contact"
                 className="text-decoration-none text-secondary"
               >
-                Contact Us
+                {z}
               </a>
             </li>
           </ul>

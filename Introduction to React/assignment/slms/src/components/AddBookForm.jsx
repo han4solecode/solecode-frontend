@@ -39,6 +39,10 @@ function AddBookForm() {
     };
 
     console.log(payload);
+
+    alert(
+      `A book with ID: ${id}, title: ${title}, author: ${author}, category: ${category}, publication year: ${year}, and ISBN: ${isbn} has been created`
+    );
   };
 
   return (

@@ -35,7 +35,7 @@ function BookList() {
   return (
     <>
       <div className="container-fluid my-3">
-        <h2 className="text-dark">Book List</h2>
+        <h2 className="text-dark">List of Available Books</h2>
         <table className="table table-striped w-auto table-bordered table-dark">
           <thead>
             <tr className="text-center">
@@ -60,10 +60,10 @@ function BookList() {
                 <td>{book.year}</td>
                 <td>{book.isbn}</td>
                 <td>
-                  <button type="button" class="btn btn-warning mx-1">
+                  <button type="button" className="btn btn-warning mx-1">
                     Update
                   </button>
-                  <button type="button" class="btn btn-danger mx-1">
+                  <button type="button" className="btn btn-danger mx-1">
                     Delete
                   </button>
                 </td>
