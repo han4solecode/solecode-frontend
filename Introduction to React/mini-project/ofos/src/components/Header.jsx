@@ -16,7 +16,7 @@ function Header() {
                   height="40"
                   className="mb-2"
                 />
-                <span>KirimMakanan</span>
+                <span>KirimMakan</span>
               </a>
             </div>
             <div className="col-6 d-flex align-items-center justify-content-center pt-2">
