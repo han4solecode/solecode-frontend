@@ -73,7 +73,7 @@ function Menu() {
     <>
       <div className="container d-flex my-3 flex-column">
         <div className="row">
-          <div className="col">
+          <div className="col border-top">
             <h2 style={{ color: "#86AB89" }}>Menus</h2>
           </div>
         </div>
