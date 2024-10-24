@@ -66,7 +66,6 @@ function Menu() {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-
     setMenus([...menus, formValues]);
   };
 
@@ -138,7 +137,7 @@ function Menu() {
                 </label>
                 <div className="col">
                   <input
-                    type="text"
+                    type="number"
                     className="form-control"
                     id="inputMenuId"
                     name="id"
