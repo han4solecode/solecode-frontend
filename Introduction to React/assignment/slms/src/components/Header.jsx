@@ -11,6 +11,14 @@ function Header() {
     return today.toLocaleDateString("en-US", options);
   };
 
+  const getCurrentDate = () => {
+    let day = new Date().getDate();
+    let month = new Date().getMonth() + 1;
+    let year = new Date().getFullYear();
+
+    return `${year}-${month}-${day}`;
+  };
+
   return (
     <>
       <header className="p-3 bg-dark text-white">
@@ -22,7 +30,7 @@ function Header() {
             <span>SLMS</span>
           </a>
           <span className="d-flex align-items-center h4 mb-3 mb-md-0">
-            {getDate()}
+            {getCurrentDate()}
           </span>
         </div>
       </header>
