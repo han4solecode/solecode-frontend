@@ -69,8 +69,8 @@ function Customer() {
             <h2 style={{ color: "#86AB89" }}>Customer</h2>
           </div>
         </div>
-        <div className="row">
-          <div className="col">
+        <div className="col">
+          <div className="row px-3">
             <table className="table caption-top w-auto align-middle table-striped">
               <caption>List of Customers</caption>
               <thead>
@@ -105,7 +105,7 @@ function Customer() {
               </tbody>
             </table>
           </div>
-          <div className="col">
+          <div className="row">
             <form
               id="addCustomerForm"
               autoComplete="off"
@@ -204,7 +204,7 @@ function Customer() {
                   Address
                 </label>
                 <div className="col">
-                  <input
+                  <textarea
                     type="text"
                     className="form-control"
                     id="inputCustomerAddress"
