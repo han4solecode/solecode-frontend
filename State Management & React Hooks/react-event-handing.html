@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Event Handling</title>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  </head>
+  <body>
+    <h1>React Event Handling - Solecode Academy Frontend Developer</h1>
+    <hr />
+    <div id="class"></div>
+    <hr />
+    <div id="func"></div>
+    <hr />
+    <div id="eventPass"></div>
+  </body>
+  <script type="text/babel">
+    // class component
+    class Tombol extends React.Component {
+      //   handleButtonClick() {
+      //     alert("Hello React");
+      //   }
+
+      handleButtonClick = (e) => {
+        console.log(e);
+        console.log(e.target);
+        console.log(e.target.innerHTML);
+      };
+
+      render() {
+        return (
+          <button onClick={this.handleButtonClick} style={{ margin: "10px" }}>
+            {this.props.children}
+          </button>
+        );
+      }
+    }
+
+    class MyApp extends React.Component {
+      render() {
+        return (
+          <>
+            <h1>Belajar React</h1>
+            <Tombol>Pencet Coba</Tombol>
+          </>
+        );
+      }
+    }
+
+    ReactDOM.createRoot(document.getElementById("class")).render(<MyApp />);
+
+    // functional component
+    const Button = (props) => {
+      const handleButtonClick = () => {
+        alert(props.pesan);
+      };
+
+      return (
+        <button onClick={handleButtonClick} style={{ margin: "10px" }}>
+          {props.children}
+        </button>
+      );
+    };
+
+    const MyAppLagi = () => {
+      return (
+        <div>
+          <h1>Belajar React</h1>
+          <Button pesan="Belajar React">React</Button>
+          <Button pesan="Belajar JavaScript">JavaScript</Button>
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById("func")).render(<MyAppLagi />);
+
+    // passing down event
+    const Button2 = (props) => {
+      return <button onClick={props.onTombolClick}>Click Me</button>;
+    };
+
+    const MyApp2 = () => {
+      const handleClick = () => {
+        alert("Alert from MyApp");
+      };
+
+      return (
+        <div>
+          <h1>Belajar React</h1>
+          <Button2 onTombolClick={handleClick} />
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById("eventPass")).render(
+      <MyApp2 />
+    );
+  </script>
+</html>
