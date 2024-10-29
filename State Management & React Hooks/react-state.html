@@ -17,6 +17,8 @@
     <div id="root2"></div>
     <hr />
     <div id="root3"></div>
+    <hr />
+    <div id="root4"></div>
   </body>
   <script type="text/babel">
     // class component state
@@ -96,5 +98,45 @@
     }
 
     ReactDOM.createRoot(document.getElementById("root3")).render(<MyApp3 />);
+
+    // passing down state to a child component
+    // example 1
+    // Mahasiswa component as a child component
+    class Mahasiswa extends React.Component {
+      render() {
+        return (
+          <figure>
+            <img
+              src={"img/" + this.props.mahasiswa.pasFoto}
+              alt={this.props.mahasiswa.nama}
+            />
+            <figcaption>
+              {this.props.mahasiswa.nama} ({this.props.mahasiswa.jurusan})
+            </figcaption>
+          </figure>
+        );
+      }
+    }
+    // MyApp4 component as a parent component
+    class MyApp4 extends React.Component {
+      constructor() {
+        super();
+        this.state = {
+          nama: "Eka",
+          jurusan: "Teknik Informatika",
+          pasFoto: "people1.jpg",
+        };
+      }
+
+      render() {
+        return (
+          <div>
+            <Mahasiswa mahasiswa={this.state} />
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.createRoot(document.getElementById("root4")).render(<MyApp4 />);
   </script>
 </html>
