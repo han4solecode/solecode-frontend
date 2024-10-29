@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exercise: Student Data Slide</title>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  </head>
+  <body>
+    <div style="display: flex; flex-direction: column; align-items: center">
+      <h1>Student Data Slide</h1>
+      <div id="root"></div>
+    </div>
+  </body>
+  <script type="text/babel">
+    class SlideButton extends React.Component {
+      render() {
+        return (
+          <button
+            onClick={this.props.onButtonClick}
+            style={{ margin: "3px" }}
+            value={this.props.id}
+          >
+            {this.props.children}
+          </button>
+        );
+      }
+    }
+
+    class Slide extends React.Component {
+      render() {
+        return (
+          <figure>
+            <img src={`img/${this.props.pasFoto}`} alt={this.props.nama} />
+            <figcaption>
+              {this.props.nama} ({this.props.jurusan})
+            </figcaption>
+          </figure>
+        );
+      }
+    }
+
+    class MyApp extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          students: [
+            {
+              id: "01",
+              nama: "Eka",
+              jurusan: "Teknik Informatika",
+              pasFoto: "people1.jpg",
+            },
+            {
+              id: "02",
+              nama: "Lisa",
+              jurusan: "Sistem Informasi",
+              pasFoto: "people2.jpg",
+            },
+            {
+              id: "03",
+              nama: "Rudi",
+              jurusan: "Teknik Elektro",
+              pasFoto: "people4.jpg",
+            },
+            {
+              id: "04",
+              nama: "Michael",
+              jurusan: "Teknik Komputer",
+              pasFoto: "people8.jpg",
+            },
+          ],
+          selectedStudent: {
+            id: "01",
+            nama: "Eka",
+            jurusan: "Teknik Informatika",
+            pasFoto: "people1.jpg",
+          },
+        };
+      }
+
+      handleSlideButtonClick = (e) => {
+        console.log(e.target);
+        console.log(e.target.value);
+        var selected = this.state.students.find(
+          (data) => data.id === e.target.value
+        );
+        console.log(selected);
+
+        this.setState({
+          selectedStudent: {
+            id: selected.id,
+            nama: selected.nama,
+            jurusan: selected.jurusan,
+            pasFoto: selected.pasFoto,
+          },
+        });
+      };
+
+      render() {
+        return (
+          <>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              {this.state.students.map((student) => (
+                <SlideButton
+                  onButtonClick={this.handleSlideButtonClick}
+                  id={student.id}
+                >
+                  {student.nama}
+                </SlideButton>
+              ))}
+            </div>
+            <Slide
+              nama={this.state.selectedStudent.nama}
+              jurusan={this.state.selectedStudent.jurusan}
+              pasFoto={this.state.selectedStudent.pasFoto}
+            />
+          </>
+        );
+      }
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<MyApp />);
+  </script>
+</html>
