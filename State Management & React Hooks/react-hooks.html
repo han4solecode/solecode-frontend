@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Hooks</title>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  </head>
+  <body>
+    <h1>React Hooks - Solecode Academy Frontend Developer</h1>
+    <hr />
+    <div id="root1"></div>
+  </body>
+  <script type="text/babel">
+    const MyApp1 = () => {
+      const [judul, setJudul] = React.useState("Belajar React");
+
+      const handleButtonClick = () => {
+        setJudul("Belajar Javascript");
+      };
+
+      return (
+        <>
+          <h1>{judul}</h1>
+          <button onClick={handleButtonClick}>Click Me</button>
+        </>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById("root1")).render(<MyApp1 />);
+  </script>
+</html>
