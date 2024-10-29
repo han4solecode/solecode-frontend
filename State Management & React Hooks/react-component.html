@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Component</title>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  </head>
+  <body>
+    <h1>React Component - Solecode Academy Frontend Developer</h1>
+    <div id="root"></div>
+  </body>
+  <script type="text/babel">
+    const mahasiswa = [
+      {
+        id: "01",
+        nama: "Eka",
+        jurusan: "Teknik Informatika",
+        pasFoto: "people1.jpg",
+      },
+
+      {
+        id: "02",
+        nama: "Lisa",
+        jurusan: "Sistem Informasi",
+        pasFoto: "people2.jpg",
+      },
+      {
+        id: "03",
+        nama: "Rudi",
+        jurusan: "Teknik Elektro",
+        pasFoto: "people4.jpg",
+      },
+    ];
+
+    class MyComponent extends React.Component {
+      constructor() {
+        super();
+        this.judulReact = "Belajar React";
+      }
+
+      judulHurufKecil() {
+        return this.judulReact.toLocaleLowerCase();
+      }
+
+      render() {
+        return (
+          <>
+            <h1>{this.judulReact}</h1>
+            <hr />
+            <p>Sst... lagi serius {this.judulHurufKecil()}</p>
+          </>
+        );
+      }
+    }
+
+    class DaftarMahasiswa extends React.Component {
+      render() {
+        return (
+          <>
+            <h1>Daftar Mahasiswa - Universitas Ilkoom</h1>
+            <hr />
+            <section style={{ display: "flex", textAlign: "center" }}>
+              {mahasiswa.map((item) => (
+                <figure key={item.id}>
+                  <img src={`img/${item.pasFoto}`} alt={item.nama} />
+                  <figcaption>
+                    {item.nama} ({item.jurusan})
+                  </figcaption>
+                </figure>
+              ))}
+            </section>
+          </>
+        );
+      }
+    }
+
+    const Content = () => {
+      return (
+        <>
+          <MyComponent />
+          <br />
+          <DaftarMahasiswa />
+        </>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<Content />);
+  </script>
+</html>
