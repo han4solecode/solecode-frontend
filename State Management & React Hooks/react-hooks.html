@@ -13,6 +13,12 @@
     <h1>React Hooks - Solecode Academy Frontend Developer</h1>
     <hr />
     <div id="root1"></div>
+    <hr />
+    <div id="root2"></div>
+    <hr />
+    <div id="root3"></div>
+    <hr />
+    <div id="root4"></div>
   </body>
   <script type="text/babel">
     const MyApp1 = () => {
@@ -31,5 +37,130 @@
     };
 
     ReactDOM.createRoot(document.getElementById("root1")).render(<MyApp1 />);
+
+    // updating state from a child component
+    const Tombol = (props) => {
+      const handleClick = () => {
+        if (props.buttonType === "dec") {
+          props.onButtonClick(-1);
+        } else {
+          props.onButtonClick(+1);
+        }
+      };
+
+      return <button onClick={handleClick}>{props.children}</button>;
+    };
+
+    const MyApp2 = () => {
+      const [counter, setCounter] = React.useState(0);
+
+      const handleButtonClick = (change) => {
+        setCounter((prevCount) => {
+          return prevCount + change;
+        });
+      };
+
+      return (
+        <div>
+          <h1>{counter}</h1>
+          <Tombol onButtonClick={handleButtonClick} buttonType="dec">
+            -1
+          </Tombol>
+          <Tombol onButtonClick={handleButtonClick} buttonType="inc">
+            +1
+          </Tombol>
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById("root2")).render(<MyApp2 />);
+
+    // updating an object inside a state
+    const MyApp3 = () => {
+      const [person, setPerson] = React.useState({
+        firstName: "Barbara",
+        lastName: "Hepworth",
+        email: "bhepworth@sculpture.com",
+      });
+
+      const handleFirstNameChange = (e) => {
+        setPerson({
+          ...person,
+          firstName: e.target.value,
+        });
+      };
+
+      return (
+        <div>
+          <label>
+            First name:
+            <input value={person.firstName} onChange={handleFirstNameChange} />
+          </label>
+
+          <p>{JSON.stringify(person)}</p>
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById("root3")).render(<MyApp3 />);
+
+    // update an array inside a state (push new item)
+    let nextId = 1;
+
+    const List = () => {
+      const [name, setName] = React.useState("");
+      const [artists, setArtists] = React.useState([]);
+      const [artistId, setArtistId] = React.useState();
+
+      function handleDeleteArtist(id) {
+        setArtists(artists.filter((artist) => artist.id !== id));
+      }
+      console.log(artistId);
+
+      //   function getToBeUpdatedArtist(id) {
+      //     let artist = artists.find((artist) => artist.id === id);
+      //     return artist;
+      //   }
+
+      return (
+        <>
+          <h1>Inspiring sculptors:</h1>
+          {artistId == null ? (
+            <div>
+              <input value={name} onChange={(e) => setName(e.target.value)} />
+              <button
+                onClick={() => {
+                  setArtists([...artists, { id: nextId++, name: name }]);
+                }}
+              >
+                Add
+              </button>
+            </div>
+          ) : (
+            <div>
+              <p>Edit Input: {artistId}</p>
+            </div>
+          )}
+          <ul>
+            {artists.map((artist) => (
+              <li key={artist.id}>
+                {artist.name}
+                <button
+                  onClick={(e) => setArtistId(e.target.value)}
+                  value={artist.id}
+                >
+                  Edit
+                </button>
+                <button onClick={() => handleDeleteArtist(artist.id)}>
+                  Delete
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById("root4")).render(<List />);
   </script>
 </html>
