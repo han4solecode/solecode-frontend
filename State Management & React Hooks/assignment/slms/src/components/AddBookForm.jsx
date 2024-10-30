@@ -27,17 +27,16 @@ function AddBookForm(props) {
     title: "",
     author: "",
     category: bookCategories[0],
-    category: "",
     year: "",
     isbn: "",
   };
 
-  const [formvValues, setFormValues] = useState(initialValues);
+  const [formValues, setFormValues] = useState(initialValues);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormValues({ ...formvValues, [name]: value });
-    console.log(formvValues);
+    setFormValues({ ...formValues, [name]: value });
+    console.log(formValues);
   };
 
   const handleFormSubmit = (e) => {
@@ -49,7 +48,7 @@ function AddBookForm(props) {
       var id = books[books.length - 1].id + 1;
     }
 
-    let newBook = { ...formvValues, id: id };
+    let newBook = { ...formValues, id: id };
 
     setFormValues(newBook);
 
@@ -81,7 +80,7 @@ function AddBookForm(props) {
                 type="text"
                 className="form-control"
                 id="inputBookTitle"
-                value={formvValues.title}
+                value={formValues.title}
                 required
                 name="title"
                 onChange={handleInputChange}
@@ -100,7 +99,7 @@ function AddBookForm(props) {
                 type="text"
                 className="form-control"
                 id="inputBookAuthor"
-                value={formvValues.author}
+                value={formValues.author}
                 required
                 name="author"
                 onChange={handleInputChange}
@@ -118,7 +117,7 @@ function AddBookForm(props) {
               <select
                 id="inputBookCategory"
                 className="form-select"
-                value={formvValues.category}
+                value={formValues.category}
                 required
                 name="category"
                 onChange={handleInputChange}
@@ -143,7 +142,7 @@ function AddBookForm(props) {
                 type="number"
                 className="form-control"
                 id="inputBookPublicationYear"
-                value={formvValues.year}
+                value={formValues.year}
                 required
                 name="year"
                 min="1900"
@@ -162,7 +161,7 @@ function AddBookForm(props) {
                 type="text"
                 className="form-control"
                 id="inputBookISBN"
-                value={formvValues.isbn}
+                value={formValues.isbn}
                 required
                 name="isbn"
                 onChange={handleInputChange}
