@@ -55,7 +55,7 @@ function AddBookForm() {
           autoComplete="off"
           onSubmit={handleFormSubmit}
         >
-          <div className="my-3 mb-4 row">
+          {/* <div className="my-3 mb-4 row">
             <label htmlFor="inputBookId" className="col-sm-2 col-form-label">
               ID
             </label>
@@ -68,7 +68,7 @@ function AddBookForm() {
                 onChange={(e) => setId(e.target.value)}
               />
             </div>
-          </div>
+          </div> */}
           <div className="my-3 mb-4 row">
             <label htmlFor="inputBookTitle" className="col-sm-2 col-form-label">
               Title
@@ -79,6 +79,8 @@ function AddBookForm() {
                 className="form-control"
                 id="inputBookTitle"
                 value={title}
+                required
+                name="title"
                 onChange={(e) => setTitle(e.target.value)}
               />
             </div>
@@ -96,6 +98,8 @@ function AddBookForm() {
                 className="form-control"
                 id="inputBookAuthor"
                 value={author}
+                required
+                name="author"
                 onChange={(e) => setAuthor(e.target.value)}
               />
             </div>
@@ -109,10 +113,11 @@ function AddBookForm() {
             </label>
             <div className="col">
               <select
-                name="inputBookCategory"
                 id="inputBookCategory"
                 className="form-select"
                 value={category}
+                required
+                name="category"
                 onChange={(e) => setCategory(e.target.value)}
               >
                 {bookCategories.map((val) => (
@@ -130,10 +135,15 @@ function AddBookForm() {
             </label>
             <div className="col">
               <input
-                type="text"
+                type="number"
                 className="form-control"
                 id="inputBookPublicationYear"
                 value={year}
+                required
+                name="publicationYear"
+                min="1900"
+                max="2099"
+                step="1"
                 onChange={(e) => setYear(e.target.value)}
               />
             </div>
@@ -148,12 +158,14 @@ function AddBookForm() {
                 className="form-control"
                 id="inputBookISBN"
                 value={isbn}
+                required
+                name="isbn"
                 onChange={(e) => setIsbn(e.target.value)}
               />
             </div>
           </div>
           <button type="submit" className="btn btn-primary">
-            Submit
+            Add
           </button>
         </form>
       </div>
