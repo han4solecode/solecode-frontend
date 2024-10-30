@@ -19,6 +19,8 @@
     <div id="root3"></div>
     <hr />
     <div id="root4"></div>
+    <hr />
+    <div id="root5"></div>
   </body>
   <script type="text/babel">
     const MyApp1 = () => {
@@ -162,5 +164,38 @@
     };
 
     ReactDOM.createRoot(document.getElementById("root4")).render(<List />);
+
+    // useRef
+    const MyApp4 = () => {
+      const [judul, setJudul] = React.useState("Belajar React");
+      const foo = React.useRef("Hei");
+
+      const handleButtonClick = () => {
+        foo.current = "Hello...";
+
+        if (judul === "Belajar React") {
+          setJudul("Belajar JavaScript");
+        } else {
+          setJudul("Belajar React");
+        }
+      };
+
+      const handleFooClick = () => {
+        console.log(foo);
+        console.log(foo.current);
+      };
+
+      return (
+        <div>
+          <h1>{judul}</h1>
+          <div>
+            <button onClick={handleButtonClick}>Click me</button>
+            <button onClick={handleFooClick}>Get foo</button>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById("root5")).render(<MyApp4 />);
   </script>
 </html>
