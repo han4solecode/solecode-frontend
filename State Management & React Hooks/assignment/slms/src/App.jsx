@@ -23,13 +23,17 @@ function App() {
     alert(`Book with ID ${id} has been deleted successfully`);
   };
 
+  const handleAddBook = (newBook) => {
+    setBooks([...books, newBook]);
+  };
+
   return (
     <>
       <div className="App">
         <Header></Header>
         <div className="container d-flex flex-column">
           <BookList books={books} onDelete={handleDeleteBook}></BookList>
-          <AddBookForm></AddBookForm>
+          <AddBookForm books={books} onAddBook={handleAddBook}></AddBookForm>
         </div>
         <Footer></Footer>
       </div>

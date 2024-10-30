@@ -1,6 +1,8 @@
 import { useState } from "react";
 
-function AddBookForm() {
+function AddBookForm(props) {
+  const { books, onAddBook } = props;
+
   let bookCategories = [
     "Arts & Music",
     "Biography",
@@ -20,29 +22,44 @@ function AddBookForm() {
     "Sci-Fi & Fantasy",
   ];
 
-  const [id, setId] = useState("");
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [category, setCategory] = useState(bookCategories[0]);
-  const [year, setYear] = useState("");
-  const [isbn, setIsbn] = useState("");
+  const initialValues = {
+    id: 0,
+    title: "",
+    author: "",
+    category: bookCategories[0],
+    category: "",
+    year: "",
+    isbn: "",
+  };
+
+  const [formvValues, setFormValues] = useState(initialValues);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({ ...formvValues, [name]: value });
+    console.log(formvValues);
+  };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    let newBook = { id, title, author, category, year, isbn };
+    if (books.length === 0) {
+      var id = 1;
+    } else {
+      var id = books[books.length - 1].id + 1;
+    }
 
-    let payload = {
-      status: "success",
-      message: "new book created successfuly",
-      ...newBook,
-    };
+    let newBook = { ...formvValues, id: id };
 
-    console.log(payload);
+    setFormValues(newBook);
+
+    onAddBook(newBook);
 
     alert(
-      `A book with ID: ${id}, title: ${title}, author: ${author}, category: ${category}, publication year: ${year}, and ISBN: ${isbn} has been created`
+      `A book with ID: ${newBook.id}, title: ${newBook.title}, author: ${newBook.author}, category: ${newBook.category}, publication year: ${newBook.year}, and ISBN: ${newBook.isbn} has been created`
     );
+
+    setFormValues(initialValues);
   };
 
   return (
@@ -55,20 +72,6 @@ function AddBookForm() {
           autoComplete="off"
           onSubmit={handleFormSubmit}
         >
-          {/* <div className="my-3 mb-4 row">
-            <label htmlFor="inputBookId" className="col-sm-2 col-form-label">
-              ID
-            </label>
-            <div className="col">
-              <input
-                type="text"
-                className="form-control"
-                id="inputBookId"
-                value={id}
-                onChange={(e) => setId(e.target.value)}
-              />
-            </div>
-          </div> */}
           <div className="my-3 mb-4 row">
             <label htmlFor="inputBookTitle" className="col-sm-2 col-form-label">
               Title
@@ -78,10 +81,10 @@ function AddBookForm() {
                 type="text"
                 className="form-control"
                 id="inputBookTitle"
-                value={title}
+                value={formvValues.title}
                 required
                 name="title"
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={handleInputChange}
               />
             </div>
           </div>
@@ -97,10 +100,10 @@ function AddBookForm() {
                 type="text"
                 className="form-control"
                 id="inputBookAuthor"
-                value={author}
+                value={formvValues.author}
                 required
                 name="author"
-                onChange={(e) => setAuthor(e.target.value)}
+                onChange={handleInputChange}
               />
             </div>
           </div>
@@ -115,13 +118,15 @@ function AddBookForm() {
               <select
                 id="inputBookCategory"
                 className="form-select"
-                value={category}
+                value={formvValues.category}
                 required
                 name="category"
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={handleInputChange}
               >
-                {bookCategories.map((val) => (
-                  <option value={val}>{val}</option>
+                {bookCategories.map((val, key) => (
+                  <option value={val} key={key}>
+                    {val}
+                  </option>
                 ))}
               </select>
             </div>
@@ -138,13 +143,13 @@ function AddBookForm() {
                 type="number"
                 className="form-control"
                 id="inputBookPublicationYear"
-                value={year}
+                value={formvValues.year}
                 required
-                name="publicationYear"
+                name="year"
                 min="1900"
                 max="2099"
                 step="1"
-                onChange={(e) => setYear(e.target.value)}
+                onChange={handleInputChange}
               />
             </div>
           </div>
@@ -157,10 +162,10 @@ function AddBookForm() {
                 type="text"
                 className="form-control"
                 id="inputBookISBN"
-                value={isbn}
+                value={formvValues.isbn}
                 required
                 name="isbn"
-                onChange={(e) => setIsbn(e.target.value)}
+                onChange={handleInputChange}
               />
             </div>
           </div>
