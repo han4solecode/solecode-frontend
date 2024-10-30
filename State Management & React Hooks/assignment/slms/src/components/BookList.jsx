@@ -1,5 +1,5 @@
 function BookList(props) {
-  const { books } = props;
+  const { books, onDelete } = props;
 
   const TableBody = () => {
     return (
@@ -18,7 +18,11 @@ function BookList(props) {
               <button type="button" className="btn btn-warning mx-1">
                 Update
               </button>
-              <button type="button" className="btn btn-danger mx-1">
+              <button
+                type="button"
+                className="btn btn-danger mx-1"
+                onClick={() => onDelete(book.id)}
+              >
                 Delete
               </button>
             </td>
@@ -47,11 +51,13 @@ function BookList(props) {
           {books.length ? (
             <TableBody></TableBody>
           ) : (
-            <tr className="bg-white">
-              <td colSpan="7" className="text-black text-center">
-                No Data Available
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <td colSpan="7" className="text-white text-center">
+                  No Data Available
+                </td>
+              </tr>
+            </tbody>
           )}
         </table>
       </div>

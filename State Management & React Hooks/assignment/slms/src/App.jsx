@@ -18,12 +18,17 @@ function App() {
     },
   ]);
 
+  const handleDeleteBook = (id) => {
+    setBooks(books.filter((book) => book.id !== id));
+    alert(`Book with ID ${id} has been deleted successfully`);
+  };
+
   return (
     <>
       <div className="App">
         <Header></Header>
         <div className="container d-flex flex-column">
-          <BookList books={books}></BookList>
+          <BookList books={books} onDelete={handleDeleteBook}></BookList>
           <AddBookForm></AddBookForm>
         </div>
         <Footer></Footer>
