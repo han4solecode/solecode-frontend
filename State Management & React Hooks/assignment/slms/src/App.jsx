@@ -18,6 +18,8 @@ function App() {
     },
   ]);
 
+  const [bookToEdit, setBookToEdit] = useState(null);
+
   const handleDeleteBook = (id) => {
     setBooks(books.filter((book) => book.id !== id));
     alert(`Book with ID ${id} has been deleted successfully`);
@@ -27,13 +29,42 @@ function App() {
     setBooks([...books, newBook]);
   };
 
+  const handleBookEditMode = (id) => {
+    setBookToEdit(id);
+  };
+
+  const handleUpdateBook = (updatedBook) => {
+    setBooks(
+      books.map((book) => (book.id === updatedBook.id ? updatedBook : book))
+    );
+  };
+
+  const handleDoneUpdateBook = () => {
+    setBookToEdit(null);
+  };
+
+  // console.log(bookToEdit);
+
   return (
     <>
       <div className="App">
         <Header></Header>
         <div className="container d-flex flex-column">
-          <BookList books={books} onDelete={handleDeleteBook}></BookList>
-          <AddBookForm books={books} onAddBook={handleAddBook}></AddBookForm>
+          <BookList
+            books={books}
+            onEdit={handleBookEditMode}
+            onDelete={handleDeleteBook}
+          ></BookList>
+          <AddBookForm
+            books={books}
+            onAddBook={handleAddBook}
+            onUpdateBook={handleUpdateBook}
+            editingBook={
+              bookToEdit !== null &&
+              books.find((book) => book.id === bookToEdit)
+            }
+            onDoneUpdate={handleDoneUpdateBook}
+          ></AddBookForm>
         </div>
         <Footer></Footer>
       </div>

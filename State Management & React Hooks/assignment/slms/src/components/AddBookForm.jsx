@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function AddBookForm(props) {
-  const { books, onAddBook } = props;
+  const { books, onAddBook, editingBook, onUpdateBook, onDoneUpdate } = props;
+
+  // console.log(editingBook);
 
   let bookCategories = [
     "Arts & Music",
@@ -31,40 +33,109 @@ function AddBookForm(props) {
     isbn: "",
   };
 
-  const [formValues, setFormValues] = useState(initialValues);
+  // const [formValues, setFormValues] = useState(initialValues);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
-    console.log(formValues);
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [category, setCategory] = useState(bookCategories[0]);
+  const [year, setYear] = useState("");
+  const [isbn, setIsbn] = useState("");
+
+  // console.log(formValues);
+
+  // const handleInputChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setFormValues({ ...formValues, [name]: value });
+  // };
+
+  useEffect(() => {
+    if (editingBook) {
+      setTitle(editingBook.title);
+      setAuthor(editingBook.author);
+      setCategory(editingBook.category);
+      setYear(editingBook.year);
+      setIsbn(editingBook.isbn);
+    }
+  }, [editingBook]);
+
+  const handleCancelEdit = () => {
+    onDoneUpdate();
+    setTitle("");
+    setAuthor("");
+    setCategory("");
+    setYear("");
+    setIsbn("");
   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    if (books.length === 0) {
-      var id = 1;
+    if (editingBook) {
+      // let updatedBook = formValues;
+
+      let updatedBook = {
+        id: editingBook.id,
+        title: title,
+        author: author,
+        category: category,
+        year: year,
+        isbn: isbn,
+      };
+
+      onUpdateBook(updatedBook);
+
+      onDoneUpdate();
+
+      // setFormValues(initialValues);
+
+      setTitle("");
+      setAuthor("");
+      setCategory("");
+      setYear("");
+      setIsbn("");
+
+      alert(`Book with ID ${editingBook.id} has been updated successfully`);
     } else {
-      var id = books[books.length - 1].id + 1;
+      if (books.length === 0) {
+        var id = 1;
+      } else {
+        var id = books[books.length - 1].id + 1;
+      }
+
+      // let newBook = { ...formValues, id: id };
+      let newBook = {
+        id: id,
+        title: title,
+        author: author,
+        category: category,
+        year: year,
+        isbn: isbn,
+      };
+
+      // setFormValues(newBook);
+
+      onAddBook(newBook);
+
+      setTitle("");
+      setAuthor("");
+      setCategory("");
+      setYear("");
+      setIsbn("");
+
+      alert(
+        `A book with ID: ${newBook.id}, title: ${newBook.title}, author: ${newBook.author}, category: ${newBook.category}, publication year: ${newBook.year}, and ISBN: ${newBook.isbn} has been created`
+      );
     }
-
-    let newBook = { ...formValues, id: id };
-
-    setFormValues(newBook);
-
-    onAddBook(newBook);
-
-    alert(
-      `A book with ID: ${newBook.id}, title: ${newBook.title}, author: ${newBook.author}, category: ${newBook.category}, publication year: ${newBook.year}, and ISBN: ${newBook.isbn} has been created`
-    );
-
-    setFormValues(initialValues);
   };
 
   return (
     <>
       <div className="container-fluid my-3">
-        <h3>Add a new book</h3>
+        {editingBook ? (
+          <h3>Editing {editingBook.title}</h3>
+        ) : (
+          <h3>Add a new book</h3>
+        )}
         <form
           className="bg-dark text-white rounded-1 p-3 px-4"
           id="addBookForm"
@@ -80,10 +151,10 @@ function AddBookForm(props) {
                 type="text"
                 className="form-control"
                 id="inputBookTitle"
-                value={formValues.title}
+                value={title}
                 required
                 name="title"
-                onChange={handleInputChange}
+                onChange={(e) => setTitle(e.target.value)}
               />
             </div>
           </div>
@@ -99,10 +170,10 @@ function AddBookForm(props) {
                 type="text"
                 className="form-control"
                 id="inputBookAuthor"
-                value={formValues.author}
+                value={author}
                 required
                 name="author"
-                onChange={handleInputChange}
+                onChange={(e) => setAuthor(e.target.value)}
               />
             </div>
           </div>
@@ -117,10 +188,10 @@ function AddBookForm(props) {
               <select
                 id="inputBookCategory"
                 className="form-select"
-                value={formValues.category}
+                value={category}
                 required
                 name="category"
-                onChange={handleInputChange}
+                onChange={(e) => setCategory(e.target.value)}
               >
                 {bookCategories.map((val, key) => (
                   <option value={val} key={key}>
@@ -142,13 +213,13 @@ function AddBookForm(props) {
                 type="number"
                 className="form-control"
                 id="inputBookPublicationYear"
-                value={formValues.year}
+                value={year}
                 required
                 name="year"
                 min="1900"
                 max="2099"
                 step="1"
-                onChange={handleInputChange}
+                onChange={(e) => setYear(e.target.value)}
               />
             </div>
           </div>
@@ -161,16 +232,31 @@ function AddBookForm(props) {
                 type="text"
                 className="form-control"
                 id="inputBookISBN"
-                value={formValues.isbn}
+                value={isbn}
                 required
                 name="isbn"
-                onChange={handleInputChange}
+                onChange={(e) => setIsbn(e.target.value)}
               />
             </div>
           </div>
-          <button type="submit" className="btn btn-primary">
-            Add
-          </button>
+          {editingBook ? (
+            <>
+              <button type="submit" className="btn btn-primary me-2">
+                Update
+              </button>
+              <button
+                type="reset"
+                className="btn btn-secondary"
+                onClick={handleCancelEdit}
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button type="submit" className="btn btn-primary">
+              Add
+            </button>
+          )}
         </form>
       </div>
     </>

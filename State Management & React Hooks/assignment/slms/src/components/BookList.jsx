@@ -1,5 +1,13 @@
 function BookList(props) {
-  const { books, onDelete } = props;
+  const { books, onEdit, onDelete } = props;
+
+  const handleEditButtonClick = (id) => {
+    onEdit(id);
+
+    // let editedBook = books.find((book) => book.id === id);
+
+    // console.log(editedBook);
+  };
 
   const TableBody = () => {
     return (
@@ -15,8 +23,12 @@ function BookList(props) {
             <td>{book.year}</td>
             <td>{book.isbn}</td>
             <td>
-              <button type="button" className="btn btn-warning mx-1">
-                Update
+              <button
+                type="button"
+                className="btn btn-warning mx-1"
+                onClick={() => handleEditButtonClick(book.id)}
+              >
+                Edit
               </button>
               <button
                 type="button"
