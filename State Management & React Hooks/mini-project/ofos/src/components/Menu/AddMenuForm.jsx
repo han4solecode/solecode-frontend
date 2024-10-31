@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function AddMenuForm(props) {
   const { menus, onAddMenu, onUpdateMenu, editingMenu, onDoneUpdate } = props;
@@ -22,8 +22,11 @@ function AddMenuForm(props) {
     console.log(formValues);
   };
 
+  const editInput = useRef(null);
+
   useEffect(() => {
     if (editingMenu) {
+      editInput.current.focus();
       setFormValues(editingMenu);
     }
   }, [editingMenu]);
@@ -40,7 +43,7 @@ function AddMenuForm(props) {
       let updatedMenu = {
         id: editingMenu.id,
         name: formValues.name,
-        price: formValues.name,
+        price: formValues.price,
         category: formValues.category,
         rating: formValues.rating,
         isAvailable: formValues.isAvailable,
@@ -104,6 +107,7 @@ function AddMenuForm(props) {
               maxLength="100"
               value={formValues.name}
               onChange={handleInputChange}
+              ref={editInput}
             />
           </div>
         </div>

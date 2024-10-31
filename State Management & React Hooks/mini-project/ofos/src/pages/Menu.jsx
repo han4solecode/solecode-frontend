@@ -4,52 +4,9 @@ import MenuList from "../components/Menu/MenuList";
 import AddMenuForm from "../components/Menu/AddMenuForm";
 
 function Menu(props) {
-  const { sendDataToApp } = props;
+  const { sendDataToApp, menuData } = props;
 
-  let initialMenu = [
-    {
-      id: 1,
-      name: "Nasi Goreng",
-      price: 20000,
-      category: "Food",
-      rating: 5,
-      isAvailable: "true",
-    },
-    {
-      id: 2,
-      name: "Sop Iga",
-      price: 40000,
-      category: "Food",
-      rating: 4,
-      isAvailable: "true",
-    },
-    {
-      id: 3,
-      name: "Es Teh",
-      price: 7000,
-      category: "Beverage",
-      rating: 4,
-      isAvailable: "true",
-    },
-    {
-      id: 4,
-      name: "Es Teler",
-      price: 14000,
-      category: "Beverage",
-      rating: 4,
-      isAvailable: "false",
-    },
-    {
-      id: 5,
-      name: "Klepon",
-      price: 10000,
-      category: "Dessert",
-      rating: 3,
-      isAvailable: "true",
-    },
-  ];
-
-  const [menus, setMenus] = useState(initialMenu);
+  const [menus, setMenus] = useState(menuData);
 
   const [menuToEdit, setMenuToEdit] = useState(null);
 
@@ -82,7 +39,6 @@ function Menu(props) {
 
   useEffect(() => {
     sendDataToApp(menus);
-    // localStorage.setItem("menus", JSON.stringify(menus));
   }, [menus]);
 
   return (
