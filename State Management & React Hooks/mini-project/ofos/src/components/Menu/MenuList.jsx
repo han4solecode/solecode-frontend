@@ -15,7 +15,7 @@ function MenuList(props) {
             <td className="text-center">{menu.price}</td>
             <td className="text-center">{menu.category}</td>
             <td className="text-center">{menu.rating}</td>
-            {menu.isAvailable ? (
+            {menu.isAvailable === "true" ? (
               <td className="text-center">Yes</td>
             ) : (
               <td className="text-center">No</td>
