@@ -43,9 +43,9 @@ function AddMenuForm(props) {
       let updatedMenu = {
         id: editingMenu.id,
         name: formValues.name,
-        price: formValues.price,
+        price: Number(formValues.price),
         category: formValues.category,
-        rating: formValues.rating,
+        rating: Number(formValues.rating),
         isAvailable: formValues.isAvailable,
       };
 
@@ -66,9 +66,9 @@ function AddMenuForm(props) {
       let newMenu = {
         id: id,
         name: formValues.name,
-        price: formValues.price,
+        price: Number(formValues.price),
         category: formValues.category,
-        rating: formValues.rating,
+        rating: Number(formValues.rating),
         isAvailable: formValues.isAvailable,
       };
 
