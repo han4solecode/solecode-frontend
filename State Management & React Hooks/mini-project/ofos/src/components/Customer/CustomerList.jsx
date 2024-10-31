@@ -1,5 +1,5 @@
 function CustomerList(props) {
-  const { customers } = props;
+  const { customers, onDelete } = props;
 
   const TableBody = () => {
     return (
@@ -22,7 +22,7 @@ function CustomerList(props) {
               <button
                 type="button"
                 className="btn btn-danger mx-1"
-                // onClick={() => onDelete(menu.id)}
+                onClick={() => onDelete(customer.id)}
               >
                 Delete
               </button>

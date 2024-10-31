@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import CustomerList from "../components/Customer/CustomerList";
 import AddCustomerForm from "../components/Customer/AddCustomerForm";
@@ -18,7 +18,10 @@ function Customer(props) {
   const [customers, setCustomers] = useState(customerData);
 
   // props to CustomerList
-
+  const handleDeleteCustomer = (id) => {
+    setCustomers(customers.filter((customer) => customer.id !== id));
+    alert(`Customer with ID ${id} has been deleted successfully`);
+  };
   // end props to CustomerList
 
   const handleInputChange = (e) => {
@@ -31,6 +34,10 @@ function Customer(props) {
     e.preventDefault();
     setCustomers([...customers, formValues]);
   };
+
+  useEffect(() => {
+    sendDataToApp(customers);
+  }, [customers]);
 
   // return (
   //   <>
@@ -216,7 +223,10 @@ function Customer(props) {
         <div className="container">
           <div className="col">
             <div className="row">
-              <CustomerList customers={customers}></CustomerList>
+              <CustomerList
+                customers={customers}
+                onDelete={handleDeleteCustomer}
+              ></CustomerList>
             </div>
             <div className="row">
               <AddCustomerForm></AddCustomerForm>
