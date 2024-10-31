@@ -8,7 +8,13 @@ function Customer(props) {
 
   const [customers, setCustomers] = useState(customerData);
 
+  const [customerToEdit, setCustomerToEdit] = useState(null);
+
   // props to CustomerList
+  const handleCustomerEditMode = (id) => {
+    setCustomerToEdit(id);
+  };
+
   const handleDeleteCustomer = (id) => {
     setCustomers(customers.filter((customer) => customer.id !== id));
     alert(`Customer with ID ${id} has been deleted successfully`);
@@ -19,12 +25,19 @@ function Customer(props) {
   const handleAddCustomer = (newCustomer) => {
     setCustomers([...customers, newCustomer]);
   };
-  // end props to AddCustomerForm
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    setCustomers([...customers, formValues]);
+  const handleUpdateCustomer = (updatedCustomer) => {
+    setCustomers(
+      customers.map((customer) =>
+        customer.id === updatedCustomer.id ? updatedCustomer : customer
+      )
+    );
   };
+
+  const handleDoneUpdateCustomer = () => {
+    setCustomerToEdit(null);
+  };
+  // end props to AddCustomerForm
 
   useEffect(() => {
     sendDataToApp(customers);
@@ -43,6 +56,7 @@ function Customer(props) {
             <div className="row">
               <CustomerList
                 customers={customers}
+                onEdit={handleCustomerEditMode}
                 onDelete={handleDeleteCustomer}
               ></CustomerList>
             </div>
@@ -50,6 +64,12 @@ function Customer(props) {
               <AddCustomerForm
                 customers={customers}
                 onAddCustomer={handleAddCustomer}
+                onUpdateCustomer={handleUpdateCustomer}
+                editingCustomer={
+                  customerToEdit !== null &&
+                  customers.find((customer) => customer.id === customerToEdit)
+                }
+                onDoneUpdate={handleDoneUpdateCustomer}
               ></AddCustomerForm>
             </div>
           </div>

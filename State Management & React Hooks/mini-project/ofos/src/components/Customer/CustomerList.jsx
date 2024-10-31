@@ -1,5 +1,9 @@
 function CustomerList(props) {
-  const { customers, onDelete } = props;
+  const { customers, onEdit, onDelete } = props;
+
+  const handleEditButtonClick = (id) => {
+    onEdit(id);
+  };
 
   const TableBody = () => {
     return (
@@ -15,7 +19,7 @@ function CustomerList(props) {
               <button
                 type="button"
                 className="btn btn-warning mx-1"
-                // onClick={() => handleEditButtonClick(menu.id)}
+                onClick={() => handleEditButtonClick(customer.id)}
               >
                 Edit
               </button>

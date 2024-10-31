@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function AddCustomerForm(props) {
-  const { customers, onAddCustomer } = props;
+  const {
+    customers,
+    onAddCustomer,
+    onUpdateCustomer,
+    editingCustomer,
+    onDoneUpdate,
+  } = props;
 
   const initialValues = {
     id: 0,
@@ -19,36 +25,78 @@ function AddCustomerForm(props) {
     console.log(formValues);
   };
 
+  const editInput = useRef(null);
+
+  useEffect(() => {
+    if (editingCustomer) {
+      editInput.current.focus();
+      setFormValues(editingCustomer);
+    }
+  }, [editingCustomer]);
+
+  const handleCancelEdit = () => {
+    onDoneUpdate();
+    setFormValues(initialValues);
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    if (customers.length === 0) {
-      var id = 1;
+    if (editingCustomer) {
+      let updatedCustomer = {
+        id: editingCustomer.id,
+        name: formValues.name,
+        email: formValues.email,
+        phoneNumber: formValues.phoneNumber,
+        address: formValues.address,
+      };
+
+      onUpdateCustomer(updatedCustomer);
+
+      onDoneUpdate();
+
+      setFormValues(initialValues);
+
+      alert(
+        `Customer with ID ${updatedCustomer.id} has been updated successfully`
+      );
     } else {
-      var id = customers[customers.length - 1].id + 1;
+      if (customers.length === 0) {
+        var id = 1;
+      } else {
+        var id = customers[customers.length - 1].id + 1;
+      }
+
+      let newCustomer = {
+        id: id,
+        name: formValues.name,
+        email: formValues.email,
+        phoneNumber: formValues.phoneNumber,
+        address: formValues.address,
+      };
+
+      onAddCustomer(newCustomer);
+
+      setFormValues(initialValues);
+
+      alert(
+        `A customer with ID ${newCustomer.id} has been created successfully`
+      );
     }
-
-    let newCustomer = {
-      id: id,
-      name: formValues.name,
-      email: formValues.email,
-      phoneNumber: formValues.phoneNumber,
-      address: formValues.address,
-    };
-
-    onAddCustomer(newCustomer);
-
-    setFormValues(initialValues);
-
-    alert(`A customer with ID ${newCustomer.id} has been created successfully`);
   };
 
   return (
     <>
       <form id="addCustomerForm" autoComplete="off" onSubmit={handleFormSubmit}>
-        <caption className="row">
-          <span>Add a New Customer</span>
-        </caption>
+        {editingCustomer ? (
+          <caption className="row">
+            <span>Editing {editingCustomer.name} Customer</span>
+          </caption>
+        ) : (
+          <caption className="row">
+            <span>Add a New Customer</span>
+          </caption>
+        )}
         <div className="my-1 mb-4 row">
           <label
             htmlFor="inputCustomerName"
@@ -67,6 +115,7 @@ function AddCustomerForm(props) {
               maxLength="100"
               value={formValues.name}
               onChange={handleInputChange}
+              ref={editInput}
             />
           </div>
         </div>
@@ -105,7 +154,7 @@ function AddCustomerForm(props) {
               name="phoneNumber"
               // required
               pattern="^(\+62|62|0)8[1-9][0-9]{6,9}$"
-              placeholder="(+62)(62)(0)8XXXXXXX"
+              placeholder="(+62)(62)(08)XXXXXXXXXXXX"
               value={formValues.phoneNumber}
               onChange={handleInputChange}
             />
@@ -131,18 +180,50 @@ function AddCustomerForm(props) {
             />
           </div>
         </div>
-        <button
-          type="submit"
-          style={{
-            backgroundColor: "#A28B55",
-            color: "white",
-            border: "none",
-            padding: "10px 15px",
-            borderRadius: "4px",
-          }}
-        >
-          Add
-        </button>
+        {editingCustomer ? (
+          <>
+            <button
+              type="submit"
+              style={{
+                backgroundColor: "#A28B55",
+                color: "white",
+                border: "none",
+                padding: "10px 15px",
+                borderRadius: "4px",
+              }}
+              className="me-2"
+            >
+              Update
+            </button>
+            <button
+              type="button"
+              className="btn-secondary"
+              style={{
+                backgroundColor: "#808080",
+                color: "white",
+                border: "none",
+                padding: "10px 15px",
+                borderRadius: "4px",
+              }}
+              onClick={handleCancelEdit}
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <button
+            type="submit"
+            style={{
+              backgroundColor: "#A28B55",
+              color: "white",
+              border: "none",
+              padding: "10px 15px",
+              borderRadius: "4px",
+            }}
+          >
+            Add
+          </button>
+        )}
       </form>
     </>
   );
