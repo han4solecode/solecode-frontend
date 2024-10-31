@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function AddBookForm(props) {
   const { books, onAddBook, editingBook, onUpdateBook, onDoneUpdate } = props;
@@ -48,8 +48,11 @@ function AddBookForm(props) {
   //   setFormValues({ ...formValues, [name]: value });
   // };
 
+  const editInput = useRef(null);
+
   useEffect(() => {
     if (editingBook) {
+      editInput.current.focus();
       setTitle(editingBook.title);
       setAuthor(editingBook.author);
       setCategory(editingBook.category);
@@ -155,6 +158,7 @@ function AddBookForm(props) {
                 required
                 name="title"
                 onChange={(e) => setTitle(e.target.value)}
+                ref={editInput}
               />
             </div>
           </div>
