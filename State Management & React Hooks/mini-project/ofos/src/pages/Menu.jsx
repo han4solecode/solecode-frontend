@@ -68,10 +68,21 @@ function Menu(props) {
   const handleAddMenu = (newMenu) => {
     setMenus([...menus, newMenu]);
   };
-  // end porps to AddMenuForm
+
+  const handleUpdateMenu = (updatedMenu) => {
+    setMenus(
+      menus.map((menu) => (menu.id === updatedMenu.id ? updatedMenu : menu))
+    );
+  };
+
+  const handleDoneUpdateMenu = () => {
+    setMenuToEdit(null);
+  };
+  // end props to AddMenuForm
 
   useEffect(() => {
     sendDataToApp(menus);
+    // localStorage.setItem("menus", JSON.stringify(menus));
   }, [menus]);
 
   return (
@@ -95,11 +106,12 @@ function Menu(props) {
               <AddMenuForm
                 menus={menus}
                 onAddMenu={handleAddMenu}
-                // onUpdateMenu={handleUpdateMenu}
-                // editingMenu={
-                //   menuToEdit !== null && menus.find((menu) => menu.id === menuToEdit)
-                // }
-                // onDoneUpdate={handleDoneUpdateMenu}
+                onUpdateMenu={handleUpdateMenu}
+                editingMenu={
+                  menuToEdit !== null &&
+                  menus.find((menu) => menu.id === menuToEdit)
+                }
+                onDoneUpdate={handleDoneUpdateMenu}
               ></AddMenuForm>
             </div>
           </div>

@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function AddMenuForm(props) {
-  const { menus, onAddMenu } = props;
+  const { menus, onAddMenu, onUpdateMenu, editingMenu, onDoneUpdate } = props;
 
   const categories = ["Food", "Beverage", "Dessert"];
 
@@ -22,37 +22,73 @@ function AddMenuForm(props) {
     console.log(formValues);
   };
 
+  useEffect(() => {
+    if (editingMenu) {
+      setFormValues(editingMenu);
+    }
+  }, [editingMenu]);
+
+  const handleCancelEdit = () => {
+    onDoneUpdate();
+    setFormValues(initialValues);
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    if (menus.length === 0) {
-      var id = 1;
+    if (editingMenu) {
+      let updatedMenu = {
+        id: editingMenu.id,
+        name: formValues.name,
+        price: formValues.name,
+        category: formValues.category,
+        rating: formValues.rating,
+        isAvailable: formValues.isAvailable,
+      };
+
+      onUpdateMenu(updatedMenu);
+
+      onDoneUpdate();
+
+      setFormValues(initialValues);
+
+      alert(`Menu with ID ${updatedMenu.id} has been updated successfully`);
     } else {
-      var id = menus[menus.length - 1].id + 1;
+      if (menus.length === 0) {
+        var id = 1;
+      } else {
+        var id = menus[menus.length - 1].id + 1;
+      }
+
+      let newMenu = {
+        id: id,
+        name: formValues.name,
+        price: formValues.price,
+        category: formValues.category,
+        rating: formValues.rating,
+        isAvailable: formValues.isAvailable,
+      };
+
+      onAddMenu(newMenu);
+
+      setFormValues(initialValues);
+
+      alert(`A menu with ID ${newMenu.id} has been created successfully`);
     }
-
-    let newMenu = {
-      id: id,
-      name: formValues.name,
-      price: formValues.price,
-      category: formValues.category,
-      rating: formValues.rating,
-      isAvailable: formValues.isAvailable,
-    };
-
-    onAddMenu(newMenu);
-
-    setFormValues(initialValues);
-
-    alert(`A menu with ID ${newMenu.id} has been created successfully`);
   };
 
   return (
     <>
       <form id="addMenuForm" autoComplete="off" onSubmit={handleFormSubmit}>
-        <caption className="row">
-          <span>Add a New Menu</span>
-        </caption>
+        {editingMenu ? (
+          <caption className="row">
+            <span>Editing {editingMenu.name} Menu</span>
+          </caption>
+        ) : (
+          <caption className="row">
+            <span>Add a New Menu</span>
+          </caption>
+        )}
         <div className="my-1 mb-4 row">
           <label htmlFor="inputMenuName" className="col-sm-2 col-form-label">
             Name
@@ -150,18 +186,50 @@ function AddMenuForm(props) {
             </select>
           </div>
         </div>
-        <button
-          type="submit"
-          style={{
-            backgroundColor: "#A28B55",
-            color: "white",
-            border: "none",
-            padding: "10px 15px",
-            borderRadius: "4px",
-          }}
-        >
-          Add
-        </button>
+        {editingMenu ? (
+          <>
+            <button
+              type="submit"
+              style={{
+                backgroundColor: "#A28B55",
+                color: "white",
+                border: "none",
+                padding: "10px 15px",
+                borderRadius: "4px",
+              }}
+              className="me-2"
+            >
+              Update
+            </button>
+            <button
+              type="button"
+              className="btn-secondary"
+              style={{
+                backgroundColor: "#808080",
+                color: "white",
+                border: "none",
+                padding: "10px 15px",
+                borderRadius: "4px",
+              }}
+              onClick={handleCancelEdit}
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <button
+            type="submit"
+            style={{
+              backgroundColor: "#A28B55",
+              color: "white",
+              border: "none",
+              padding: "10px 15px",
+              borderRadius: "4px",
+            }}
+          >
+            Add
+          </button>
+        )}
       </form>
     </>
   );
