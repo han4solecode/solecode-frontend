@@ -1,4 +1,11 @@
-function Header() {
+function Header(props) {
+  const { setView } = props;
+
+  const handleNavClick = (route) => (e) => {
+    e.preventDefault();
+    setView(route);
+  };
+
   return (
     <>
       <header
@@ -20,14 +27,26 @@ function Header() {
               </a>
             </div>
             <div className="col-6 d-flex align-items-center justify-content-center pt-2">
-              <a href="/" className="h4 text-decoration-none mx-2">
+              <a
+                href="/menu"
+                className="h4 text-decoration-none mx-2"
+                onClick={(e) => handleNavClick("menu")(e)}
+              >
                 Menu
               </a>
-              <a href="/" className="h4 text-decoration-none mx-2">
-                Promotion
+              <a
+                href="/customer"
+                className="h4 text-decoration-none mx-2"
+                onClick={(e) => handleNavClick("customer")(e)}
+              >
+                Customer
               </a>
-              <a href="/" className="h4 text-decoration-none mx-2">
-                Contact
+              <a
+                href="/order"
+                className="h4 text-decoration-none mx-2"
+                onClick={(e) => handleNavClick("order")(e)}
+              >
+                Order
               </a>
             </div>
             <div className="col d-flex justify-content-end align-items-center">
