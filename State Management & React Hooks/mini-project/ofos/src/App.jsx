@@ -53,7 +53,43 @@ function App() {
       isAvailable: "true",
     },
   ]);
-  const [customers, setCustomers] = useState([]);
+  const [customers, setCustomers] = useState([
+    {
+      id: 1,
+      name: "Customer 1",
+      email: "customer1@gmail.com",
+      phoneNumber: "0813818181",
+      address: "Jl. Pisok 1, Bintaro",
+    },
+    {
+      id: 2,
+      name: "Customer 2",
+      email: "customer2@gmail.com",
+      phoneNumber: "0813818182",
+      address: "Jl. Pisok 2, Bintaro",
+    },
+    {
+      id: 3,
+      name: "Customer 3",
+      email: "customer3@gmail.com",
+      phoneNumber: "0813818183",
+      address: "Jl. Pisok 3, Bintaro",
+    },
+    {
+      id: 4,
+      name: "Customer 4",
+      email: "customer4@gmail.com",
+      phoneNumber: "0813818184",
+      address: "Jl. Pisok 4, Bintaro",
+    },
+    {
+      id: 5,
+      name: "Customer 5",
+      email: "customer5@gmail.com",
+      phoneNumber: "0813818185",
+      address: "Jl. Pisok 5, Bintaro",
+    },
+  ]);
 
   console.log(menus);
 
@@ -62,7 +98,12 @@ function App() {
       case "menu":
         return <Menu sendDataToApp={setMenus} menuData={menus}></Menu>;
       case "customer":
-        return <Customer sendDataToApp={setCustomers}></Customer>;
+        return (
+          <Customer
+            sendDataToApp={setCustomers}
+            customerData={customers}
+          ></Customer>
+        );
       case "order":
         return <Order menus={menus} customers={customers}></Order>;
       default:
