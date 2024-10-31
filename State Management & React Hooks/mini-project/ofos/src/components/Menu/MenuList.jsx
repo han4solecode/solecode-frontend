@@ -12,7 +12,13 @@ function MenuList(props) {
           <tr className="align-middle" key={menu.id}>
             <td className="text-center">{menu.id}</td>
             <td className="text-center">{menu.name}</td>
-            <td className="text-center">{menu.price}</td>
+            <td className="text-center">
+              Rp{" "}
+              {menu.price.toLocaleString("id-ID", {
+                styles: "currency",
+                currency: "IDR",
+              })}
+            </td>
             <td className="text-center">{menu.category}</td>
             <td className="text-center">{menu.rating}</td>
             {menu.isAvailable === "true" ? (
