@@ -53,6 +53,7 @@ function App() {
       isAvailable: "true",
     },
   ]);
+
   const [customers, setCustomers] = useState([
     {
       id: 1,
@@ -91,7 +92,9 @@ function App() {
     },
   ]);
 
-  console.log(menus);
+  const [orders, setOrders] = useState([]);
+
+  console.log(orders);
 
   const renderView = () => {
     switch (view) {
@@ -105,7 +108,14 @@ function App() {
           ></Customer>
         );
       case "order":
-        return <Order menus={menus} customers={customers}></Order>;
+        return (
+          <Order
+            sendOrderDataToApp={setOrders}
+            orderData={orders}
+            menus={menus}
+            customers={customers}
+          ></Order>
+        );
       default:
         <Menu></Menu>;
     }
