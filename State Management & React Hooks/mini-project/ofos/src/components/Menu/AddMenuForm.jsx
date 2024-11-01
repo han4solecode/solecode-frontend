@@ -25,6 +25,10 @@ function AddMenuForm(props) {
   const editInput = useRef(null);
 
   useEffect(() => {
+    editInput.current.focus();
+  }, []);
+
+  useEffect(() => {
     if (editingMenu) {
       editInput.current.focus();
       setFormValues(editingMenu);
@@ -34,6 +38,7 @@ function AddMenuForm(props) {
   const handleCancelEdit = () => {
     onDoneUpdate();
     setFormValues(initialValues);
+    editInput.current.focus();
   };
 
   const handleFormSubmit = (e) => {

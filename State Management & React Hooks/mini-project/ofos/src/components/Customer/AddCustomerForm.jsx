@@ -28,6 +28,10 @@ function AddCustomerForm(props) {
   const editInput = useRef(null);
 
   useEffect(() => {
+    editInput.current.focus();
+  }, []);
+
+  useEffect(() => {
     if (editingCustomer) {
       editInput.current.focus();
       setFormValues(editingCustomer);
@@ -37,6 +41,7 @@ function AddCustomerForm(props) {
   const handleCancelEdit = () => {
     onDoneUpdate();
     setFormValues(initialValues);
+    editInput.current.focus();
   };
 
   const handleFormSubmit = (e) => {
