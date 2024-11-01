@@ -117,7 +117,7 @@ function App() {
           ></Order>
         );
       default:
-        <Menu></Menu>;
+        <Menu sendDataToApp={setMenus} menuData={menus}></Menu>;
     }
   };
 
