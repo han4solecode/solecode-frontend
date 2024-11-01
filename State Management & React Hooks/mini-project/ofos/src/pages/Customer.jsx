@@ -16,8 +16,12 @@ function Customer(props) {
   };
 
   const handleDeleteCustomer = (id) => {
-    setCustomers(customers.filter((customer) => customer.id !== id));
-    alert(`Customer with ID ${id} has been deleted successfully`);
+    if (confirm(`Are you sure you want to delete customer ID ${id}?`)) {
+      setCustomers(customers.filter((customer) => customer.id !== id));
+      alert(`Customer with ID ${id} has been deleted successfully`);
+    } else {
+      return;
+    }
   };
   // end props to CustomerList
 
