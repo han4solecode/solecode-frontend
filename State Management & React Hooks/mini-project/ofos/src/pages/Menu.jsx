@@ -16,8 +16,12 @@ function Menu(props) {
   };
 
   const handleDeleteMenu = (id) => {
-    setMenus(menus.filter((menu) => menu.id !== id));
-    alert(`Menu with ID ${id} has been deleted successfully`);
+    if (confirm(`Are you sure you want to delete menu ID ${id}?`)) {
+      setMenus(menus.filter((menu) => menu.id !== id));
+      alert(`Menu with ID ${id} has been deleted successfully`);
+    } else {
+      return;
+    }
   };
   // end props to MenuList
 
