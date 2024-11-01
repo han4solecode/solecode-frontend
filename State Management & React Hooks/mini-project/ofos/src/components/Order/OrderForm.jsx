@@ -17,11 +17,11 @@ function OrderForm(props) {
 
   console.log(customerId);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: Number(value) });
-    console.log(formValues);
-  };
+  //   const handleInputChange = (e) => {
+  //     const { name, value } = e.target;
+  //     setFormValues({ ...formValues, [name]: Number(value) });
+  //     console.log(formValues);
+  //   };
 
   const handleAddToCart = (menuId) => {
     if (cart.find((item) => item.menuId === menuId)) {
@@ -61,13 +61,13 @@ function OrderForm(props) {
       return;
     }
 
-    var menusCart = [];
+    // var menusCart = [];
 
-    cart.forEach((item) => {
-      let menu = menus.find((menu) => menu.id === item.menuId);
-      menusCart.push(menu);
-      //   console.log(menusCart);
-    });
+    // cart.forEach((item) => {
+    //   let menu = menus.find((menu) => menu.id === item.menuId);
+    //   menusCart.push(menu);
+    //   //   console.log(menusCart);
+    // });
 
     var customer = customers.find((customer) => customer.id === customerId);
 
