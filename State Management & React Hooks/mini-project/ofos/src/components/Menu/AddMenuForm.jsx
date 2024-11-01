@@ -11,7 +11,7 @@ function AddMenuForm(props) {
     price: 0,
     category: categories[0],
     rating: 0,
-    isAvailable: true,
+    isAvailable: "true",
   };
 
   const [formValues, setFormValues] = useState(initialValues);
