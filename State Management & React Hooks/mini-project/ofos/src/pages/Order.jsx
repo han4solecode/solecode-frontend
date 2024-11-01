@@ -11,95 +11,84 @@ function Order(props) {
     setOrders([...orders, newOrder]);
   };
 
+  const handleCancelOrder = (id) => {
+    setOrders(orders.filter((order) => order.id !== id));
+    alert(`Order with ID ${id} has been canceled successfully`);
+  };
+
   useEffect(() => {
     sendOrderDataToApp(orders);
   }, [orders]);
 
-  // return (
-  //   <>
-  //     <div className="container d-flex my-3 flex-column">
-  //       <div className="row">
-  //         <div className="col border-top">
-  //           <h2 style={{ color: "#86AB89" }}>Order</h2>
-  //         </div>
-  //       </div>
-  //       <div className="row">
-  //         <div className="col">
-  //           <div className="row">
-  //             <caption>Place a New Order</caption>
-  //           </div>
-  //           {menus.map((menu, key) => (
-  //             <div className="form-check" key={key}>
-  //               {menu.isAvailable === "true" ? (
-  //                 <input
-  //                   type="checkbox"
-  //                   className="form-check-input"
-  //                   id="checkMenu"
-  //                   value={menu.id}
-  //                   onChange={checkMenuHandler}
-  //                 />
-  //               ) : (
-  //                 <input
-  //                   type="checkbox"
-  //                   className="form-check-input"
-  //                   value={key}
-  //                   id="checkMenu"
-  //                   disabled
-  //                 />
-  //               )}
-  //               {menu.isAvailable === "true" ? (
-  //                 <label htmlFor="checkMenu" className="form-check-label">
-  //                   {menu.name} | Rp{" "}
-  //                   {menu.price.toLocaleString("id-ID", {
-  //                     styles: "currency",
-  //                     currency: "IDR",
-  //                   })}{" "}
-  //                   | {menu.rating} star rating
-  //                 </label>
-  //               ) : (
-  //                 <label htmlFor="checkMenu" className="form-check-label">
-  //                   {menu.name} | Rp{" "}
-  //                   {menu.price.toLocaleString("id-ID", {
-  //                     styles: "currency",
-  //                     currency: "IDR",
-  //                   })}{" "}
-  //                   | {menu.rating} star rating (sold out)
-  //                 </label>
-  //               )}
-  //             </div>
-  //           ))}
-  //         </div>
-  //         <div className="col">
-  //           <table className="table caption-top wo-auto align-middle">
-  //             <caption>Order Details</caption>
-  //             <thead>
-  //               <tr className="text-center">
-  //                 <th scope="col">No</th>
-  //                 <th scope="col">Menu Name</th>
-  //                 <th scope="col">Quantity</th>
-  //                 <th scope="col">Price</th>
-  //               </tr>
-  //             </thead>
-  //             <tbody>
-  //               {menus.map((menu, key) => (
-  //                 <tr className="align-middle" key={key}>
-  //                   <td className="text-center">{key + 1}</td>
-  //                   <td className="text-center">{menu.name}</td>
-  //                   <td className="text-center">3</td>
-  //                   <td className="text-center">{menu.price}</td>
-  //                 </tr>
-  //               ))}
-  //               <tr className="text-center">
-  //                 <td colSpan="3">Total Cost</td>
-  //                 <td>99999</td>
-  //               </tr>
-  //             </tbody>
-  //           </table>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </>
-  // );
+  const OrderCard = ({ order }) => {
+    return (
+      <>
+        <div
+          className="card mx-1 mb-2 shadow"
+          style={{ width: "18rem" }}
+          key={order.id}
+        >
+          <div
+            className="card-header text-center"
+            style={{ backgroundColor: "#A28B55" }}
+          >
+            <b className="text-white">Order ID {order.id}</b>
+          </div>
+          <div className="card-body">
+            <h5 className="card-title mb-2">Customer Details</h5>
+            <div className="d-flex flex-column mb-3">
+              <span className="card-text">Name: {order.customer.name}</span>
+              <span className="card-text">Email: {order.customer.email}</span>
+              <span className="card-text">
+                Phone Number: {order.customer.phoneNumber}
+              </span>
+              <span className="card-text">
+                Address: {order.customer.address}
+              </span>
+            </div>
+            <h5 className="card-title mb-2">Order Details</h5>
+            <div className="d-flex flex-column mb-3">
+              {order.cart.map((item) => {
+                const menu = menus.find((menu) => menu.id === item.menuId);
+                return (
+                  <div className="d-flex justify-content-between">
+                    <span className="card-text">{menu.name}</span>
+                    <span className="card-text">x {item.quantity}</span>
+                  </div>
+                );
+              })}
+              <div className="d-flex justify-content-between mt-2">
+                <b>Total Cost</b>
+                <b>
+                  Rp{" "}
+                  {order.totalPrice.toLocaleString("id-ID", {
+                    styles: "currency",
+                    currency: "IDR",
+                  })}
+                </b>
+              </div>
+            </div>
+            <b>Status: {order.status.toUpperCase()}</b>
+          </div>
+          <div className="card-footer d-flex justify-content-center">
+            <button
+              className="btn btn-sm me-2"
+              style={{
+                backgroundColor: "#808080",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+              }}
+              onClick={() => handleCancelOrder(order.id)}
+            >
+              Cancel Order
+            </button>
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
       <div className="container d-flex my-3 flex-column">
@@ -117,12 +106,25 @@ function Order(props) {
                   onPlaceOrder={handlePlaceOrder}
                 ></OrderForm>
               </div>
-              {/* <div className="col">
-                <div className="d-flex">
-                  <caption>Ordered Menu</caption>
-                </div>
-              </div> */}
             </div>
+          </div>
+          <div className="col pt-5">
+            {orders.length !== 0 ? (
+              <>
+                <div className="row">
+                  <h2 style={{ color: "#86AB89" }}>Placed Order</h2>
+                </div>
+                <div className="row">
+                  <div className="d-flex flex-wrap">
+                    {orders.map((order) => (
+                      <OrderCard order={order}></OrderCard>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>

@@ -5,21 +5,21 @@ function OrderForm(props) {
 
   const initialValues = {
     customerId: customers[0].id,
-    // cart: [],
-    // totalPrice: 0,
-    // status: "",
   };
 
   const [availableMenu, setAvailableMenu] = useState(
     menus.filter((menu) => menu.isAvailable === "true")
   );
   const [formValues, setFormValues] = useState(initialValues);
+  const [customerId, setCustomerId] = useState(customers[0].id);
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
+  console.log(customerId);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormValues({ ...formValues, [name]: value });
+    setFormValues({ ...formValues, [name]: Number(value) });
     console.log(formValues);
   };
 
@@ -66,26 +66,27 @@ function OrderForm(props) {
     cart.forEach((item) => {
       let menu = menus.find((menu) => menu.id === item.menuId);
       menusCart.push(menu);
-      console.log(menusCart);
+      //   console.log(menusCart);
     });
 
-    var customer = customers.find(
-      (customer) => customer.id === formValues.customerId
-    );
+    var customer = customers.find((customer) => customer.id === customerId);
 
     let newOrder = {
       id: id,
       customer: customer,
-      cart: menusCart,
+      //   cart: [...menusCart, cart],
+      cart: cart,
       totalPrice: totalPrice,
       status: "processed",
     };
 
     onPlaceOrder(newOrder);
 
-    setFormValues(initialValues);
+    setCustomerId(customers[0].id);
     setCart([]);
     setTotalPrice(0);
+
+    alert(`A new order with ID ${id} has been placed successfully`);
   };
 
   useEffect(() => {
@@ -198,11 +199,12 @@ function OrderForm(props) {
                 name="customerId"
                 id="inputCustomerId"
                 className="form-select"
-                value={Number(formValues.customerId)}
-                onChange={handleInputChange}
+                value={customerId}
+                // onChange={handleInputChange}
+                onChange={(e) => setCustomerId(Number(e.target.value))}
               >
                 {customers.map((customer) => (
-                  <option value={Number(customer.id)} key={customer.id}>
+                  <option value={customer.id} key={customer.id}>
                     {customer.name}
                   </option>
                 ))}
