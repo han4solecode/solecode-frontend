@@ -4,7 +4,7 @@ function Card(props) {
   const { cardTitle, data, cardFooter } = props;
 
   return (
-    <div className="w-64 h-40 rounded shadow-lg">
+    <div className="w-64 h-40 rounded shadow-lg border">
       <header className="bg-gray-800 text-white text-lg h-10 rounded-t-lg flex justify-center items-center">
         {cardTitle}
       </header>
