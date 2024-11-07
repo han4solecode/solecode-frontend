@@ -1,0 +1,177 @@
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import PageLayout from "../components/Layouts/PageLayout";
+import Button from "../components/Elements/Button";
+
+function DepartmentFormPage(props) {
+  const { isEditing } = props;
+  const { id } = useParams();
+
+  const navigate = useNavigate();
+
+  const initialValues = {
+    deptNo: 0,
+    deptName: "",
+    mgrEmpNo: 0,
+  };
+
+  const [formValues, setFormValues] = useState(initialValues);
+  const [employees, setEmployees] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [errors, setErrors] = useState(initialValues);
+
+  useState(() => {
+    const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
+    const departmentData = JSON.parse(
+      localStorage.getItem("departments") || "[]"
+    );
+    if (employeeData && departmentData) {
+      setEmployees(employeeData);
+      setDepartments(departmentData);
+    }
+  }, []);
+
+  useState(() => {
+    if (isEditing) {
+      const departmentData = JSON.parse(
+        localStorage.getItem("departments") || "[]"
+      );
+      const editedDept = departmentData.find(
+        (dept) => dept.deptNo === Number(id)
+      );
+      setFormValues(editedDept);
+    }
+  }, []);
+
+  const getEmpsInDept = (deptNo) => {
+    let filteredEmployees = employees.filter(
+      (employee) => employee.deptNo === deptNo
+    );
+    return filteredEmployees;
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    if (type === "checkbox") {
+      setFormValues({ ...formValues, isAvailable: checked });
+    } else {
+      setFormValues({ ...formValues, [name]: value });
+    }
+  };
+
+  const handleClearForm = (e) => {
+    e.preventDefault();
+    setFormValues(initialValues);
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+
+    let departments = JSON.parse(localStorage.getItem("departments") || "[]");
+
+    if (isEditing) {
+      let editedDepartment = {
+        ...formValues,
+        deptNo: Number(formValues.deptNo),
+        mgrEmpNo: Number(formValues.mgrEmpNo),
+      };
+
+      let updatedDepartmentData = departments.map((dept) =>
+        dept.deptNo === editedDepartment.deptNo ? editedDepartment : dept
+      );
+
+      localStorage.setItem(
+        "departments",
+        JSON.stringify(updatedDepartmentData)
+      );
+
+      alert(
+        `Department ${editedDepartment.deptNo} has been updated successfully`
+      );
+      navigate("/departments");
+    } else {
+      // auto generate deptNo
+      if (departments.length === 0) {
+        var deptNo = 1;
+      } else {
+        var deptNo = departments[departments.length - 1].deptNo + 1;
+      }
+      departments.push({
+        ...formValues,
+        deptNo: Number(deptNo),
+        mgrEmpNo: Number(formValues.mgrEmpNo),
+      });
+      localStorage.setItem("departments", JSON.stringify(departments));
+
+      alert("A new department has been created successfully");
+      navigate("/departments");
+    }
+  };
+
+  return (
+    <PageLayout
+      pageTitle={
+        isEditing ? `Editing Department ${id}` : "Add a New Department"
+      }
+    >
+      <div className="w-full">
+        <form autoComplete="off">
+          <div className="mb-3">
+            <label
+              htmlFor="deptName"
+              className="block text-black mb-2 text-lg text-semibold"
+            >
+              Department Name
+            </label>
+            <input
+              type="text"
+              name="deptName"
+              id="deptName"
+              className="border rounded text-lg w-full p-2 border-gray-400 focus:border-gray-800 focus:ring-0 focus:outline-none"
+              onChange={(e) => handleInputChange(e)}
+              value={formValues.deptName}
+            />
+            {errors.deptName && (
+              <small className="text-red-600">{errors.deptName}</small>
+            )}
+          </div>
+          <div className="mb-3">
+            <label
+              htmlFor="mgrEmpNo"
+              className="block text-black mb-2 text-lg text-semibold"
+            >
+              Manager
+            </label>
+            <select
+              name="mgrEmpNo"
+              id="mgrEmpNo"
+              className="border rounded text-lg w-full p-2 border-gray-400 focus:border-gray-800 focus:ring-0 focus:outline-none"
+              value={formValues.mgrEmpNo}
+              onChange={(e) => handleInputChange(e)}
+            >
+              {getEmpsInDept(formValues.deptNo).map((emp) => (
+                <option value={emp.empNo} key={emp.empNo}>
+                  {emp.fName} {emp.lName}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="mt-3 space-x-2">
+            <Button type="submit" onClick={handleFormSubmit}>
+              {isEditing ? "Edit" : "Add"}
+            </Button>
+            <Button
+              type="reset"
+              styleName="bg-gray-600"
+              onClick={handleClearForm}
+            >
+              Clear
+            </Button>
+          </div>
+        </form>
+      </div>
+    </PageLayout>
+  );
+}
+
+export default DepartmentFormPage;
