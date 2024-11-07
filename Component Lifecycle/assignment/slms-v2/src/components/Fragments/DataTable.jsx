@@ -2,7 +2,7 @@ function DataTable(props) {
   const { header, body } = props;
 
   return (
-    <table className="w-full my-3 shadow-lg rouned">
+    <table className="my-3 shadow-lg rouned table-fixed">
       <thead className="bg-gray-800 text-white">
         <tr>
           {header.map((th, key) => (

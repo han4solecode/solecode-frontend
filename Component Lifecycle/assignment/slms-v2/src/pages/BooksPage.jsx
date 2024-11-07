@@ -19,38 +19,59 @@ function BooksPage(props) {
     "ISBN",
     "Title",
     "Author",
-    "Publication Year",
     "Category",
+    "Publication Year",
     "Availability",
     "Action",
   ];
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("books"));
+    const data = JSON.parse(localStorage.getItem("books") || "[]");
     if (data) {
       setBooks(data);
     }
   }, []);
 
+  const handleDeleteBook = (isbn) => {
+    if (confirm(`Are you sure you want to delete book ID ${isbn}?`)) {
+      let books = JSON.parse(localStorage.getItem("books"));
+      books = books.filter((book) => book.isbn !== isbn);
+      localStorage.setItem("books", JSON.stringify(books));
+      if (books.length === 0) {
+        localStorage.removeItem("books");
+      }
+      setBooks(books);
+      alert(`Book with ID ${isbn} has been deleted successfully`);
+    } else {
+      return;
+    }
+  };
+
   const TableBody = () => {
     return books.length !== 0 ? (
       <tbody>
-        {books.map((book) => {
+        {books.map((book) => (
           <tr
             key={book.isbn}
-            className="text-center align-middle odd:bg-white even:bg-slate-500"
+            className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
           >
+            <td>{book.isbn}</td>
             <td>{book.title}</td>
             <td>{book.author}</td>
             <td>{book.category}</td>
             <td>{book.year}</td>
-            <td>{book.isAvailable}</td>
-            <td>
-              <Button>Edit</Button>
-              <Button>Delete</Button>
+            {book.isAvailable ? <td>Yes</td> : <td>No</td>}
+            <td className="space-x-2">
+              <Button styleName="bg-green-700">Edit</Button>
+              <Button
+                styleName="bg-red-700"
+                onClick={() => handleDeleteBook(book.isbn)}
+              >
+                Delete
+              </Button>
             </td>
-          </tr>;
-        })}
+          </tr>
+        ))}
       </tbody>
     ) : (
       <tbody>

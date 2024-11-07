@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 import LoadingAnimation from "../Elements/LoadingAnimation";
 
 function Card(props) {
-  const { cardTitle, data, cardFooter } = props;
+  const { cardTitle, data, cardFooter, isLoading } = props;
 
   return (
     <div className="w-64 h-40 rounded shadow-lg">
@@ -9,11 +10,12 @@ function Card(props) {
         {cardTitle}
       </header>
       <div className="flex flex-col items-center justify-center mt-3">
-        {data ? (
+        {isLoading ? (
           <span className="text-6xl">{data}</span>
         ) : (
           <LoadingAnimation></LoadingAnimation>
         )}
+        {/* <span className="text-6xl">{data}</span> */}
         <span className="mt-1">{cardFooter}</span>
       </div>
     </div>

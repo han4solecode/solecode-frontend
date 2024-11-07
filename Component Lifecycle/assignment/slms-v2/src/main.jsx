@@ -9,6 +9,8 @@ import MainLayout from "./components/Layouts/MainLayout";
 import HomePage from "./pages/HomePage";
 import BooksPage from "./pages/BooksPage";
 import BookFormPage from "./pages/BookFormPage";
+import MembersPage from "./pages/MembersPage";
+import MemberFormPage from "./pages/MemberFormPage";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +32,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/members",
-        element: <div>Members Page</div>,
+        element: <MembersPage></MembersPage>,
+      },
+      {
+        path: "/members/add",
+        element: <MemberFormPage></MemberFormPage>,
       },
     ],
   },
