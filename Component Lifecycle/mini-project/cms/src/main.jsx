@@ -5,10 +5,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 // import App from "./App.jsx";
 
+import MainLayout from "./components/Layouts/MainLayout";
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <div>Hello</div>,
+    element: <MainLayout></MainLayout>,
     errorElement: (
       <div className="flex justify-center items-center h-screen">Error 404</div>
     ),
