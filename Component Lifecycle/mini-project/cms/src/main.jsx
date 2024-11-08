@@ -15,13 +15,14 @@ import ProjectsPage from "./pages/ProjectsPage";
 import ProjectFormPage from "./pages/ProjectFormPage";
 import AssignmentsPage from "./pages/AssignmentsPage";
 import AssignmentFormPage from "./pages/AssignmentFormPage";
+import AssignmentDetailPage from "./pages/AssignmentDetailPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout></MainLayout>,
     errorElement: (
-      <div className="flex justify-center items-center h-screen text-3xl">
+      <div className="flex justify-center items-center h-screen text-3xl font-bold">
         Error 404
       </div>
     ),
@@ -42,7 +43,7 @@ const router = createBrowserRouter([
         path: "/employees/:id",
         element: <EmployeeFormPage isEditing={true}></EmployeeFormPage>,
         errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl">
+          <div className="flex justify-center items-center h-screen text-3xl font-bold">
             Error 404
           </div>
         ),
@@ -59,7 +60,7 @@ const router = createBrowserRouter([
         path: "/departments/:id",
         element: <DepartmentFormPage isEditing={true}></DepartmentFormPage>,
         errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl">
+          <div className="flex justify-center items-center h-screen text-3xl font-bold">
             Error 404
           </div>
         ),
@@ -76,7 +77,7 @@ const router = createBrowserRouter([
         path: "/projects/:id",
         element: <ProjectFormPage isEditing={true}></ProjectFormPage>,
         errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl">
+          <div className="flex justify-center items-center h-screen text-3xl font-bold">
             Error 404
           </div>
         ),
@@ -93,7 +94,16 @@ const router = createBrowserRouter([
         path: "/assignments/:empNo/:projNo",
         element: <AssignmentFormPage isEditing={true}></AssignmentFormPage>,
         errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl">
+          <div className="flex justify-center items-center h-screen text-3xl font-bold">
+            Error 404
+          </div>
+        ),
+      },
+      {
+        path: "/assignments/:empNo/:projNo/detail",
+        element: <AssignmentDetailPage></AssignmentDetailPage>,
+        errorElement: (
+          <div className="flex justify-center items-center h-screen text-3xl font-bold">
             Error 404
           </div>
         ),
