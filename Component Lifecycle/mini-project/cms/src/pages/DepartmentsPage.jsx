@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
+import LoadingAnimation from "../components/Elements/LoadingAnimation";
 
 function DepartmentsPage(props) {
   const {} = props;
@@ -15,15 +16,25 @@ function DepartmentsPage(props) {
 
   const [departments, setDepartments] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const tableHeader = ["ID", "Department Name", "Manager", "Action"];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const departmentData = JSON.parse(
       localStorage.getItem("departments") || "[]"
     );
-    if (departmentData) {
+    const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
+    if (departmentData && employeeData) {
       setDepartments(departmentData);
+      setEmployees(employeeData);
     }
   }, []);
 
@@ -50,6 +61,11 @@ function DepartmentsPage(props) {
     }
   };
 
+  const getManagerName = (empNo) => {
+    let emp = employees.find((emp) => emp.empNo === empNo);
+    return `${emp.fName} ${emp.lName}`;
+  };
+
   const TableBody = () => {
     return departments.length !== 0 ? (
       <tbody>
@@ -63,7 +79,7 @@ function DepartmentsPage(props) {
             {dept.mgrEmpNo === 0 ? (
               <td className="text-red-500">Not Assigned Yet</td>
             ) : (
-              <td>{dept.mgrEmpNo}</td>
+              <td>{getManagerName(dept.mgrEmpNo)}</td>
             )}
             <td className="flex gap-2 justify-center">
               <Button
@@ -92,6 +108,14 @@ function DepartmentsPage(props) {
       </tbody>
     );
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingAnimation></LoadingAnimation>
+      </div>
+    );
+  }
 
   return (
     <PageLayout pageTitle="Departments">

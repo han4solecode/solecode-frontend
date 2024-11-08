@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
+import LoadingAnimation from "../components/Elements/LoadingAnimation";
 
 function EmployeesPage(props) {
   const {} = props;
@@ -15,6 +16,7 @@ function EmployeesPage(props) {
 
   const [departments, setDepartments] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const tableHeader = [
     "ID",
@@ -26,6 +28,13 @@ function EmployeesPage(props) {
     "Department",
     "Action",
   ];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const departmentData = JSON.parse(
@@ -106,6 +115,14 @@ function EmployeesPage(props) {
       </tbody>
     );
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingAnimation></LoadingAnimation>
+      </div>
+    );
+  }
 
   return (
     <PageLayout pageTitle="Employees">

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
+import LoadingAnimation from "../components/Elements/LoadingAnimation";
 
 function AssignmentsPage(props) {
   const {} = props;
@@ -12,6 +13,7 @@ function AssignmentsPage(props) {
   const [assignments, setAssignments] = useState([]);
   const [projects, setProjects] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const tableHeader = [
     "Employee",
@@ -20,6 +22,13 @@ function AssignmentsPage(props) {
     "Hours Worked",
     "Action",
   ];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const projectData = JSON.parse(localStorage.getItem("projects") || "[]");
@@ -136,6 +145,14 @@ function AssignmentsPage(props) {
       </tbody>
     );
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingAnimation></LoadingAnimation>
+      </div>
+    );
+  }
 
   return (
     <PageLayout pageTitle="Assignments">

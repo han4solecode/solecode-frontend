@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
+import LoadingAnimation from "../components/Elements/LoadingAnimation";
 
 function ProjectsPage(props) {
   const {} = props;
@@ -11,8 +12,16 @@ function ProjectsPage(props) {
 
   const [departments, setDepartments] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const tableHeader = ["ID", "Project Name", "Department", "Action"];
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const departmentData = JSON.parse(
@@ -91,6 +100,14 @@ function ProjectsPage(props) {
       </tbody>
     );
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingAnimation></LoadingAnimation>
+      </div>
+    );
+  }
 
   return (
     <PageLayout pageTitle="Projects">

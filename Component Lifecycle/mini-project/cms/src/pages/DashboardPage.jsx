@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import PageLayout from "../components/Layouts/PageLayout";
 import Card from "../components/Fragments/Card";
+import LoadingAnimation from "../components/Elements/LoadingAnimation";
 
 function DashboardPage(props) {
   const {} = props;
@@ -9,6 +10,14 @@ function DashboardPage(props) {
   const [departments, setDepartments] = useState([]);
   const [projects, setProjects] = useState([]);
   const [assignments, setAssignments] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
@@ -26,6 +35,14 @@ function DashboardPage(props) {
       setAssignments(assignmentData);
     }
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingAnimation></LoadingAnimation>
+      </div>
+    );
+  }
 
   return (
     <PageLayout pageTitle="Dashboard">
