@@ -32,6 +32,10 @@ function BooksPage(props) {
     }
   }, []);
 
+  const handleEditBookButtonClick = (id) => {
+    navigate(`/books/edit/${id}`);
+  };
+
   const handleDeleteBook = (isbn) => {
     if (confirm(`Are you sure you want to delete book ID ${isbn}?`)) {
       let books = JSON.parse(localStorage.getItem("books"));
@@ -61,8 +65,13 @@ function BooksPage(props) {
             <td>{book.category}</td>
             <td>{book.year}</td>
             {book.isAvailable ? <td>Yes</td> : <td>No</td>}
-            <td className="space-x-2">
-              <Button styleName="bg-green-700">Edit</Button>
+            <td className="flex gap-2 justify-center">
+              <Button
+                styleName="bg-green-700"
+                onClick={() => handleEditBookButtonClick(book.isbn)}
+              >
+                Edit
+              </Button>
               <Button
                 styleName="bg-red-700"
                 onClick={() => handleDeleteBook(book.isbn)}

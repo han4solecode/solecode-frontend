@@ -32,6 +32,10 @@ function MembersPage(props) {
     }
   }, []);
 
+  const handleEditMemberButtonClick = (id) => {
+    navigate(`/members/edit/${id}`);
+  };
+
   const handleDeleteMember = (id) => {
     if (confirm(`Are you sure you want to delete member ID ${id}?`)) {
       let members = JSON.parse(localStorage.getItem("members"));
@@ -62,7 +66,12 @@ function MembersPage(props) {
             <td>{member.phoneNumber}</td>
             <td>{member.address}</td>
             <td className="space-x-2">
-              <Button styleName="bg-green-700">Edit</Button>
+              <Button
+                styleName="bg-green-700"
+                onClick={() => handleEditMemberButtonClick(member.id)}
+              >
+                Edit
+              </Button>
               <Button
                 styleName="bg-red-700"
                 onClick={() => handleDeleteMember(member.id)}

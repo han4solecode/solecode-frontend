@@ -21,6 +21,7 @@ function HomePage(props) {
 
   const booksCount = books.length;
   const membersCount = members.length;
+  console.log(membersCount);
   console.log(loading);
 
   return (

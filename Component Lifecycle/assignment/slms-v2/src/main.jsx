@@ -31,12 +31,20 @@ const router = createBrowserRouter([
         element: <BookFormPage></BookFormPage>,
       },
       {
+        path: "/books/edit/:id",
+        element: <BookFormPage isEditing={true}></BookFormPage>,
+      },
+      {
         path: "/members",
         element: <MembersPage></MembersPage>,
       },
       {
         path: "/members/add",
         element: <MemberFormPage></MemberFormPage>,
+      },
+      {
+        path: "/members/edit/:id",
+        element: <MemberFormPage isEditing={true}></MemberFormPage>,
       },
     ],
   },

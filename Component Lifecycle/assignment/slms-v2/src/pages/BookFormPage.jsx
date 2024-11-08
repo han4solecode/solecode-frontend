@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 
 function BookFormPage(props) {
-  const {} = props;
+  const { isEditing } = props;
+  const { id } = useParams();
 
   const navigate = useNavigate();
 
@@ -41,6 +42,14 @@ function BookFormPage(props) {
   const [formValues, setFormValues] = useState(initialValues);
   const [errors, setErrors] = useState(initialValues);
 
+  useState(() => {
+    if (isEditing) {
+      const bookData = JSON.parse(localStorage.getItem("books") || "[]");
+      const editedBook = bookData.find((book) => book.isbn === id);
+      setFormValues(editedBook);
+    }
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === "checkbox") {
@@ -61,7 +70,7 @@ function BookFormPage(props) {
 
     // validation
     let isbnRegex =
-      /^(?:ISBN(?:-13)?:?\ )?(?=[0-9]{13}$|(?=(?:[0-9]+[-\ ]){4})[-\ 0-9]{17}$)97[89][-\ ]?[0-9]{1,5}[-\ ]?[0-9]+[-\ ]?[0-9]+[-\ ]?[0-9]$/;
+      /((978[\--- ])?[0-9][0-9\--- ]{10}[\--- ][0-9xX])|((978)?[0-9]{9}[0-9Xx])/;
     let currentYear = new Date().getFullYear();
     let errorMessages = {};
 
@@ -107,14 +116,30 @@ function BookFormPage(props) {
     if (formValid) {
       let books = JSON.parse(localStorage.getItem("books") || "[]");
 
-      books.push(formValues);
+      if (isEditing) {
+        let editedBook = {
+          ...formValues,
+        };
 
-      localStorage.setItem("books", JSON.stringify(books));
+        let updatedBookData = books.map((book) =>
+          book.isbn === editedBook.isbn || book.isbn !== editedBook.isbn
+            ? editedBook
+            : book
+        );
 
-      alert("A new book has been created successfully");
+        localStorage.setItem("books", JSON.stringify(updatedBookData));
 
-      // useNavigate("/books");
-      navigate("/books");
+        alert(
+          `Book with ISBN ${formValues.isbn} has been updated successfully`
+        );
+        navigate("/books");
+      } else {
+        books.push(formValues);
+        localStorage.setItem("books", JSON.stringify(books));
+
+        alert("A new book has been created successfully");
+        navigate("/books");
+      }
     }
   };
 
