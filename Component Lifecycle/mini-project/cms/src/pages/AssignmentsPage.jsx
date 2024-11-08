@@ -38,6 +38,10 @@ function AssignmentsPage(props) {
     navigate("/assignments/new");
   };
 
+  const handleAssignmentDetailButtonClick = (empNo, projNo) => {
+    navigate(`/assignments/${empNo}/${projNo}/detail`);
+  };
+
   const handleEditAssignmentButtonClick = (empNo, projNo) => {
     navigate(`/assignments/${empNo}/${projNo}`);
   };
@@ -89,6 +93,16 @@ function AssignmentsPage(props) {
             <td>{assignment.dateWorked}</td>
             <td>{assignment.hoursWorked}</td>
             <td className="flex gap-2 justify-center">
+              <Button
+                onClick={() =>
+                  handleAssignmentDetailButtonClick(
+                    assignment.empNo,
+                    assignment.projNo
+                  )
+                }
+              >
+                Detail
+              </Button>
               <Button
                 styleName="bg-green-700"
                 onClick={() =>
