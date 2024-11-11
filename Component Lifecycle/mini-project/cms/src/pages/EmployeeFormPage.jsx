@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
@@ -25,7 +25,7 @@ function EmployeeFormPage(props) {
   const [departments, setDepartments] = useState([]);
   const [errors, setErrors] = useState(initialValues);
 
-  useState(() => {
+  useEffect(() => {
     const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
     const departmentData = JSON.parse(
       localStorage.getItem("departments") || "[]"
@@ -36,7 +36,7 @@ function EmployeeFormPage(props) {
     }
   }, []);
 
-  useState(() => {
+  useEffect(() => {
     if (isEditing) {
       const employeeData = JSON.parse(
         localStorage.getItem("employees") || "[]"

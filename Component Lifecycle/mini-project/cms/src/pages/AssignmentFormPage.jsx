@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
@@ -21,7 +21,7 @@ function AssignmentFormPage(props) {
   const [assignments, setAssignments] = useState([]);
   const [errors, setErrors] = useState(initialValues);
 
-  useState(() => {
+  useEffect(() => {
     const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
     const projectData = JSON.parse(localStorage.getItem("projects") || "[]");
     const assignmentData = JSON.parse(
@@ -34,7 +34,7 @@ function AssignmentFormPage(props) {
     }
   }, []);
 
-  useState(() => {
+  useEffect(() => {
     if (isEditing) {
       const assignmentData = JSON.parse(
         localStorage.getItem("assignments") || "[]"

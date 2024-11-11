@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
@@ -20,7 +20,7 @@ function ProjectFormPage(props) {
   const [departments, setDepartments] = useState([]);
   const [errors, setErrors] = useState(initialValues);
 
-  useState(() => {
+  useEffect(() => {
     const departmentData = JSON.parse(
       localStorage.getItem("departments") || "[]"
     );
@@ -33,7 +33,7 @@ function ProjectFormPage(props) {
 
   console.log(departments);
 
-  useState(() => {
+  useEffect(() => {
     if (isEditing) {
       const projectData = JSON.parse(localStorage.getItem("projects") || "[]");
       const editedProj = projectData.find((proj) => proj.projNo === Number(id));

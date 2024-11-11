@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
@@ -21,7 +21,7 @@ function DepartmentFormPage(props) {
   const [departments, setDepartments] = useState([]);
   const [errors, setErrors] = useState(initialValues);
 
-  useState(() => {
+  useEffect(() => {
     const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
     const departmentData = JSON.parse(
       localStorage.getItem("departments") || "[]"
@@ -38,7 +38,7 @@ function DepartmentFormPage(props) {
     }
   }, []);
 
-  useState(() => {
+  useEffect(() => {
     if (isEditing) {
       const departmentData = JSON.parse(
         localStorage.getItem("departments") || "[]"
@@ -113,7 +113,7 @@ function DepartmentFormPage(props) {
       if (isEditing) {
         let editedDepartment = {
           ...formValues,
-          deptNo: Number(formValues.deptNo),
+          deptNo: Number(id),
           mgrEmpNo: Number(formValues.mgrEmpNo),
         };
 
@@ -184,7 +184,7 @@ function DepartmentFormPage(props) {
             >
               Manager
             </label>
-            {employees.length !== 0 ? (
+            {getEmpsInDept(Number(id)).length !== 0 ? (
               <select
                 name="mgrEmpNo"
                 id="mgrEmpNo"
@@ -196,7 +196,7 @@ function DepartmentFormPage(props) {
                 <option value="" disabled hidden>
                   Select Manager
                 </option>
-                {employees.map((emp) => (
+                {getEmpsInDept(Number(id)).map((emp) => (
                   <option key={emp.empNo} value={emp.empNo}>
                     {emp.fName} {emp.lName}
                   </option>
