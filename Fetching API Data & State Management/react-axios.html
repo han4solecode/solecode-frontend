@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Axios</title>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <h1>React Axios</h1>
+    <div id="root"></div>
+  </body>
+  <script type="text/babel">
+    const MyApp = () => {
+      const [persons, setPersons] = React.useState([]);
+      const [isError, setIsError] = React.useState(false);
+
+      React.useEffect(() => {
+        // const myFetch = async () => {
+        //   const res = await axios.get("https://reqres.in/apis/users?page=2");
+        //   console.log(res);
+        //   console.log(res.data);
+        //   setPersons(res.data.data);
+        // };
+        // const myFetch = async () => {
+        //   await axios.get("https://reqres.in/apis/user?page=2").then((res) => {
+        //     console.log(res);
+        //     console.log(res.data);
+        //     setPersons(res.data.data);
+        //   });
+        // };
+        const myFetch = async () => {
+          try {
+            const res = await axios.get("https://reqres.in/api/users?page=2");
+            console.log(res);
+            console.log(res.data);
+            setPersons(res.data.data);
+          } catch (error) {
+            console.log(`Error at ${error}`);
+            setIsError(true);
+          }
+        };
+        myFetch();
+      }, []);
+
+      console.log(persons);
+
+      return (
+        <div class="w-100">
+          {isError ? (
+            <p>Error</p>
+          ) : (
+            <pre>{JSON.stringify(persons, null, 4)}</pre>
+          )}
+        </div>
+      );
+    };
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<MyApp />);
+  </script>
+</html>

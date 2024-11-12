@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Fetch API</title>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <h1>React Fetch API</h1>
+    <div id="root"></div>
+  </body>
+  <script type="text/babel">
+    const MyApp = () => {
+      const [user, setUser] = React.useState([]);
+      const [errorStatus, setErrorStatus] = React.useState(false);
+      const [loadingStatus, setLoadingStatus] = React.useState(true);
+      const [page, setPage] = React.useState(1);
+
+      React.useEffect(() => {
+        const myFetch = async () => {
+          setLoadingStatus(true);
+          try {
+            let response = await fetch(
+              `https://reqres.in/api/users/${page}?delay=2`
+            );
+            if (!response.ok) {
+              setErrorStatus(true);
+              throw new Error(
+                `Terjadi gangguan dengan kode: ${response.status}`
+              );
+            }
+            let data = await response.json();
+            setUser(data.data);
+          } catch (error) {
+            console.log(error);
+          } finally {
+            setLoadingStatus(false);
+          }
+        };
+        myFetch();
+      }, [page]);
+
+      const handleChangeUserButtonClick = (e) => {
+        const { value } = e.target;
+        setPage((prevState) => prevState + parseInt(value));
+      };
+
+      if (loadingStatus) {
+        return (
+          <div>
+            <h5>Loading...</h5>
+          </div>
+        );
+      } else if (errorStatus) {
+        return (
+          <div>
+            <h3>Terjadi Gangguan...</h3>
+          </div>
+        );
+      } else {
+        return (
+          <div>
+            <h3>{`${user.first_name} ${user.last_name}`}</h3>
+            <figure>
+              <img src={user.avatar} alt={`${user.first_name}`} />
+              <figcaption>{user.email}</figcaption>
+            </figure>
+            <button value="-1" onClick={handleChangeUserButtonClick}>
+              Prev User
+            </button>
+            <button value="+1" onClick={handleChangeUserButtonClick}>
+              Next User
+            </button>
+          </div>
+        );
+      }
+    };
+
+    const MyApp2 = () => {
+      const [users, setUsers] = React.useState([]);
+      const [errorStatus, setErrorStatus] = React.useState(false);
+      const [loadingStatus, setLoadingStatus] = React.useState(true);
+      const [page, setPage] = React.useState(1);
+      const [perPage, setPerPage] = React.useState(6);
+
+      React.useEffect(() => {
+        const myFetch = async () => {
+          console.log(users);
+
+          setLoadingStatus(true);
+          try {
+            let response = await fetch(
+              `https://reqres.in/api/users?page=${page}&per_page=${perPage}`
+            );
+            if (!response.ok) {
+              setErrorStatus(true);
+              throw new Error(
+                `Terjadi gangguan dengan kode: ${response.status}`
+              );
+            }
+            let data = await response.json();
+            setUsers(data.data);
+          } catch (error) {
+            console.log(error);
+          } finally {
+            setLoadingStatus(false);
+          }
+        };
+        myFetch();
+      }, [page, perPage]);
+
+      return (
+        <>
+          <table class="table table-striped w-auto">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Avatar</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr class="align-middle">
+                  <td>{user.id}</td>
+                  <td>
+                    <img
+                      src={user.avatar}
+                      alt={`${user.first_name}`}
+                      class="rounded-circle"
+                    />
+                  </td>
+                  <td>{user.first_name}</td>
+                  <td>{user.last_name}</td>
+                  <td>{user.email}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div>
+            <div>
+              <label for="page">Page</label>
+              <input
+                type="number"
+                onChange={(e) => setPage(e.target.value)}
+                value={page}
+              />
+            </div>
+            <div>
+              <label for="perPage">Per Page</label>
+              <input
+                type="number"
+                onChange={(e) => setPerPage(e.target.value)}
+                value={perPage}
+              />
+            </div>
+          </div>
+        </>
+      );
+    };
+
+    // ReactDOM.createRoot(document.getElementById("root")).render(<MyApp />);
+    ReactDOM.createRoot(document.getElementById("root")).render(<MyApp2 />);
+  </script>
+</html>
