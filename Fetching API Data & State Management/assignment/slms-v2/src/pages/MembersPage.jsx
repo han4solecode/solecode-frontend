@@ -4,7 +4,7 @@ import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
-import { getAllUsers } from "../services/users.service";
+import { deleteUser, getAllUsers } from "../services/users.service";
 
 function MembersPage(props) {
   const {} = props;
@@ -38,14 +38,17 @@ function MembersPage(props) {
 
   const handleDeleteMember = (id) => {
     if (confirm(`Are you sure you want to delete member ID ${id}?`)) {
-      let members = JSON.parse(localStorage.getItem("members"));
-      members = members.filter((member) => member.id !== id);
-      localStorage.setItem("members", JSON.stringify(members));
-      if (members.length === 0) {
-        localStorage.removeItem("members");
-      }
-      setMembers(members);
-      alert(`Member with ID ${id} has been deleted successfully`);
+      const deleteExistingUser = async (id) => {
+        const status = await deleteUser(id);
+        if (status === 204) {
+          alert(`Book with ID ${id} has been deleted successfully`);
+          navigate("/members");
+        } else {
+          alert("Error! Please try again");
+        }
+      };
+
+      deleteExistingUser(Number(id));
     } else {
       return;
     }
