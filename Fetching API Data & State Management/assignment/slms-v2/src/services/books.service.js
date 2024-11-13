@@ -20,3 +20,14 @@ export const getBookById = async (id) => {
     console.log(`Error: ${error}`);
   }
 };
+
+export const createNewBook = async (book) => {
+  try {
+    const res = await axios.post("/api/book", book);
+    console.log(res.data);
+    const data = res.data;
+    return res.data;
+  } catch (error) {
+    console.log(`Error: ${error}`);
+  }
+};
