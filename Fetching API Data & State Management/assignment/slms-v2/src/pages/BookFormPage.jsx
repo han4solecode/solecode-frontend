@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import FormInput from "../components/Fragments/FormInput";
+import { getBookById, createNewBook } from "../services/books.service";
 
 function BookFormPage(props) {
   const { isEditing } = props;
@@ -10,34 +11,13 @@ function BookFormPage(props) {
 
   const navigate = useNavigate();
 
-  let bookCategories = [
-    "Arts & Music",
-    "Biography",
-    "Business",
-    "Comic",
-    "Computer & Tech",
-    "Cooking",
-    "Edu & Reference",
-    "Health & Fitness",
-    "History",
-    "Hobbies & Crafts",
-    "Home & Garden",
-    "Horror",
-    "Kids",
-    "Literature & Fiction",
-    "Mystery",
-    "Sci-Fi & Fantasy",
-  ];
-
   const currentYear = new Date().getFullYear();
 
   const initialValues = {
     isbn: "",
     title: "",
     author: "",
-    year: "",
-    category: bookCategories[0],
-    isAvailable: true,
+    publicationyear: "",
   };
 
   const [formValues, setFormValues] = useState(initialValues);
@@ -45,9 +25,13 @@ function BookFormPage(props) {
 
   useEffect(() => {
     if (isEditing) {
-      const bookData = JSON.parse(localStorage.getItem("books") || "[]");
-      const editedBook = bookData.find((book) => book.isbn === id);
-      setFormValues(editedBook);
+      const fetchBookToEdit = async () => {
+        const book = await getBookById(Number(id));
+        if (book) {
+          setFormValues(book);
+        }
+      };
+      fetchBookToEdit();
     }
   }, []);
 
@@ -99,10 +83,11 @@ function BookFormPage(props) {
       errorMessages.author = "";
     }
 
-    if (!formValues.year) {
-      errorMessages.year = "Publication year cannot be empty";
-    } else if (Number(formValues.year) > currentYear) {
-      errorMessages.year = "Publication year cannot exceed current year";
+    if (!formValues.publicationyear) {
+      errorMessages.publicationyear = "Publication date cannot be empty";
+    } else if (Number(formValues.publicationyear) > currentYear) {
+      errorMessages.publicationyear =
+        "Publication year cannot exceed current year";
     } else {
       errorMessages.year = "";
     }
@@ -137,17 +122,25 @@ function BookFormPage(props) {
         );
         navigate("/books");
       } else {
-        books.push(formValues);
-        localStorage.setItem("books", JSON.stringify(books));
+        const createBook = async (book) => {
+          const newBook = await createNewBook(book);
+          if (newBook) {
+            alert("A new book has been created successfully");
+            navigate("/books");
+          } else {
+            alert("Error! Please try again");
+          }
+        };
 
-        alert("A new book has been created successfully");
-        navigate("/books");
+        createBook(formValues);
       }
     }
   };
 
   return (
-    <PageLayout pageTitle="Add a New Book">
+    <PageLayout
+      pageTitle={isEditing ? `Editing Book ID ${id}` : "Add a New Book"}
+    >
       <div className="w-full">
         <form autoComplete="off">
           <FormInput
@@ -178,13 +171,13 @@ function BookFormPage(props) {
             Author
           </FormInput>
           <FormInput
-            name="year"
-            type="number"
+            name="publicationyear"
+            type="date"
             onChange={(e) => handleInputChange(e)}
-            value={formValues.year}
-            errorMessage={errors.year}
+            value={formValues.publicationyear}
+            errorMessage={errors.publicationyear}
           >
-            Publication Year
+            Publication Date
           </FormInput>
           {/* <div className="mb-3">
             <label
@@ -246,7 +239,7 @@ function BookFormPage(props) {
           </div> */}
           <div className="mt-3 space-x-2">
             <Button type="submit" onClick={handleFormSubmit}>
-              Submit
+              {isEditing ? "Edit" : "Add"}
             </Button>
             <Button
               type="reset"
