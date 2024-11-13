@@ -3,7 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import FormInput from "../components/Fragments/FormInput";
-import { createNewUser, getUserById } from "../services/users.service";
+import {
+  createNewUser,
+  getUserById,
+  updateExistingUser,
+} from "../services/users.service";
 
 function MemberFormPage(props) {
   const { isEditing } = props;
@@ -91,24 +95,18 @@ function MemberFormPage(props) {
     }
 
     if (formValid) {
-      let members = JSON.parse(localStorage.getItem("members") || "[]");
-
       if (isEditing) {
-        let editedMember = {
-          ...formValues,
-          id: Number(formValues.id),
+        const updateMember = async (id, updatedBook) => {
+          const res = await updateExistingUser(id, updatedBook);
+          if (res) {
+            alert(`Member with ID ${id} has been updated successfully`);
+            navigate("/members");
+          } else {
+            alert("Error! Please try again");
+          }
         };
 
-        let updatedMemberData = members.map((member) =>
-          member.id === editedMember.id ? editedMember : member
-        );
-
-        localStorage.setItem("members", JSON.stringify(updatedMemberData));
-
-        alert(
-          `Member with ID ${editedMember.id} has been updated successfully`
-        );
-        navigate("/members");
+        updateMember(Number(id), formValues);
       } else {
         const createMember = async (user) => {
           const newMember = await createNewUser(user);
