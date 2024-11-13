@@ -3,7 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import FormInput from "../components/Fragments/FormInput";
-import { getBookById, createNewBook } from "../services/books.service";
+import {
+  getBookById,
+  createNewBook,
+  updateExistingBook,
+} from "../services/books.service";
 
 function BookFormPage(props) {
   const { isEditing } = props;
@@ -102,25 +106,18 @@ function BookFormPage(props) {
     }
 
     if (formValid) {
-      let books = JSON.parse(localStorage.getItem("books") || "[]");
-
       if (isEditing) {
-        let editedBook = {
-          ...formValues,
+        const updateBook = async (id, updatedBook) => {
+          const res = await updateExistingBook(id, updatedBook);
+          if (res) {
+            alert(`Book with ID ${id} has been updated successfully`);
+            navigate("/books");
+          } else {
+            alert("Error! Please try again");
+          }
         };
 
-        let updatedBookData = books.map((book) =>
-          book.isbn === editedBook.isbn || book.isbn !== editedBook.isbn
-            ? editedBook
-            : book
-        );
-
-        localStorage.setItem("books", JSON.stringify(updatedBookData));
-
-        alert(
-          `Book with ISBN ${formValues.isbn} has been updated successfully`
-        );
-        navigate("/books");
+        updateBook(Number(id), formValues);
       } else {
         const createBook = async (book) => {
           const newBook = await createNewBook(book);
