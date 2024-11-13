@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import FormInput from "../components/Fragments/FormInput";
-import { getUserById } from "../services/users.service";
+import { createNewUser, getUserById } from "../services/users.service";
 
 function MemberFormPage(props) {
   const { isEditing } = props;
@@ -73,20 +73,6 @@ function MemberFormPage(props) {
       errorMessages.email = "";
     }
 
-    if (!formValues.gender) {
-      errorMessages.gender = "Gender cannot be empty";
-    } else {
-      errorMessages.gender = "";
-    }
-
-    if (!formValues.phoneNumber) {
-      errorMessages.phoneNumber = "Phone number cannot be empty";
-    } else if (!phoneNumberRegex.test(formValues.phoneNumber)) {
-      errorMessages.phoneNumber = "Phone number is not valid";
-    } else {
-      errorMessages.phoneNumber = "";
-    }
-
     if (!formValues.address.trim()) {
       errorMessages.address = "Address cannot be empty";
     } else if (formValues.address.length > 200) {
@@ -124,16 +110,17 @@ function MemberFormPage(props) {
         );
         navigate("/members");
       } else {
-        if (members.length === 0) {
-          var id = 1;
-        } else {
-          var id = members[members.length - 1].id + 1;
-        }
-        members.push({ ...formValues, id: Number(id) });
-        localStorage.setItem("members", JSON.stringify(members));
+        const createMember = async (user) => {
+          const newMember = await createNewUser(user);
+          if (newMember) {
+            alert("A new member has been created successfully");
+            navigate("/members");
+          } else {
+            alert("Error! Please try again");
+          }
+        };
 
-        alert("A new member has been created successfully");
-        navigate("/members");
+        createMember(formValues);
       }
     }
   };
