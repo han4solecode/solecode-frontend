@@ -32,3 +32,14 @@ export const createNewUser = async (user) => {
     console.log(`Error: ${error}`);
   }
 };
+
+export const updateExistingUser = async (id, updatedUser) => {
+  try {
+    const res = await axios.put(`/api/user/${id}`, updatedUser);
+    console.log(res.data);
+    const data = res.data;
+    return data;
+  } catch (error) {
+    console.log(`Error: ${error}`);
+  }
+};
