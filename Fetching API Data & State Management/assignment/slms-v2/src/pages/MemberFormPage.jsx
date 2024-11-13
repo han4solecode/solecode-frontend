@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import FormInput from "../components/Fragments/FormInput";
+import { getUserById } from "../services/users.service";
 
 function MemberFormPage(props) {
   const { isEditing } = props;
@@ -11,11 +12,10 @@ function MemberFormPage(props) {
   const navigate = useNavigate();
 
   const initialValues = {
-    id: 0,
-    fullName: "",
+    // id: 0,
+    // fullName: "",
+    name: "",
     email: "",
-    gender: "",
-    phoneNumber: "",
     address: "",
   };
 
@@ -24,11 +24,13 @@ function MemberFormPage(props) {
 
   useEffect(() => {
     if (isEditing) {
-      const memberData = JSON.parse(localStorage.getItem("members") || "[]");
-      const editedMember = memberData.find(
-        (member) => member.id === Number(id)
-      );
-      setFormValues(editedMember);
+      const fetchMemberToEdit = async () => {
+        const member = await getUserById(Number(id));
+        if (member) {
+          setFormValues(member);
+        }
+      };
+      fetchMemberToEdit();
     }
   }, []);
 
@@ -39,7 +41,7 @@ function MemberFormPage(props) {
     } else {
       setFormValues({ ...formValues, [name]: value });
     }
-    // console.log(formValues);
+    console.log(formValues);
   };
 
   const handleClearForm = (e) => {
@@ -57,10 +59,10 @@ function MemberFormPage(props) {
     let phoneNumberRegex = /^(\+62)8[1-9][0-9]{6,9}$/;
     let errorMessages = {};
 
-    if (!formValues.fullName.trim()) {
-      errorMessages.fullName = "Full name cannot be empty";
+    if (!formValues.name.trim()) {
+      errorMessages.name = "Full name cannot be empty";
     } else {
-      errorMessages.fullName = "";
+      errorMessages.name = "";
     }
 
     if (!formValues.email) {
@@ -137,15 +139,17 @@ function MemberFormPage(props) {
   };
 
   return (
-    <PageLayout pageTitle="Add a New Member">
+    <PageLayout
+      pageTitle={isEditing ? `Editing Member ID ${id}` : "Add a New Member"}
+    >
       <div className="w-full">
         <form autoComplete="off">
           <FormInput
-            name="fullName"
+            name="name"
             type="text"
             onChange={(e) => handleInputChange(e)}
-            value={formValues.fullName}
-            errorMessage={errors.fullName}
+            value={formValues.name}
+            errorMessage={errors.name}
           >
             Full Name
           </FormInput>
@@ -235,7 +239,7 @@ function MemberFormPage(props) {
           </FormInput>
           <div className="mt-3 space-x-2">
             <Button type="submit" onClick={handleFormSubmit}>
-              Submit
+              {isEditing ? "Edit" : "Add"}
             </Button>
             <Button
               type="reset"
