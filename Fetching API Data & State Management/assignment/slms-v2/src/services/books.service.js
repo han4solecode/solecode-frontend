@@ -3,6 +3,7 @@ import axios from "axios";
 export const getAllBooks = async () => {
   try {
     const res = await axios.get("/api/book");
+    console.log(res.data.$values);
     const data = res.data.$values;
     return data;
   } catch (error) {
@@ -35,6 +36,17 @@ export const createNewBook = async (book) => {
 export const updateExistingBook = async (id, updatedBook) => {
   try {
     const res = await axios.put(`/api/book/${id}`, updatedBook);
+    console.log(res.data);
+    const data = res.data;
+    return data;
+  } catch (error) {
+    console.log(`Error: ${error}`);
+  }
+};
+
+export const deleteBook = async (id) => {
+  try {
+    const res = await axios.delete(`/api/book/${id}`);
     console.log(res.data);
     const data = res.data;
     return data;
