@@ -9,3 +9,14 @@ export const getAllBooks = async () => {
     console.log(`Error: ${error}`);
   }
 };
+
+export const getBookById = async (id) => {
+  try {
+    const res = await axios.get(`/api/book/${id}`);
+    console.log(res.data);
+    const data = res.data;
+    return data;
+  } catch (error) {
+    console.log(`Error: ${error}`);
+  }
+};
