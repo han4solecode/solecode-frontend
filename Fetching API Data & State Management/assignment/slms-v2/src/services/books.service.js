@@ -26,7 +26,18 @@ export const createNewBook = async (book) => {
     const res = await axios.post("/api/book", book);
     console.log(res.data);
     const data = res.data;
-    return res.data;
+    return data;
+  } catch (error) {
+    console.log(`Error: ${error}`);
+  }
+};
+
+export const updateExistingBook = async (id, updatedBook) => {
+  try {
+    const res = await axios.put(`/api/book/${id}`, updatedBook);
+    console.log(res.data);
+    const data = res.data;
+    return data;
   } catch (error) {
     console.log(`Error: ${error}`);
   }
