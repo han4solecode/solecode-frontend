@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
+import LoadingAnimation from "../components/Elements/LoadingAnimation";
+import { getAllUsers } from "../services/users.service";
 
 function MembersPage(props) {
   const {} = props;
@@ -14,22 +16,20 @@ function MembersPage(props) {
   };
 
   const [members, setMembers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  let ths = [
-    "Member ID",
-    "Full Name",
-    "Email",
-    "Gender",
-    "Phone Number",
-    "Address",
-    "Action",
-  ];
+  let ths = ["Member ID", "Full Name", "Email", "Address", "Action"];
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("members") || "[]");
-    if (data) {
-      setMembers(data);
-    }
+    setIsLoading(true);
+    const fetchMembers = async () => {
+      const members = await getAllUsers();
+      if (members) {
+        setMembers(members);
+        setIsLoading(false);
+      }
+    };
+    fetchMembers();
   }, []);
 
   const handleEditMemberButtonClick = (id) => {
@@ -56,14 +56,12 @@ function MembersPage(props) {
       <tbody>
         {members.map((member) => (
           <tr
-            key={member.id}
+            key={member.userid}
             className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
           >
-            <td>{member.id}</td>
-            <td>{member.fullName}</td>
+            <td>{member.userid}</td>
+            <td>{member.name}</td>
             <td>{member.email}</td>
-            <td>{member.gender}</td>
-            <td>{member.phoneNumber}</td>
             <td>{member.address}</td>
             <td className="space-x-2">
               <Button
@@ -92,6 +90,16 @@ function MembersPage(props) {
       </tbody>
     );
   };
+
+  if (isLoading) {
+    return (
+      <PageLayout>
+        <div className="flex justify-center items-center h-screen">
+          <LoadingAnimation></LoadingAnimation>
+        </div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout pageTitle="Members Page">
