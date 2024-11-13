@@ -42,6 +42,28 @@ function Navbar(props) {
           >
             Members
           </NavLink>
+          <NavLink
+            to="/borrow"
+            className={({ isActive }) => {
+              return isActive
+                ? "rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-900"
+                : "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white";
+            }}
+            aria-current="page"
+          >
+            Borrow
+          </NavLink>
+          <NavLink
+            to="/return"
+            className={({ isActive }) => {
+              return isActive
+                ? "rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-900"
+                : "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white";
+            }}
+            aria-current="page"
+          >
+            Return
+          </NavLink>
         </div>
         <div className="space-x-4 flex">
           <h1 className="text-lg text-white">{getCurrentDate()}</h1>

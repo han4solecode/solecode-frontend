@@ -5,6 +5,7 @@ import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
 import { deleteUser, getAllUsers } from "../services/users.service";
+import PaginationBar from "../components/Fragments/PaginationBar";
 
 function MembersPage(props) {
   const {} = props;
@@ -17,6 +18,9 @@ function MembersPage(props) {
 
   const [members, setMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [paginatedMembers, setPaginatedMembers] = useState([]);
+  const [page, setPage] = useState(0);
+  const perPage = 5;
 
   let ths = ["Member ID", "Full Name", "Email", "Address", "Action"];
 
@@ -27,10 +31,23 @@ function MembersPage(props) {
       if (members) {
         setMembers(members);
         setIsLoading(false);
+        setPaginatedMembers(
+          members.filter((item, index) => {
+            return (index >= page * perPage) & (index < (page + 1) * perPage);
+          })
+        );
       }
     };
     fetchMembers();
   }, []);
+
+  useEffect(() => {
+    setPaginatedMembers(
+      members.filter((item, index) => {
+        return (index >= page * perPage) & (index < (page + 1) * perPage);
+      })
+    );
+  }, [page]);
 
   const handleEditMemberButtonClick = (id) => {
     navigate(`/members/edit/${id}`);
@@ -57,7 +74,7 @@ function MembersPage(props) {
   const TableBody = () => {
     return members.length !== 0 ? (
       <tbody>
-        {members.map((member) => (
+        {paginatedMembers.map((member) => (
           <tr
             key={member.userid}
             className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
@@ -110,6 +127,10 @@ function MembersPage(props) {
         Add a New Member
       </Button>
       <DataTable header={ths} body={<TableBody />}></DataTable>
+      <PaginationBar
+        pageCount={Math.ceil(members.length / perPage)}
+        setPage={setPage}
+      ></PaginationBar>
     </PageLayout>
   );
 }

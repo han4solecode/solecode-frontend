@@ -11,6 +11,8 @@ import BooksPage from "./pages/BooksPage";
 import BookFormPage from "./pages/BookFormPage";
 import MembersPage from "./pages/MembersPage";
 import MemberFormPage from "./pages/MemberFormPage";
+import BorrowPage from "./pages/BorrowPage";
+import ReturnPage from "./pages/ReturnPage";
 
 const router = createBrowserRouter([
   {
@@ -45,6 +47,14 @@ const router = createBrowserRouter([
       {
         path: "/members/edit/:id",
         element: <MemberFormPage isEditing={true}></MemberFormPage>,
+      },
+      {
+        path: "/borrow",
+        element: <BorrowPage></BorrowPage>,
+      },
+      {
+        path: "/return",
+        element: <ReturnPage></ReturnPage>,
       },
     ],
   },

@@ -21,6 +21,12 @@ function Footer(props) {
           <Link to="/members" className="hover:text-white">
             Members
           </Link>
+          <Link to="/borrow" className="hover:text-white">
+            Borrow
+          </Link>
+          <Link to="/return" className="hover:text-white">
+            Return
+          </Link>
           <a
             href="https://www.solecode.id/contact"
             target="_blank"

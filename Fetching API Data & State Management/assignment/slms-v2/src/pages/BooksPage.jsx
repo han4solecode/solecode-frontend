@@ -2,6 +2,7 @@ import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
+import PaginationBar from "../components/Fragments/PaginationBar";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllBooks, deleteBook } from "../services/books.service";
@@ -17,6 +18,9 @@ function BooksPage(props) {
 
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [paginatedBooks, setPaginatedBooks] = useState([]);
+  const [page, setPage] = useState(0);
+  const perPage = 5;
 
   let ths = ["ID", "Title", "Author", "Publication Date", "ISBN", "Action"];
 
@@ -27,10 +31,23 @@ function BooksPage(props) {
       if (books) {
         setBooks(books);
         setIsLoading(false);
+        setPaginatedBooks(
+          books.filter((item, index) => {
+            return (index >= page * perPage) & (index < (page + 1) * perPage);
+          })
+        );
       }
     };
     fetchBooks();
   }, []);
+
+  useEffect(() => {
+    setPaginatedBooks(
+      books.filter((item, index) => {
+        return (index >= page * perPage) & (index < (page + 1) * perPage);
+      })
+    );
+  }, [page]);
 
   const handleEditBookButtonClick = (id) => {
     navigate(`/books/edit/${id}`);
@@ -53,7 +70,7 @@ function BooksPage(props) {
   const TableBody = () => {
     return books.length !== 0 ? (
       <tbody>
-        {books.map((book) => (
+        {paginatedBooks.map((book) => (
           <tr
             key={book.bookid}
             className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
@@ -107,6 +124,10 @@ function BooksPage(props) {
         Add a New Book
       </Button>
       <DataTable header={ths} body={<TableBody />}></DataTable>
+      <PaginationBar
+        pageCount={Math.ceil(books.length / perPage)}
+        setPage={setPage}
+      ></PaginationBar>
     </PageLayout>
   );
 }
