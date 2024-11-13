@@ -21,3 +21,14 @@ export const getUserById = async (id) => {
     console.log(`Error: ${error}`);
   }
 };
+
+export const createNewUser = async (user) => {
+  try {
+    const res = await axios.post("/api/user", user);
+    console.log(res.data);
+    const data = res.data;
+    return data;
+  } catch (error) {
+    console.log(`Error: ${error}`);
+  }
+};
