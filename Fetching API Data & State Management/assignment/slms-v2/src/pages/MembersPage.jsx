@@ -66,13 +66,13 @@ function MembersPage(props) {
             <td className="space-x-2">
               <Button
                 styleName="bg-green-700"
-                onClick={() => handleEditMemberButtonClick(member.id)}
+                onClick={() => handleEditMemberButtonClick(member.userid)}
               >
                 Edit
               </Button>
               <Button
                 styleName="bg-red-700"
-                onClick={() => handleDeleteMember(member.id)}
+                onClick={() => handleDeleteMember(member.userid)}
               >
                 Delete
               </Button>
