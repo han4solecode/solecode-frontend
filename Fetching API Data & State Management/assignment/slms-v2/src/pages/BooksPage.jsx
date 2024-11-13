@@ -1,8 +1,10 @@
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
+import LoadingAnimation from "../components/Elements/LoadingAnimation";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getAllBooks } from "../services/books.service";
 
 function BooksPage(props) {
   const {} = props;
@@ -14,30 +16,28 @@ function BooksPage(props) {
   };
 
   const [books, setBooks] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  let ths = [
-    "ISBN",
-    "Title",
-    "Author",
-    "Category",
-    "Publication Year",
-    "Availability",
-    "Action",
-  ];
+  let ths = ["ID", "Title", "Author", "Publication Date", "ISBN", "Action"];
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("books") || "[]");
-    if (data) {
-      setBooks(data);
-    }
+    setIsLoading(true);
+    const fetchBooks = async () => {
+      const books = await getAllBooks();
+      if (books) {
+        setBooks(books);
+        setIsLoading(false);
+      }
+    };
+    fetchBooks();
   }, []);
 
   const handleEditBookButtonClick = (id) => {
     navigate(`/books/edit/${id}`);
   };
 
-  const handleDeleteBook = (isbn) => {
-    if (confirm(`Are you sure you want to delete book ID ${isbn}?`)) {
+  const handleDeleteBook = (id) => {
+    if (confirm(`Are you sure you want to delete book ID ${id}?`)) {
       let books = JSON.parse(localStorage.getItem("books"));
       books = books.filter((book) => book.isbn !== isbn);
       localStorage.setItem("books", JSON.stringify(books));
@@ -56,25 +56,24 @@ function BooksPage(props) {
       <tbody>
         {books.map((book) => (
           <tr
-            key={book.isbn}
+            key={book.bookid}
             className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
           >
-            <td>{book.isbn}</td>
+            <td>{book.bookid}</td>
             <td>{book.title}</td>
             <td>{book.author}</td>
-            <td>{book.category}</td>
-            <td>{book.year}</td>
-            {book.isAvailable ? <td>Yes</td> : <td>No</td>}
+            <td>{book.publicationyear}</td>
+            <td>{book.isbn}</td>
             <td className="flex gap-2 justify-center">
               <Button
                 styleName="bg-green-700"
-                onClick={() => handleEditBookButtonClick(book.isbn)}
+                onClick={() => handleEditBookButtonClick(book.bookid)}
               >
                 Edit
               </Button>
               <Button
                 styleName="bg-red-700"
-                onClick={() => handleDeleteBook(book.isbn)}
+                onClick={() => handleDeleteBook(book.bookid)}
               >
                 Delete
               </Button>
@@ -92,6 +91,16 @@ function BooksPage(props) {
       </tbody>
     );
   };
+
+  if (isLoading) {
+    return (
+      <PageLayout>
+        <div className="flex justify-center items-center h-screen">
+          <LoadingAnimation></LoadingAnimation>
+        </div>
+      </PageLayout>
+    );
+  }
 
   return (
     <PageLayout pageTitle="Books Page">
