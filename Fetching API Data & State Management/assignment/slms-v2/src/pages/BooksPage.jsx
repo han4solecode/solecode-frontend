@@ -4,7 +4,7 @@ import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllBooks } from "../services/books.service";
+import { getAllBooks, deleteBook } from "../services/books.service";
 
 function BooksPage(props) {
   const {} = props;
@@ -38,14 +38,13 @@ function BooksPage(props) {
 
   const handleDeleteBook = (id) => {
     if (confirm(`Are you sure you want to delete book ID ${id}?`)) {
-      let books = JSON.parse(localStorage.getItem("books"));
-      books = books.filter((book) => book.isbn !== isbn);
-      localStorage.setItem("books", JSON.stringify(books));
-      if (books.length === 0) {
-        localStorage.removeItem("books");
-      }
-      setBooks(books);
-      alert(`Book with ID ${isbn} has been deleted successfully`);
+      const deleteExistingBook = async (id) => {
+        const res = await deleteBook(id);
+        alert(`Book with ID ${id} has been deleted successfully`);
+        navigate("/books");
+      };
+
+      deleteExistingBook(Number(id));
     } else {
       return;
     }
