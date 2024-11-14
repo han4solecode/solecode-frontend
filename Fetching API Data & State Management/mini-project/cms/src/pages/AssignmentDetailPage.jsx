@@ -1,74 +1,75 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
+import LoadingAnimation from "../components/Elements/LoadingAnimation";
+import { getAssignmentById } from "../services/assignments.service";
 
 function AssignmentDetailPage(props) {
   const {} = props;
   const { empNo, projNo } = useParams();
 
-  const [employees, setEmployees] = useState({});
-  const [projects, setProjects] = useState({});
-  const [assignments, setAssignments] = useState({});
-  const [empDept, setEmpDept] = useState({});
+  const [assignment, setAssignment] = useState({});
+  const [project, setProject] = useState({});
   const [projDept, setProjDept] = useState({});
+  const [employee, setEmployee] = useState({});
+  const [empDept, setEmpDept] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  useState(() => {
-    const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
-    const projectData = JSON.parse(localStorage.getItem("projects") || "[]");
-    const assignmentData = JSON.parse(
-      localStorage.getItem("assignments") || "[]"
-    );
-    const departmentData = JSON.parse(
-      localStorage.getItem("departments") || "[]"
-    );
-
-    const employee = employeeData.find((emp) => emp.empNo === Number(empNo));
-    const project = projectData.find((proj) => proj.projNo === Number(projNo));
-    const assignment = assignmentData.find(
-      (assignment) =>
-        assignment.empNo === Number(empNo) &&
-        assignment.projNo === Number(projNo)
-    );
-    const empDept = departmentData.find(
-      (dept) => dept.deptNo === employee.deptNo
-    );
-    const projDept = departmentData.find(
-      (dept) => dept.deptNo === project.deptNo
-    );
-
-    if (employee && project && assignment && empDept && projDept) {
-      setEmployees(employee);
-      setProjects(project);
-      setAssignments(assignment);
-      setEmpDept(empDept);
-      setProjDept(projDept);
-    }
+  useEffect(() => {
+    setLoading(true);
+    getAssignmentById(Number(empNo), Number(projNo))
+      .then((res) => {
+        if (res.status === 200) {
+          setAssignment(res.data);
+          setEmployee(res.data.empnoNavigation);
+          setEmpDept(res.data.empnoNavigation.deptnoNavigation);
+          setProject(res.data.projnoNavigation);
+          setProjDept(res.data.projnoNavigation.deptnoNavigation);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(
+          `Error occurred. Please try again or contact admin. ERROR ${err}`
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingAnimation></LoadingAnimation>
+      </div>
+    );
+  }
 
   return (
     <PageLayout pageTitle="Assignment Detail">
       <div className="mb-3">
         <h1 className="text-2xl font-semibold mb-1">Employee Data</h1>
         <p>
-          Full Name: {employees.fName} {employees.lName}
+          Full Name: {employee.fname} {employee.lname}
         </p>
-        <p>Department: {empDept.deptName}</p>
-        <p>Position: {employees.position}</p>
+        <p>Department: {empDept.deptname}</p>
+        <p>Position: {employee.position}</p>
       </div>
       <div className="mb-3">
         <h1 className="text-2xl font-semibold mb-1">Project Data</h1>
-        <p>Project Name: {projects.projName}</p>
-        <p>Department: {projDept.deptName}</p>
+        <p>Project Name: {project.projname}</p>
+        <p>Department: {projDept.deptname}</p>
       </div>
       <div className="mb-3">
         <h1 className="text-2xl font-semibold mb-1">Peformance</h1>
-        <p>Work Start Date: {assignments.dateWorked}</p>
+        <p>Work Start Date: {assignment.dateworked}</p>
         <p>
           Hours Worked:{" "}
-          {assignments.hoursWorked <= 1
-            ? `${assignments.hoursWorked} hour`
-            : `${assignments.hoursWorked} hours`}
+          {assignment.hoursworked <= 1
+            ? `${assignment.hoursworked} hour`
+            : `${assignment.hoursworked} hours`}
         </p>
       </div>
     </PageLayout>
