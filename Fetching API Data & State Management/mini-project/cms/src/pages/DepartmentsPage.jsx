@@ -5,7 +5,10 @@ import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
 import PaginationBar from "../components/Fragments/PaginationBar";
-import { getAllDepartment } from "../services/departments.service";
+import {
+  deleteDepartment,
+  getAllDepartment,
+} from "../services/departments.service";
 
 function DepartmentsPage(props) {
   const {} = props;
@@ -60,14 +63,20 @@ function DepartmentsPage(props) {
     if (
       confirm(`Are you sure you want to delete department deptNo ${deptNo}?`)
     ) {
-      let departments = JSON.parse(localStorage.getItem("departments"));
-      departments = departments.filter((dept) => dept.deptNo !== deptNo);
-      localStorage.setItem("departments", JSON.stringify(departments));
-      if (departments.length === 0) {
-        localStorage.removeItem("departments");
-      }
-      setDepartments(departments);
-      alert(`Department with DeptNo ${deptNo} has been deleted successfully`);
+      deleteDepartment(deptNo)
+        .then((res) => {
+          if (res.status === 204) {
+            alert(
+              `Department with DeptNo ${deptNo} has been deleted successfully`
+            );
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(
+            `Error occurred. Please try again or contact admin. ERROR ${err}`
+          );
+        });
     } else {
       return;
     }
