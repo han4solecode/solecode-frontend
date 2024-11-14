@@ -4,6 +4,8 @@ import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
+import PaginationBar from "../components/Fragments/PaginationBar";
+import { getAllEmployees } from "../services/employees.service";
 
 function EmployeesPage(props) {
   const {} = props;
@@ -14,9 +16,10 @@ function EmployeesPage(props) {
     navigate("/employees/new");
   };
 
-  const [departments, setDepartments] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [perPage, setPerPage] = useState(3);
 
   const tableHeader = [
     "ID",
@@ -30,22 +33,32 @@ function EmployeesPage(props) {
   ];
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
+    setLoading(true);
+    getAllEmployees(perPage, page + 1)
+      .then((res) => {
+        if (res.status === 200) {
+          setEmployees(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
-    const departmentData = JSON.parse(
-      localStorage.getItem("departments") || "[]"
-    );
-    const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
-    if (departmentData && employeeData) {
-      setDepartments(departmentData);
-      setEmployees(employeeData);
-    }
-  }, []);
+    const fetchEmployees = async (perPage, page) => {
+      const res = await getAllEmployees(perPage, page);
+      if (res.status === 200) {
+        console.log(res.data);
+        setEmployees(res.data);
+        setLoading(false);
+      }
+    };
+    fetchEmployees(perPage, page + 1);
+  }, [page]);
 
   const handleEditEmployeeButtonClick = (id) => {
     navigate(`/employees/${id}`);
@@ -66,38 +79,33 @@ function EmployeesPage(props) {
     }
   };
 
-  const getDeptName = (deptNo) => {
-    let dept = departments.find((dept) => dept.deptNo === deptNo);
-    return dept.deptName;
-  };
-
   const TableBody = () => {
     return employees.length !== 0 ? (
       <tbody>
         {employees.map((emp) => (
           <tr
-            key={emp.empNo}
+            key={emp.empno}
             className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
           >
-            <td>{emp.empNo}</td>
+            <td>{emp.empno}</td>
             <td>
-              {emp.fName} {emp.lName}
+              {emp.fname} {emp.lname}
             </td>
             <td>{emp.address}</td>
             <td>{emp.dob}</td>
             <td>{emp.sex}</td>
             <td>{emp.position}</td>
-            <td>{getDeptName(emp.deptNo)}</td>
+            <td>{emp.deptnoNavigation.deptname}</td>
             <td className="flex gap-2 justify-center">
               <Button
                 styleName="bg-green-700"
-                onClick={() => handleEditEmployeeButtonClick(emp.empNo)}
+                onClick={() => handleEditEmployeeButtonClick(emp.empno)}
               >
                 Edit
               </Button>
               <Button
                 styleName="bg-red-700"
-                onClick={() => handleDeleteEmployee(emp.empNo)}
+                onClick={() => handleDeleteEmployee(emp.empno)}
               >
                 Delete
               </Button>
@@ -130,6 +138,7 @@ function EmployeesPage(props) {
         Add a New Employee
       </Button>
       <DataTable header={tableHeader} body={<TableBody />}></DataTable>
+      <PaginationBar pageCount={10} setPage={setPage}></PaginationBar>
     </PageLayout>
   );
 }
