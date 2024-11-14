@@ -29,7 +29,6 @@ function EmployeeFormPage(props) {
   };
 
   const [formValues, setFormValues] = useState(initialValues);
-  const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [errors, setErrors] = useState(initialValues);
   const [loading, setLoading] = useState(false);
@@ -155,8 +154,6 @@ function EmployeeFormPage(props) {
     }
 
     if (formValid) {
-      let employees = JSON.parse(localStorage.getItem("employees") || "[]");
-
       if (isEditing) {
         let updatedEmployee = {
           ...formValues,
