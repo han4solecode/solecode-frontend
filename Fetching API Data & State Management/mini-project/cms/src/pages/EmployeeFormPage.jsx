@@ -3,6 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import FormInput from "../components/Fragments/FormInput";
+import LoadingAnimation from "../components/Elements/LoadingAnimation";
+import { addEmployee } from "../services/employees.service";
+import { getAllDepartmentNoPaging } from "../services/departments.service";
 
 function EmployeeFormPage(props) {
   const { isEditing } = props;
@@ -12,29 +15,38 @@ function EmployeeFormPage(props) {
 
   const initialValues = {
     // empNo: 0,
-    fName: "",
-    lName: "",
+    fname: "",
+    lname: "",
     address: "",
     dob: "",
     sex: "",
     position: "",
-    deptNo: "",
+    deptno: "",
   };
 
   const [formValues, setFormValues] = useState(initialValues);
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [errors, setErrors] = useState(initialValues);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
-    const departmentData = JSON.parse(
-      localStorage.getItem("departments") || "[]"
-    );
-    if (employeeData && departmentData) {
-      setEmployees(employeeData);
-      setDepartments(departmentData);
-    }
+    setLoading(true);
+    getAllDepartmentNoPaging()
+      .then((res) => {
+        if (res.status === 200) {
+          setDepartments(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(
+          `Error occurred. Please try again or contact admin. ERROR ${err}`
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -70,12 +82,12 @@ function EmployeeFormPage(props) {
     console.log(currentDate);
     let errorMessages = {};
 
-    if (!formValues.fName.trim()) {
-      errorMessages.fName = "First name is required";
-    } else if (formValues.fName.length > 50) {
-      errorMessages.fName = "First name cannot exceed 50 characters";
+    if (!formValues.fname.trim()) {
+      errorMessages.fname = "First name is required";
+    } else if (formValues.fname.length > 50) {
+      errorMessages.fname = "First name cannot exceed 50 characters";
     } else {
-      errorMessages.fName = "";
+      errorMessages.fname = "";
     }
 
     if (formValues.lname.length > 50) {
@@ -112,10 +124,10 @@ function EmployeeFormPage(props) {
       errorMessages.position = "";
     }
 
-    if (!formValues.deptNo) {
-      errorMessages.deptNo = "Department is required";
+    if (!formValues.deptno) {
+      errorMessages.deptno = "Department is required";
     } else {
-      errorMessages.deptNo = "";
+      errorMessages.deptno = "";
     }
 
     setErrors(errorMessages);
@@ -146,23 +158,31 @@ function EmployeeFormPage(props) {
         alert(`Employee ${editedEmployee.empNo} has been updated successfully`);
         navigate("/employees");
       } else {
-        if (employees.length === 0) {
-          var empNo = 1;
-        } else {
-          var empNo = employees[employees.length - 1].empNo + 1;
-        }
-        employees.push({
-          ...formValues,
-          empNo: Number(empNo),
-          deptNo: Number(formValues.deptNo),
-        });
-        localStorage.setItem("employees", JSON.stringify(employees));
-
-        alert("A new employee has been created successfully");
-        navigate("/employees");
+        let newEmployee = { ...formValues, deptno: Number(formValues.deptno) };
+        addEmployee(newEmployee)
+          .then((res) => {
+            if (res.status === 201) {
+              alert("A new employee has been created successfully");
+              navigate("/employees");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(
+              `Error occurred. Please try again or contact admin. ERROR ${err}`
+            );
+          });
       }
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingAnimation></LoadingAnimation>
+      </div>
+    );
+  }
 
   return (
     <PageLayout
@@ -171,20 +191,20 @@ function EmployeeFormPage(props) {
       <div className="w-full">
         <form autoComplete="off">
           <FormInput
-            name="fName"
+            name="fname"
             type="text"
             onChange={(e) => handleInputChange(e)}
-            value={formValues.fName}
-            errorMessage={errors.fName}
+            value={formValues.fname}
+            errorMessage={errors.fname}
           >
             First Name
           </FormInput>
           <FormInput
-            name="lName"
+            name="lname"
             type="text"
             onChange={(e) => handleInputChange(e)}
-            value={formValues.lName}
-            errorMessage={errors.lName}
+            value={formValues.lname}
+            errorMessage={errors.lname}
           >
             Last Name
           </FormInput>
@@ -267,23 +287,23 @@ function EmployeeFormPage(props) {
               Department
             </label>
             <select
-              name="deptNo"
-              id="deptNo"
+              name="deptno"
+              id="deptno"
               className="border rounded text-lg w-full p-2 border-gray-400 focus:border-gray-800 focus:ring-0 focus:outline-none"
-              value={formValues.deptNo}
+              value={formValues.deptno}
               onChange={(e) => handleInputChange(e)}
             >
               <option value="" disabled hidden>
                 Select Department
               </option>
               {departments.map((dept) => (
-                <option value={dept.deptNo} key={dept.deptNo}>
-                  {dept.deptName}
+                <option value={dept.deptno} key={dept.deptno}>
+                  {dept.deptname}
                 </option>
               ))}
             </select>
-            {errors.deptNo && (
-              <small className="text-red-600">{errors.deptNo}</small>
+            {errors.deptno && (
+              <small className="text-red-600">{errors.deptno}</small>
             )}
           </div>
           <div className="mt-3 space-x-2">
