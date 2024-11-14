@@ -6,7 +6,11 @@ import FormInput from "../components/Fragments/FormInput";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
 import { getAllEmployeesNoPaging } from "../services/employees.service";
 import { getAllProjectsNoPaging } from "../services/projects.service";
-import { addAssignment } from "../services/assignments.service";
+import {
+  addAssignment,
+  getAssignmentById,
+  updateAssignment,
+} from "../services/assignments.service";
 
 function AssignmentFormPage(props) {
   const { isEditing } = props;
@@ -46,16 +50,22 @@ function AssignmentFormPage(props) {
 
   useEffect(() => {
     if (isEditing) {
-      const assignmentData = JSON.parse(
-        localStorage.getItem("assignments") || "[]"
-      );
-      const editedAssignment = assignmentData.find(
-        (assignment) =>
-          assignment.empNo === Number(empNo) &&
-          assignment.projNo === Number(projNo)
-      );
-      //   console.log(empNo);
-      setFormValues(editedAssignment);
+      setLoading(true);
+      getAssignmentById(Number(empNo), Number(projNo))
+        .then((res) => {
+          if (res.status === 200) {
+            setFormValues(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(
+            `Error occurred. Please try again or contact admin. ERROR ${err}`
+          );
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, []);
 
@@ -117,35 +127,30 @@ function AssignmentFormPage(props) {
     }
 
     if (formValid) {
-      let assignments = JSON.parse(localStorage.getItem("assignments") || "[]");
+      // let assignments = JSON.parse(localStorage.getItem("assignments") || "[]");
 
       if (isEditing) {
-        let editedAssignment = {
+        let updatedAssignemt = {
           ...formValues,
-          empNo: Number(formValues.empNo),
-          projNo: Number(formValues.projNo),
+          empno: Number(formValues.empno),
+          projno: Number(formValues.projno),
         };
 
-        console.log(editedAssignment);
-
-        let updatedAssignmentData = assignments.map((assignment) =>
-          assignment.empNo === Number(empNo) &&
-          assignment.projNo === Number(projNo)
-            ? editedAssignment
-            : assignment
-        );
-
-        console.log(updatedAssignmentData);
-
-        localStorage.setItem(
-          "assignments",
-          JSON.stringify(updatedAssignmentData)
-        );
-
-        alert(
-          `Assignment of employee empNo ${empNo} in project projNo ${projNo} has been updated successfully`
-        );
-        navigate("/assignments");
+        updateAssignment(Number(empNo), Number(projNo), updatedAssignemt)
+          .then((res) => {
+            if (res.status === 200) {
+              alert(
+                `Assignment of employee empNo ${empNo} in project projNo ${projNo} has been updated successfully`
+              );
+              navigate("/assignments");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(
+              `Error occurred. Please try again or contact admin. ERROR ${err}`
+            );
+          });
       } else {
         let newAssignment = {
           ...formValues,
