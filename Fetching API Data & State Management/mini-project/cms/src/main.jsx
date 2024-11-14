@@ -8,6 +8,7 @@ import "./index.css";
 import MainLayout from "./components/Layouts/MainLayout";
 import DashboardPage from "./pages/DashboardPage";
 import DepartmentsPage from "./pages/DepartmentsPage";
+import DepartmentDetailPage from "./pages/DepartmentDetailPage";
 import DepartmentFormPage from "./pages/DepartmentFormPage";
 import EmployeesPage from "./pages/EmployeesPage";
 import EmployeeFormPage from "./pages/EmployeeFormPage";
@@ -51,6 +52,15 @@ const router = createBrowserRouter([
       {
         path: "/departments",
         element: <DepartmentsPage></DepartmentsPage>,
+      },
+      {
+        path: "/departments/:id/detail",
+        element: <DepartmentDetailPage></DepartmentDetailPage>,
+        errorElement: (
+          <div className="flex justify-center items-center h-screen text-3xl font-bold">
+            Error 404
+          </div>
+        ),
       },
       {
         path: "/departments/new",
