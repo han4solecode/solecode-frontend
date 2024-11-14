@@ -44,7 +44,7 @@ export const updateProject = async (projectId, updatedProject) => {
 
 export const deleteProject = async (projectId) => {
   try {
-    const res = await axios.delete(`/api/project/${employeeId}`);
+    const res = await axios.delete(`/api/project/${projectId}`);
     console.log(res);
     return res;
   } catch (error) {
