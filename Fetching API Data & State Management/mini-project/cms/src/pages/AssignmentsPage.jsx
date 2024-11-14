@@ -16,8 +16,6 @@ function AssignmentsPage(props) {
   const navigate = useNavigate();
 
   const [assignments, setAssignments] = useState([]);
-  const [projects, setProjects] = useState([]);
-  const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [perPage, setPerPage] = useState(3);
@@ -89,33 +87,9 @@ function AssignmentsPage(props) {
             `Error occurred. Please try again or contact admin. ERROR ${err}`
           );
         });
-
-      // let assignments = JSON.parse(localStorage.getItem("assignments"));
-      // assignments = assignments.filter(
-      //   (assignment) =>
-      //     assignment.empNo !== empNo && assignment.projNo !== projNo
-      // );
-      // localStorage.setItem("assignment", JSON.stringify(assignments));
-      // if (assignments.length === 0) {
-      //   localStorage.removeItem("assignments");
-      // }
-      // setAssignments(assignments);
-      // alert(
-      //   `Assignment of employee empNo ${empNo} in project projNo ${projNo} has been deleted successfully`
-      // );
     } else {
       return;
     }
-  };
-
-  const getEmployeeName = (empNo) => {
-    let emp = employees.find((emp) => emp.empNo === empNo);
-    return `${emp.fName} ${emp.lName}`;
-  };
-
-  const getProjectName = (projNo) => {
-    let proj = projects.find((proj) => proj.projNo === projNo);
-    return proj.projName;
   };
 
   const TableBody = () => {
