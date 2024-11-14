@@ -4,6 +4,8 @@ import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
+import PaginationBar from "../components/Fragments/PaginationBar";
+import { getAllDepartment } from "../services/departments.service";
 
 function DepartmentsPage(props) {
   const {} = props;
@@ -15,30 +17,36 @@ function DepartmentsPage(props) {
   };
 
   const [departments, setDepartments] = useState([]);
-  const [employees, setEmployees] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [perPage, setPerPage] = useState(3);
 
   const tableHeader = ["ID", "Department Name", "Manager", "Action"];
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
+    setLoading(true);
+    const fetchDepartments = async (perPage, page) => {
+      const res = await getAllDepartment(perPage, page);
+      if (res.status === 200) {
+        setDepartments(res.data);
+        console.log(res.data);
+        setLoading(false);
+      }
+    };
+    fetchDepartments(perPage, page + 1);
   }, []);
 
   useEffect(() => {
-    const departmentData = JSON.parse(
-      localStorage.getItem("departments") || "[]"
-    );
-    const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
-    if (departmentData && employeeData) {
-      setDepartments(departmentData);
-      setEmployees(employeeData);
-    }
-  }, []);
-
-  //   console.log(departments);
+    const fetchDepartments = async (perPage, page) => {
+      const res = await getAllDepartment(perPage, page);
+      if (res.status === 200) {
+        setDepartments(res.data);
+        console.log(res.data);
+        setLoading(false);
+      }
+    };
+    fetchDepartments(perPage, page + 1);
+  }, [page]);
 
   const handleEditDepartmentButtonClick = (id) => {
     navigate(`/departments/${id}`);
@@ -61,25 +69,22 @@ function DepartmentsPage(props) {
     }
   };
 
-  const getManagerName = (empNo) => {
-    let emp = employees.find((emp) => emp.empNo === empNo);
-    return `${emp.fName} ${emp.lName}`;
-  };
-
   const TableBody = () => {
     return departments.length !== 0 ? (
       <tbody>
         {departments.map((dept) => (
           <tr
-            key={dept.deptNo}
+            key={dept.deptno}
             className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
           >
-            <td>{dept.deptNo}</td>
-            <td>{dept.deptName}</td>
-            {dept.mgrEmpNo === 0 ? (
+            <td>{dept.deptno}</td>
+            <td>{dept.deptname}</td>
+            {!dept.mgrempno ? (
               <td className="text-red-500">Not Assigned Yet</td>
             ) : (
-              <td>{getManagerName(dept.mgrEmpNo)}</td>
+              <td>
+                {dept.mgrempnoNavigation.fname} {dept.mgrempnoNavigation.lname}
+              </td>
             )}
             <td className="flex gap-2 justify-center">
               <Button
@@ -123,6 +128,7 @@ function DepartmentsPage(props) {
         Add a New Department
       </Button>
       <DataTable header={tableHeader} body={<TableBody />}></DataTable>
+      <PaginationBar pageCount={10} setPage={setPage}></PaginationBar>
     </PageLayout>
   );
 }
