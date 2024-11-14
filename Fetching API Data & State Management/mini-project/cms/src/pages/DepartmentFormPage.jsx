@@ -94,7 +94,10 @@ function DepartmentFormPage(props) {
       if (isEditing) {
         let updatedDepartment = {
           ...formValues,
-          mgrempno: Number(formValues.mgrempno),
+          mgrempno:
+            formValues.mgrempno === null
+              ? formValues.mgrempno
+              : Number(formValues.mgrempno),
         };
 
         updateDepartment(Number(id), updatedDepartment)
@@ -170,7 +173,7 @@ function DepartmentFormPage(props) {
                 onChange={(e) => handleInputChange(e)}
                 // defaultValue={empsInDept[0].empNo}
               >
-                <option value={null} disabled hidden>
+                <option value={null} hidden>
                   Select Manager
                 </option>
                 {employees.map((emp) => (
