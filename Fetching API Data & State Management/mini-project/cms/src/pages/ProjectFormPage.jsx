@@ -3,6 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import FormInput from "../components/Fragments/FormInput";
+import LoadingAnimation from "../components/Elements/LoadingAnimation";
+import { getAllDepartmentNoPaging } from "../services/departments.service";
+import { addProject } from "../services/projects.service";
 
 function ProjectFormPage(props) {
   const { isEditing } = props;
@@ -12,27 +15,34 @@ function ProjectFormPage(props) {
 
   const initialValues = {
     // projNo: 0,
-    projName: "",
-    deptNo: "",
+    projname: "",
+    deptno: "",
   };
 
   const [formValues, setFormValues] = useState(initialValues);
-  const [projects, setProjects] = useState([]);
+  // const [projects, setProjects] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [errors, setErrors] = useState(initialValues);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const departmentData = JSON.parse(
-      localStorage.getItem("departments") || "[]"
-    );
-    const projectData = JSON.parse(localStorage.getItem("projects") || "[]");
-    if (departmentData && projectData) {
-      setDepartments(departmentData);
-      setProjects(projectData);
-    }
+    setLoading(true);
+    getAllDepartmentNoPaging()
+      .then((res) => {
+        if (res.status === 200) {
+          setDepartments(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(
+          `Error occurred. Please try again or contact admin. ERROR ${err}`
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
-
-  // console.log(departments);
 
   useEffect(() => {
     if (isEditing) {
@@ -63,18 +73,18 @@ function ProjectFormPage(props) {
     // validation
     let errorMessages = {};
 
-    if (!formValues.projName.trim()) {
-      errorMessages.projName = "Project name is required";
-    } else if (formValues.projName.length > 100) {
-      errorMessages.projName = "Project name cannot exceed 100 character";
+    if (!formValues.projname.trim()) {
+      errorMessages.projname = "Project name is required";
+    } else if (formValues.projname.length > 100) {
+      errorMessages.projname = "Project name cannot exceed 100 character";
     } else {
-      errorMessages.projName = "";
+      errorMessages.projname = "";
     }
 
-    if (!formValues.deptNo) {
-      errorMessages.deptNo = "Department is required";
+    if (!formValues.deptno) {
+      errorMessages.deptno = "Department is required";
     } else {
-      errorMessages.deptNo = "";
+      errorMessages.deptno = "";
     }
 
     setErrors(errorMessages);
@@ -105,23 +115,31 @@ function ProjectFormPage(props) {
         alert(`Project ${editedProject.projNo} has been updated successfully`);
         navigate("/projects");
       } else {
-        if (projects.length === 0) {
-          var projNo = 1;
-        } else {
-          var projNo = projects[projects.length - 1].projNo + 1;
-        }
-        projects.push({
-          ...formValues,
-          projNo: Number(projNo),
-          deptNo: Number(formValues.deptNo),
-        });
-        localStorage.setItem("projects", JSON.stringify(projects));
-
-        alert("A new project has been created successfully");
-        navigate("/projects");
+        let newProject = { ...formValues, deptno: Number(formValues.deptno) };
+        addProject(newProject)
+          .then((res) => {
+            if (res.status === 201) {
+              alert("A new project has been created successfully");
+              navigate("/projects");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(
+              `Error occurred. Please try again or contact admin. ERROR ${err}`
+            );
+          });
       }
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingAnimation></LoadingAnimation>
+      </div>
+    );
+  }
 
   return (
     <PageLayout
@@ -130,39 +148,39 @@ function ProjectFormPage(props) {
       <div className="w-full">
         <form autoComplete="off">
           <FormInput
-            name="projName"
+            name="projname"
             type="text"
             onChange={(e) => handleInputChange(e)}
-            value={formValues.projName}
-            errorMessage={errors.projName}
+            value={formValues.projname}
+            errorMessage={errors.projname}
           >
             Project Name
           </FormInput>
           <div className="mb-3">
             <label
-              htmlFor="deptNo"
+              htmlFor="deptno"
               className="block text-black mb-2 text-lg text-semibold"
             >
               Department
             </label>
             <select
-              name="deptNo"
-              id="deptNo"
+              name="deptno"
+              id="deptno"
               className="border rounded text-lg w-full p-2 border-gray-400 focus:border-gray-800 focus:ring-0 focus:outline-none"
-              value={formValues.deptNo}
+              value={formValues.deptno}
               onChange={(e) => handleInputChange(e)}
             >
               <option value="" disabled hidden>
                 Select Department
               </option>
               {departments.map((dept) => (
-                <option value={dept.deptNo} key={dept.deptNo}>
-                  {dept.deptName}
+                <option value={dept.deptno} key={dept.deptno}>
+                  {dept.deptname}
                 </option>
               ))}
             </select>
-            {errors.deptNo && (
-              <small className="text-red-600">{errors.deptNo}</small>
+            {errors.deptno && (
+              <small className="text-red-600">{errors.deptno}</small>
             )}
           </div>
           <div className="mt-3 space-x-2">
