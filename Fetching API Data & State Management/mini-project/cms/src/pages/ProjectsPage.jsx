@@ -4,6 +4,8 @@ import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
+import PaginationBar from "../components/Fragments/PaginationBar";
+import { getAllProjects } from "../services/projects.service";
 
 function ProjectsPage(props) {
   const {} = props;
@@ -12,27 +14,38 @@ function ProjectsPage(props) {
 
   const [departments, setDepartments] = useState([]);
   const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [perPage, setPerPage] = useState(3);
 
   const tableHeader = ["ID", "Project Name", "Department", "Action"];
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
+    setLoading(true);
+    getAllProjects(perPage, page + 1)
+      .then((res) => {
+        if (res.status === 200) {
+          setProjects(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
-    const departmentData = JSON.parse(
-      localStorage.getItem("departments") || "[]"
-    );
-    const projectData = JSON.parse(localStorage.getItem("projects") || "[]");
-    if (departmentData && projectData) {
-      setDepartments(departmentData);
-      setProjects(projectData);
-    }
-  }, []);
+    const fetchProjects = async (perPage, page) => {
+      const res = await getAllProjects(perPage, page);
+      if (res.status === 200) {
+        setProjects(res.data);
+        setLoading(false);
+      }
+    };
+    fetchProjects(perPage, page + 1);
+  }, [page]);
 
   const handleAddProjectButtonClick = () => {
     navigate("/projects/new");
@@ -57,32 +70,27 @@ function ProjectsPage(props) {
     }
   };
 
-  const getDeptName = (deptNo) => {
-    let dept = departments.find((dept) => dept.deptNo === deptNo);
-    return dept.deptName;
-  };
-
   const TableBody = () => {
     return projects.length !== 0 ? (
       <tbody>
         {projects.map((proj) => (
           <tr
-            key={proj.projNo}
+            key={proj.projno}
             className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
           >
-            <td>{proj.projNo}</td>
-            <td>{proj.projName}</td>
-            <td>{getDeptName(proj.deptNo)}</td>
+            <td>{proj.projno}</td>
+            <td>{proj.projname}</td>
+            <td>{proj.deptnoNavigation.deptname}</td>
             <td className="flex gap-2 justify-center">
               <Button
                 styleName="bg-green-700"
-                onClick={() => handleEditProjectButtonClick(proj.projNo)}
+                onClick={() => handleEditProjectButtonClick(proj.projno)}
               >
                 Edit
               </Button>
               <Button
                 styleName="bg-red-700"
-                onClick={() => handleDeleteProject(proj.projNo)}
+                onClick={() => handleDeleteProject(proj.projno)}
               >
                 Delete
               </Button>
@@ -115,6 +123,7 @@ function ProjectsPage(props) {
         Add a New Project
       </Button>
       <DataTable header={tableHeader} body={<TableBody />}></DataTable>
+      <PaginationBar pageCount={10} setPage={setPage}></PaginationBar>
     </PageLayout>
   );
 }
