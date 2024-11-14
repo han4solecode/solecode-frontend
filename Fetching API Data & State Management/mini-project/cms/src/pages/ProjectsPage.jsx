@@ -5,7 +5,7 @@ import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
 import PaginationBar from "../components/Fragments/PaginationBar";
-import { getAllProjects } from "../services/projects.service";
+import { deleteProject, getAllProjects } from "../services/projects.service";
 
 function ProjectsPage(props) {
   const {} = props;
@@ -57,14 +57,29 @@ function ProjectsPage(props) {
 
   const handleDeleteProject = (projNo) => {
     if (confirm(`Are you sure you want to delete project projNo ${projNo}?`)) {
-      let projects = JSON.parse(localStorage.getItem("projects"));
-      projects = projects.filter((proj) => proj.projNo !== projNo);
-      localStorage.setItem("projects", JSON.stringify(projects));
-      if (projects.length === 0) {
-        localStorage.removeItem("projects");
-      }
-      setProjects(projects);
-      alert(`Project with projNo ${projNo} has been deleted successfully`);
+      deleteProject(projNo)
+        .then((res) => {
+          if (res.status === 204) {
+            alert(
+              `Project with projNo ${projNo} has been deleted successfully`
+            );
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(
+            `Error occurred. Please try again or contact admin. ERROR ${err}`
+          );
+        });
+
+      // let projects = JSON.parse(localStorage.getItem("projects"));
+      // projects = projects.filter((proj) => proj.projNo !== projNo);
+      // localStorage.setItem("projects", JSON.stringify(projects));
+      // if (projects.length === 0) {
+      //   localStorage.removeItem("projects");
+      // }
+      // setProjects(projects);
+      // alert(`Project with projNo ${projNo} has been deleted successfully`);
     } else {
       return;
     }
