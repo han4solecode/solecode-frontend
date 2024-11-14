@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { addDepartment } from "../services/departments.service";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import FormInput from "../components/Fragments/FormInput";
@@ -61,17 +62,6 @@ function DepartmentFormPage(props) {
     return filteredEmployees;
   };
 
-  //   useState(() => {
-  //     const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
-  //     const empsInDept = employeeData.filter((emp) => emp.deptNo === id);
-  //     console.log(employeeData);
-  //     console.log(formValues);
-  //     console.log(empsInDept);
-  //     setEmpsInDept(empsInDept);
-  //   }, []);
-
-  //   console.log(empsInDept);
-
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === "checkbox") {
@@ -132,21 +122,20 @@ function DepartmentFormPage(props) {
         );
         navigate("/departments");
       } else {
-        // auto generate deptNo
-        if (departments.length === 0) {
-          var deptNo = 1;
-        } else {
-          var deptNo = departments[departments.length - 1].deptNo + 1;
-        }
-        departments.push({
-          ...formValues,
-          deptNo: Number(deptNo),
-          mgrEmpNo: Number(formValues.mgrEmpNo),
-        });
-        localStorage.setItem("departments", JSON.stringify(departments));
-
-        alert("A new department has been created successfully");
-        navigate("/departments");
+        let newDepartment = { deptname: formValues.deptName };
+        addDepartment(newDepartment)
+          .then((res) => {
+            if (res.status === 201) {
+              alert("A new department has been created successfully");
+              navigate("/departments");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(
+              `Error occurred. Please try again or contact admin. ERROR ${err}`
+            );
+          });
       }
     }
   };
