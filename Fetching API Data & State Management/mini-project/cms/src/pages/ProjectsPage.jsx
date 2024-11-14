@@ -71,15 +71,6 @@ function ProjectsPage(props) {
             `Error occurred. Please try again or contact admin. ERROR ${err}`
           );
         });
-
-      // let projects = JSON.parse(localStorage.getItem("projects"));
-      // projects = projects.filter((proj) => proj.projNo !== projNo);
-      // localStorage.setItem("projects", JSON.stringify(projects));
-      // if (projects.length === 0) {
-      //   localStorage.removeItem("projects");
-      // }
-      // setProjects(projects);
-      // alert(`Project with projNo ${projNo} has been deleted successfully`);
     } else {
       return;
     }
