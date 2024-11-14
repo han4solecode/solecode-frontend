@@ -78,15 +78,6 @@ function EmployeesPage(props) {
             `Error occurred. Please try again or contact admin. ERROR ${err}`
           );
         });
-
-      // let employees = JSON.parse(localStorage.getItem("employees"));
-      // employees = employees.filter((emp) => emp.empNo !== empNo);
-      // localStorage.setItem("employees", JSON.stringify(employees));
-      // if (employees.length === 0) {
-      //   localStorage.removeItem("employees");
-      // }
-      // setEmployees(employees);
-      // alert(`Employee with EmpNo ${empNo} has been deleted successfully`);
     } else {
       return;
     }
