@@ -4,7 +4,11 @@ import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import FormInput from "../components/Fragments/FormInput";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
-import { addEmployee } from "../services/employees.service";
+import {
+  addEmployee,
+  getEmployeeById,
+  updateEmployee,
+} from "../services/employees.service";
 import { getAllDepartmentNoPaging } from "../services/departments.service";
 
 function EmployeeFormPage(props) {
@@ -51,11 +55,22 @@ function EmployeeFormPage(props) {
 
   useEffect(() => {
     if (isEditing) {
-      const employeeData = JSON.parse(
-        localStorage.getItem("employees") || "[]"
-      );
-      const editedEmp = employeeData.find((emp) => emp.empNo === Number(id));
-      setFormValues(editedEmp);
+      setLoading(true);
+      getEmployeeById(Number(id))
+        .then((res) => {
+          if (res.status === 200) {
+            setFormValues(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(
+            `Error occurred. Please try again or contact admin. ERROR ${err}`
+          );
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, []);
 
@@ -143,20 +158,24 @@ function EmployeeFormPage(props) {
       let employees = JSON.parse(localStorage.getItem("employees") || "[]");
 
       if (isEditing) {
-        let editedEmployee = {
+        let updatedEmployee = {
           ...formValues,
-          empNo: Number(formValues.empNo),
-          deptNo: Number(formValues.deptNo),
+          deptno: Number(formValues.deptno),
         };
 
-        let updatedEmployeeData = employees.map((emp) =>
-          emp.empNo === editedEmployee.empNo ? editedEmployee : emp
-        );
-
-        localStorage.setItem("employees", JSON.stringify(updatedEmployeeData));
-
-        alert(`Employee ${editedEmployee.empNo} has been updated successfully`);
-        navigate("/employees");
+        updateEmployee(Number(id), updatedEmployee)
+          .then((res) => {
+            if (res.status === 200) {
+              alert(`Employee ${id} has been updated successfully`);
+              navigate("/employees");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(
+              `Error occurred. Please try again or contact admin. ERROR ${err}`
+            );
+          });
       } else {
         let newEmployee = { ...formValues, deptno: Number(formValues.deptno) };
         addEmployee(newEmployee)
