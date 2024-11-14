@@ -4,6 +4,8 @@ import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
+import PaginationBar from "../components/Fragments/PaginationBar";
+import { getAllAssignment } from "../services/assignments.service";
 
 function AssignmentsPage(props) {
   const {} = props;
@@ -13,7 +15,9 @@ function AssignmentsPage(props) {
   const [assignments, setAssignments] = useState([]);
   const [projects, setProjects] = useState([]);
   const [employees, setEmployees] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(0);
+  const [perPage, setPerPage] = useState(3);
 
   const tableHeader = [
     "Employee",
@@ -24,24 +28,31 @@ function AssignmentsPage(props) {
   ];
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
+    setLoading(true);
+    getAllAssignment(perPage, page + 1)
+      .then((res) => {
+        if (res.status === 200) {
+          setAssignments(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
-    const projectData = JSON.parse(localStorage.getItem("projects") || "[]");
-    const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
-    const assignmentData = JSON.parse(
-      localStorage.getItem("assignments") || "[]"
-    );
-    if (projectData && employeeData && assignmentData) {
-      setProjects(projectData);
-      setEmployees(employeeData);
-      setAssignments(assignmentData);
-    }
-  }, []);
+    const fetchAssignments = async (perPage, page) => {
+      const res = await getAllAssignment(perPage, page);
+      if (res.status === 200) {
+        setAssignments(res.data);
+        setLoading(false);
+      }
+    };
+    fetchAssignments(perPage, page + 1);
+  }, [page]);
 
   const handleAddAssignmentButtonClick = () => {
     navigate("/assignments/new");
@@ -97,16 +108,19 @@ function AssignmentsPage(props) {
             key={key}
             className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
           >
-            <td>{getEmployeeName(assignment.empNo)}</td>
-            <td>{getProjectName(assignment.projNo)}</td>
-            <td>{assignment.dateWorked}</td>
-            <td>{assignment.hoursWorked}</td>
+            <td>
+              {assignment.empnoNavigation.fname}{" "}
+              {assignment.empnoNavigation.lname}
+            </td>
+            <td>{assignment.projnoNavigation.projname}</td>
+            <td>{assignment.dateworked}</td>
+            <td>{assignment.hoursworked}</td>
             <td className="flex gap-2 justify-center">
               <Button
                 onClick={() =>
                   handleAssignmentDetailButtonClick(
-                    assignment.empNo,
-                    assignment.projNo
+                    assignment.empno,
+                    assignment.projno
                   )
                 }
               >
@@ -116,8 +130,8 @@ function AssignmentsPage(props) {
                 styleName="bg-green-700"
                 onClick={() =>
                   handleEditAssignmentButtonClick(
-                    assignment.empNo,
-                    assignment.projNo
+                    assignment.empno,
+                    assignment.projno
                   )
                 }
               >
@@ -126,7 +140,7 @@ function AssignmentsPage(props) {
               <Button
                 styleName="bg-red-700"
                 onClick={() =>
-                  handleDeleteAssignment(assignment.empNo, assignment.projNo)
+                  handleDeleteAssignment(assignment.empno, assignment.projno)
                 }
               >
                 Delete
@@ -160,6 +174,7 @@ function AssignmentsPage(props) {
         Add a New Assignment
       </Button>
       <DataTable header={tableHeader} body={<TableBody />}></DataTable>
+      <PaginationBar pageCount={10} setPage={setPage}></PaginationBar>
     </PageLayout>
   );
 }
