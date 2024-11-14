@@ -12,6 +12,16 @@ export const getAllDepartment = async (recordsPerPage, currentPage) => {
   }
 };
 
+export const getAllDepartmentNoPaging = async () => {
+  try {
+    const res = await axios.get(`/api/department/all`);
+    console.log(res);
+    return res;
+  } catch (error) {
+    console.log(`Error: ${error}`);
+  }
+};
+
 export const getDepartmentById = async (departmentId) => {
   try {
     const res = await axios.get(`/api/department/${departmentId}`);
