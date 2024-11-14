@@ -5,7 +5,11 @@ import Button from "../components/Elements/Button";
 import FormInput from "../components/Fragments/FormInput";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
 import { getAllDepartmentNoPaging } from "../services/departments.service";
-import { addProject } from "../services/projects.service";
+import {
+  addProject,
+  getProjectById,
+  updateProject,
+} from "../services/projects.service";
 
 function ProjectFormPage(props) {
   const { isEditing } = props;
@@ -46,9 +50,22 @@ function ProjectFormPage(props) {
 
   useEffect(() => {
     if (isEditing) {
-      const projectData = JSON.parse(localStorage.getItem("projects") || "[]");
-      const editedProj = projectData.find((proj) => proj.projNo === Number(id));
-      setFormValues(editedProj);
+      setLoading(true);
+      getProjectById(Number(id))
+        .then((res) => {
+          if (res.status === 200) {
+            setFormValues(res.data);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(
+            `Error occurred. Please try again or contact admin. ERROR ${err}`
+          );
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, []);
 
@@ -97,23 +114,25 @@ function ProjectFormPage(props) {
     }
 
     if (formValid) {
-      let projects = JSON.parse(localStorage.getItem("projects") || "[]");
-
       if (isEditing) {
-        let editedProject = {
+        let updatedProject = {
           ...formValues,
-          projNo: Number(formValues.projNo),
-          deptNo: Number(formValues.deptNo),
+          deptno: Number(formValues.deptno),
         };
 
-        let updatedProjectData = projects.map((proj) =>
-          proj.projNo === editedProject.projNo ? editedProject : proj
-        );
-
-        localStorage.setItem("projects", JSON.stringify(updatedProjectData));
-
-        alert(`Project ${editedProject.projNo} has been updated successfully`);
-        navigate("/projects");
+        updateProject(Number(id), updatedProject)
+          .then((res) => {
+            if (res.status === 200) {
+              alert(`Project ${id} has been updated successfully`);
+              navigate("/projects");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(
+              `Error occurred. Please try again or contact admin. ERROR ${err}`
+            );
+          });
       } else {
         let newProject = { ...formValues, deptno: Number(formValues.deptno) };
         addProject(newProject)
