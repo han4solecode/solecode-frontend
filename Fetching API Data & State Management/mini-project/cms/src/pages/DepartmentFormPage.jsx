@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { addDepartment } from "../services/departments.service";
+import {
+  addDepartment,
+  getDepartmentById,
+  updateDepartment,
+} from "../services/departments.service";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import FormInput from "../components/Fragments/FormInput";
+import LoadingAnimation from "../components/Elements/LoadingAnimation";
 
 function DepartmentFormPage(props) {
   const { isEditing } = props;
@@ -13,8 +18,8 @@ function DepartmentFormPage(props) {
 
   const initialValues = {
     // deptNo: 0,
-    deptName: "",
-    mgrEmpNo: "",
+    deptname: "",
+    mgrempno: "",
   };
 
   const [formValues, setFormValues] = useState(initialValues);
@@ -22,45 +27,32 @@ function DepartmentFormPage(props) {
   const [empsInDept, setEmpsInDept] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [errors, setErrors] = useState(initialValues);
-
-  useEffect(() => {
-    const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
-    const departmentData = JSON.parse(
-      localStorage.getItem("departments") || "[]"
-    );
-
-    // get all employees in a specific department (from params :id)
-    const empsInDept = employeeData.filter((emp) => emp.deptNo === Number(id));
-    console.log(empsInDept);
-
-    if (employeeData && departmentData && empsInDept) {
-      setEmployees(employeeData);
-      setDepartments(departmentData);
-      setEmpsInDept(empsInDept);
-    }
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isEditing) {
-      const departmentData = JSON.parse(
-        localStorage.getItem("departments") || "[]"
-      );
-      const editedDept = departmentData.find(
-        (dept) => dept.deptNo === Number(id)
-      );
-      setFormValues(editedDept);
+      setLoading(true);
+      getDepartmentById(Number(id))
+        .then((res) => {
+          if (res.status === 200) {
+            // setDepartments(res.data);
+            setFormValues(res.data);
+            setEmployees(res.data.employees);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(
+            `Error occurred. Please try again or contact admin. ERROR ${err}`
+          );
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, []);
 
   console.log(formValues);
-  //   console.log(empsInDept);
-
-  const getEmpsInDept = (deptNo) => {
-    let filteredEmployees = employees.filter(
-      (employee) => employee.deptNo === deptNo
-    );
-    return filteredEmployees;
-  };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -83,10 +75,10 @@ function DepartmentFormPage(props) {
     // validation
     let errorMessages = {};
 
-    if (!formValues.deptName.trim()) {
-      errorMessages.deptName = "Department name is required";
+    if (!formValues.deptname.trim()) {
+      errorMessages.deptname = "Department name is required";
     } else {
-      errorMessages.deptName = "";
+      errorMessages.deptname = "";
     }
 
     setErrors(errorMessages);
@@ -99,30 +91,27 @@ function DepartmentFormPage(props) {
     }
 
     if (formValid) {
-      let departments = JSON.parse(localStorage.getItem("departments") || "[]");
-
       if (isEditing) {
-        let editedDepartment = {
+        let updatedDepartment = {
           ...formValues,
-          deptNo: Number(id),
-          mgrEmpNo: Number(formValues.mgrEmpNo),
+          mgrempno: Number(formValues.mgrempno),
         };
 
-        let updatedDepartmentData = departments.map((dept) =>
-          dept.deptNo === editedDepartment.deptNo ? editedDepartment : dept
-        );
-
-        localStorage.setItem(
-          "departments",
-          JSON.stringify(updatedDepartmentData)
-        );
-
-        alert(
-          `Department ${editedDepartment.deptNo} has been updated successfully`
-        );
-        navigate("/departments");
+        updateDepartment(Number(id), updatedDepartment)
+          .then((res) => {
+            if (res.status === 200) {
+              alert(`Department ${id} has been updated successfully`);
+              navigate("/departments");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            alert(
+              `Error occurred. Please try again or contact admin. ERROR ${err}`
+            );
+          });
       } else {
-        let newDepartment = { deptname: formValues.deptName };
+        let newDepartment = { deptname: formValues.deptname };
         addDepartment(newDepartment)
           .then((res) => {
             if (res.status === 201) {
@@ -140,6 +129,14 @@ function DepartmentFormPage(props) {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <LoadingAnimation></LoadingAnimation>
+      </div>
+    );
+  }
+
   return (
     <PageLayout
       pageTitle={
@@ -149,36 +146,36 @@ function DepartmentFormPage(props) {
       <div className="w-full">
         <form autoComplete="off">
           <FormInput
-            name="deptName"
+            name="deptname"
             type="text"
             onChange={(e) => handleInputChange(e)}
-            value={formValues.deptName}
-            errorMessage={errors.deptName}
+            value={formValues.deptname}
+            errorMessage={errors.deptname}
           >
             Department Name
           </FormInput>
           <div className="mb-3">
             <label
-              htmlFor="mgrEmpNo"
+              htmlFor="mgrempno"
               className="block text-black mb-2 text-lg text-semibold"
             >
               Manager
             </label>
-            {getEmpsInDept(Number(id)).length !== 0 ? (
+            {employees.length !== 0 ? (
               <select
-                name="mgrEmpNo"
-                id="mgrEmpNo"
+                name="mgrempno"
+                id="mgrempno"
                 className="border rounded text-lg w-full p-2 border-gray-400 focus:border-gray-800 focus:ring-0 focus:outline-none"
-                value={formValues.mgrEmpNo}
+                value={formValues.mgrempno}
                 onChange={(e) => handleInputChange(e)}
                 // defaultValue={empsInDept[0].empNo}
               >
-                <option value={0} disabled hidden>
+                <option value={null} disabled hidden>
                   Select Manager
                 </option>
-                {getEmpsInDept(Number(id)).map((emp) => (
-                  <option key={emp.empNo} value={String(emp.empNo)}>
-                    {emp.fName} {emp.lName}
+                {employees.map((emp) => (
+                  <option key={emp.empno} value={emp.empno}>
+                    {emp.fname} {emp.lname}
                   </option>
                 ))}
               </select>
