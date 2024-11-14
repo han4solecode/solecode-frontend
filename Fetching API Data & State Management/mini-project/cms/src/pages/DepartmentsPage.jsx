@@ -48,6 +48,10 @@ function DepartmentsPage(props) {
     fetchDepartments(perPage, page + 1);
   }, [page]);
 
+  const handleDetailButtonClick = (id) => {
+    navigate(`/departments/${id}/detail`);
+  };
+
   const handleEditDepartmentButtonClick = (id) => {
     navigate(`/departments/${id}`);
   };
@@ -87,15 +91,18 @@ function DepartmentsPage(props) {
               </td>
             )}
             <td className="flex gap-2 justify-center">
+              <Button onClick={() => handleDetailButtonClick(dept.deptno)}>
+                Detail
+              </Button>
               <Button
                 styleName="bg-green-700"
-                onClick={() => handleEditDepartmentButtonClick(dept.deptNo)}
+                onClick={() => handleEditDepartmentButtonClick(dept.deptno)}
               >
                 Edit
               </Button>
               <Button
                 styleName="bg-red-700"
-                onClick={() => handleDeleteDepartment(dept.deptNo)}
+                onClick={() => handleDeleteDepartment(dept.deptno)}
               >
                 Delete
               </Button>
