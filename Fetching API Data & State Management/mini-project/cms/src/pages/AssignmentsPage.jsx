@@ -5,7 +5,10 @@ import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
 import PaginationBar from "../components/Fragments/PaginationBar";
-import { getAllAssignment } from "../services/assignments.service";
+import {
+  deleteAssignment,
+  getAllAssignment,
+} from "../services/assignments.service";
 
 function AssignmentsPage(props) {
   const {} = props;
@@ -72,19 +75,34 @@ function AssignmentsPage(props) {
         `Are you sure you want to delete assignment of employee empNo ${empNo} in project projNo ${projNo}?`
       )
     ) {
-      let assignments = JSON.parse(localStorage.getItem("assignments"));
-      assignments = assignments.filter(
-        (assignment) =>
-          assignment.empNo !== empNo && assignment.projNo !== projNo
-      );
-      localStorage.setItem("assignment", JSON.stringify(assignments));
-      if (assignments.length === 0) {
-        localStorage.removeItem("assignments");
-      }
-      setAssignments(assignments);
-      alert(
-        `Assignment of employee empNo ${empNo} in project projNo ${projNo} has been deleted successfully`
-      );
+      deleteAssignment(empNo, projNo)
+        .then((res) => {
+          if (res.status === 204) {
+            alert(
+              `Assignment of employee empNo ${empNo} in project projNo ${projNo} has been deleted successfully`
+            );
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          alert(
+            `Error occurred. Please try again or contact admin. ERROR ${err}`
+          );
+        });
+
+      // let assignments = JSON.parse(localStorage.getItem("assignments"));
+      // assignments = assignments.filter(
+      //   (assignment) =>
+      //     assignment.empNo !== empNo && assignment.projNo !== projNo
+      // );
+      // localStorage.setItem("assignment", JSON.stringify(assignments));
+      // if (assignments.length === 0) {
+      //   localStorage.removeItem("assignments");
+      // }
+      // setAssignments(assignments);
+      // alert(
+      //   `Assignment of employee empNo ${empNo} in project projNo ${projNo} has been deleted successfully`
+      // );
     } else {
       return;
     }
