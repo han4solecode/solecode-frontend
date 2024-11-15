@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import PageLayout from "../components/Layouts/PageLayout";
 import Card from "../components/Fragments/Card";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
+import { getAllEmployeesNoPaging } from "../services/employees.service";
+import { getAllDepartmentNoPaging } from "../services/departments.service";
+import { getAllProjectsNoPaging } from "../services/projects.service";
+import { getAllAssignmentsNoPaging } from "../services/assignments.service";
 
 function DashboardPage(props) {
   const {} = props;
@@ -13,27 +17,25 @@ function DashboardPage(props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const employeeData = JSON.parse(localStorage.getItem("employees") || "[]");
-    const departmentData = JSON.parse(
-      localStorage.getItem("departments") || "[]"
-    );
-    const projectData = JSON.parse(localStorage.getItem("projects") || "[]");
-    const assignmentData = JSON.parse(
-      localStorage.getItem("assignments") || "[]"
-    );
-    if (employeeData && departmentData && projectData && assignmentData) {
-      setEmployees(employeeData);
-      setDepartments(departmentData);
-      setProjects(projectData);
-      setAssignments(assignmentData);
-    }
+    setLoading(true);
+    Promise.all([
+      getAllEmployeesNoPaging(),
+      getAllDepartmentNoPaging(),
+      getAllProjectsNoPaging(),
+      getAllAssignmentsNoPaging(),
+    ])
+      .then((res) => {
+        setEmployees(res[0].data);
+        setDepartments(res[1].data);
+        setProjects(res[2].data);
+        setAssignments(res[3].data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   if (loading) {
