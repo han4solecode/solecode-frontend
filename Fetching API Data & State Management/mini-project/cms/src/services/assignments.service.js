@@ -12,6 +12,16 @@ export const getAllAssignment = async (recordsPerPage, currentPage) => {
   }
 };
 
+export const getAllAssignmentsNoPaging = async () => {
+  try {
+    const res = await axios.get(`/api/workson/all`);
+    console.log(res);
+    return res;
+  } catch (error) {
+    console.log(`Error: ${error}`);
+  }
+};
+
 export const getAssignmentById = async (employeeId, projectId) => {
   try {
     const res = await axios.get(`/api/workson/${employeeId}/${projectId}`);
