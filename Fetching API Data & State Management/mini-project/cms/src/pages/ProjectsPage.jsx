@@ -5,15 +5,19 @@ import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
 import PaginationBar from "../components/Fragments/PaginationBar";
-import { deleteProject, getAllProjects } from "../services/projects.service";
+import {
+  deleteProject,
+  getAllProjects,
+  getAllProjectsNoPaging,
+} from "../services/projects.service";
 
 function ProjectsPage(props) {
   const {} = props;
 
   const navigate = useNavigate();
 
-  const [departments, setDepartments] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [allProjects, setAllProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [perPage, setPerPage] = useState(3);
@@ -22,14 +26,13 @@ function ProjectsPage(props) {
 
   useEffect(() => {
     setLoading(true);
-    getAllProjects(perPage, page + 1)
+    Promise.all([getAllProjects(perPage, page + 1), getAllProjectsNoPaging()])
       .then((res) => {
-        if (res.status === 200) {
-          setProjects(res.data);
-        }
+        setProjects(res[0].data);
+        setAllProjects(res[1].data);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err[0], err[1]);
       })
       .finally(() => {
         setLoading(false);
@@ -129,7 +132,10 @@ function ProjectsPage(props) {
         Add a New Project
       </Button>
       <DataTable header={tableHeader} body={<TableBody />}></DataTable>
-      <PaginationBar pageCount={10} setPage={setPage}></PaginationBar>
+      <PaginationBar
+        pageCount={Math.ceil(allProjects.length / perPage)}
+        setPage={setPage}
+      ></PaginationBar>
     </PageLayout>
   );
 }
