@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
@@ -8,6 +8,7 @@ import { getAssignmentById } from "../services/assignments.service";
 function AssignmentDetailPage(props) {
   const {} = props;
   const { empNo, projNo } = useParams();
+  const navigate = useNavigate();
 
   const [assignment, setAssignment] = useState({});
   const [project, setProject] = useState({});
@@ -72,6 +73,7 @@ function AssignmentDetailPage(props) {
             : `${assignment.hoursworked} hours`}
         </p>
       </div>
+      <Button onClick={() => navigate("/assignments")}>Go Back</Button>
     </PageLayout>
   );
 }
