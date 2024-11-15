@@ -48,7 +48,7 @@ function ProjectsPage(props) {
       }
     };
     fetchProjects(perPage, page + 1);
-  }, [page]);
+  }, [page, perPage]);
 
   const handleAddProjectButtonClick = () => {
     navigate("/projects/new");
@@ -128,9 +128,21 @@ function ProjectsPage(props) {
 
   return (
     <PageLayout pageTitle="Projects">
-      <Button onClick={handleAddProjectButtonClick} type="button">
-        Add a New Project
-      </Button>
+      <div className="flex justify-between items-center">
+        <Button onClick={handleAddProjectButtonClick} type="button">
+          Add a New Project
+        </Button>
+        <div>
+          <label htmlFor="perPage">Items per page: </label>
+          <input
+            type="number"
+            className="w-10"
+            min="0"
+            value={perPage}
+            onChange={(e) => setPerPage(e.target.value)}
+          />
+        </div>
+      </div>
       <DataTable header={tableHeader} body={<TableBody />}></DataTable>
       <PaginationBar
         pageCount={Math.ceil(allProjects.length / perPage)}
