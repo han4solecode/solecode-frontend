@@ -56,7 +56,7 @@ function DepartmentsPage(props) {
       }
     };
     fetchDepartments(perPage, page + 1);
-  }, [page]);
+  }, [page, perPage]);
 
   const handleDetailButtonClick = (id) => {
     navigate(`/departments/${id}/detail`);
@@ -147,9 +147,21 @@ function DepartmentsPage(props) {
 
   return (
     <PageLayout pageTitle="Departments">
-      <Button onClick={handleAddDepartmentButtonClick} type="button">
-        Add a New Department
-      </Button>
+      <div className="flex justify-between items-center">
+        <Button onClick={handleAddDepartmentButtonClick} type="button">
+          Add a New Department
+        </Button>
+        <div>
+          <label htmlFor="perPage">Items per page: </label>
+          <input
+            type="number"
+            className="w-10"
+            min="0"
+            value={perPage}
+            onChange={(e) => setPerPage(e.target.value)}
+          />
+        </div>
+      </div>
       <DataTable header={tableHeader} body={<TableBody />}></DataTable>
       <PaginationBar
         pageCount={Math.ceil(allDepartments.length / perPage)}
