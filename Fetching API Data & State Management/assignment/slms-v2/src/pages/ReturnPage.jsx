@@ -20,8 +20,8 @@ function ReturnPage(props) {
 
   let ths = [
     "ID",
-    "Member ID",
-    "Book ID",
+    "Member Name",
+    "Book Title",
     "Borrow Date",
     "Return Date",
     "Action",
@@ -64,7 +64,7 @@ function ReturnPage(props) {
           alert(
             `Book with with lendingID ${lendingId} has been returned successfully`
           );
-          navigate("/return");
+          navigate(0);
         }
       };
 
@@ -93,8 +93,8 @@ function ReturnPage(props) {
             className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
           >
             <td>{lending.lendingid}</td>
-            <td>{lending.userid}</td>
-            <td>{lending.bookid}</td>
+            <td>{lending.user.name}</td>
+            <td>{lending.book.title}</td>
             <td>{lending.borrowdate}</td>
             <td>{lending.returndate}</td>
             <td className="flex gap-2 justify-center">
