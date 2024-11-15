@@ -27,25 +27,22 @@ function AssignmentFormPage(props) {
   const [formValues, setFormValues] = useState(initialValues);
   const [employees, setEmployees] = useState([]);
   const [projects, setProjects] = useState([]);
-  const [assignments, setAssignments] = useState([]);
   const [errors, setErrors] = useState(initialValues);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);
-    const fetchData = async () => {
-      const empRes = await getAllEmployeesNoPaging();
-      if (empRes.status === 200) {
-        setEmployees(empRes.data);
+    Promise.all([getAllEmployeesNoPaging(), getAllProjectsNoPaging()])
+      .then((res) => {
+        setEmployees(res[0].data);
+        setProjects(res[1].data);
+      })
+      .catch((err) => {
+        console.log(err[0], err[1]);
+      })
+      .finally(() => {
         setLoading(false);
-      }
-      const projRes = await getAllProjectsNoPaging();
-      if (projRes.status === 200) {
-        setProjects(projRes.data);
-        setLoading(false);
-      }
-    };
-    fetchData();
+      });
   }, []);
 
   useEffect(() => {
