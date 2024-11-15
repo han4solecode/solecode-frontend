@@ -107,6 +107,11 @@ function EmployeesPage(props) {
             <td>{emp.deptnoNavigation.deptname}</td>
             <td className="flex gap-2 justify-center">
               <Button
+                onClick={() => navigate(`/employees/${emp.empno}/detail`)}
+              >
+                Detail
+              </Button>
+              <Button
                 styleName="bg-green-700"
                 onClick={() => handleEditEmployeeButtonClick(emp.empno)}
               >

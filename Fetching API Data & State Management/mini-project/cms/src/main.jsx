@@ -11,6 +11,7 @@ import DepartmentsPage from "./pages/DepartmentsPage";
 import DepartmentDetailPage from "./pages/DepartmentDetailPage";
 import DepartmentFormPage from "./pages/DepartmentFormPage";
 import EmployeesPage from "./pages/EmployeesPage";
+import EmployeeDetailPage from "./pages/EmployeeDetailPage";
 import EmployeeFormPage from "./pages/EmployeeFormPage";
 import ProjectsPage from "./pages/ProjectsPage";
 import ProjectFormPage from "./pages/ProjectFormPage";
@@ -43,6 +44,15 @@ const router = createBrowserRouter([
       {
         path: "/employees/:id",
         element: <EmployeeFormPage isEditing={true}></EmployeeFormPage>,
+        errorElement: (
+          <div className="flex justify-center items-center h-screen text-3xl font-bold">
+            Error 404
+          </div>
+        ),
+      },
+      {
+        path: "/employees/:id/detail",
+        element: <EmployeeDetailPage></EmployeeDetailPage>,
         errorElement: (
           <div className="flex justify-center items-center h-screen text-3xl font-bold">
             Error 404
