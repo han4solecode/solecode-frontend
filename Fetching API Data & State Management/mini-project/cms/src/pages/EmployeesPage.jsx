@@ -5,7 +5,11 @@ import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
 import PaginationBar from "../components/Fragments/PaginationBar";
-import { deleteEmployee, getAllEmployees } from "../services/employees.service";
+import {
+  deleteEmployee,
+  getAllEmployees,
+  getAllEmployeesNoPaging,
+} from "../services/employees.service";
 
 function EmployeesPage(props) {
   const {} = props;
@@ -20,6 +24,7 @@ function EmployeesPage(props) {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [perPage, setPerPage] = useState(3);
+  const [allEmployees, setAllEmployees] = useState([]);
 
   const tableHeader = [
     "ID",
@@ -34,14 +39,13 @@ function EmployeesPage(props) {
 
   useEffect(() => {
     setLoading(true);
-    getAllEmployees(perPage, page + 1)
+    Promise.all([getAllEmployees(perPage, page + 1), getAllEmployeesNoPaging()])
       .then((res) => {
-        if (res.status === 200) {
-          setEmployees(res.data);
-        }
+        setEmployees(res[0].data);
+        setAllEmployees(res[1].data);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err[0], err[1]);
       })
       .finally(() => {
         setLoading(false);
@@ -142,7 +146,10 @@ function EmployeesPage(props) {
         Add a New Employee
       </Button>
       <DataTable header={tableHeader} body={<TableBody />}></DataTable>
-      <PaginationBar pageCount={10} setPage={setPage}></PaginationBar>
+      <PaginationBar
+        pageCount={Math.ceil(allEmployees.length / perPage)}
+        setPage={setPage}
+      ></PaginationBar>
     </PageLayout>
   );
 }
