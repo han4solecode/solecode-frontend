@@ -93,6 +93,11 @@ function ProjectsPage(props) {
             <td>{proj.deptnoNavigation.deptname}</td>
             <td className="flex gap-2 justify-center">
               <Button
+                onClick={() => navigate(`/projects/${proj.projno}/detail`)}
+              >
+                Detail
+              </Button>
+              <Button
                 styleName="bg-green-700"
                 onClick={() => handleEditProjectButtonClick(proj.projno)}
               >

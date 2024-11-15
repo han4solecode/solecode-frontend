@@ -14,6 +14,7 @@ import EmployeesPage from "./pages/EmployeesPage";
 import EmployeeDetailPage from "./pages/EmployeeDetailPage";
 import EmployeeFormPage from "./pages/EmployeeFormPage";
 import ProjectsPage from "./pages/ProjectsPage";
+import ProjectDetailPage from "./pages/ProjectDetailPage";
 import ProjectFormPage from "./pages/ProjectFormPage";
 import AssignmentsPage from "./pages/AssignmentsPage";
 import AssignmentFormPage from "./pages/AssignmentFormPage";
@@ -88,6 +89,15 @@ const router = createBrowserRouter([
       {
         path: "/projects",
         element: <ProjectsPage></ProjectsPage>,
+      },
+      {
+        path: "/projects/:id/detail",
+        element: <ProjectDetailPage></ProjectDetailPage>,
+        errorElement: (
+          <div className="flex justify-center items-center h-screen text-3xl font-bold">
+            Error 404
+          </div>
+        ),
       },
       {
         path: "/projects/new",
