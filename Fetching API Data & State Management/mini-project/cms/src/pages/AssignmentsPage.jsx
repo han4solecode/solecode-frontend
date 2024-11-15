@@ -8,6 +8,7 @@ import PaginationBar from "../components/Fragments/PaginationBar";
 import {
   deleteAssignment,
   getAllAssignment,
+  getAllAssignmentsNoPaging,
 } from "../services/assignments.service";
 
 function AssignmentsPage(props) {
@@ -16,6 +17,7 @@ function AssignmentsPage(props) {
   const navigate = useNavigate();
 
   const [assignments, setAssignments] = useState([]);
+  const [allAssingments, setAllAssignments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [perPage, setPerPage] = useState(3);
@@ -30,14 +32,16 @@ function AssignmentsPage(props) {
 
   useEffect(() => {
     setLoading(true);
-    getAllAssignment(perPage, page + 1)
+    Promise.all([
+      getAllAssignment(perPage, page + 1),
+      getAllAssignmentsNoPaging(),
+    ])
       .then((res) => {
-        if (res.status === 200) {
-          setAssignments(res.data);
-        }
+        setAssignments(res[0].data);
+        setAllAssignments(res[1].data);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err[0], err[1]);
       })
       .finally(() => {
         setLoading(false);
@@ -166,7 +170,10 @@ function AssignmentsPage(props) {
         Add a New Assignment
       </Button>
       <DataTable header={tableHeader} body={<TableBody />}></DataTable>
-      <PaginationBar pageCount={10} setPage={setPage}></PaginationBar>
+      <PaginationBar
+        pageCount={Math.ceil(allAssingments.length / perPage)}
+        setPage={setPage}
+      ></PaginationBar>
     </PageLayout>
   );
 }
