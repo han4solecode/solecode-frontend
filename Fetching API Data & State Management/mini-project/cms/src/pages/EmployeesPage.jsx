@@ -75,6 +75,7 @@ function EmployeesPage(props) {
           if (res.status === 204) {
             alert(`Employee with EmpNo ${empNo} has been deleted successfully`);
           }
+          navigate(0);
         })
         .catch((err) => {
           console.log(err);

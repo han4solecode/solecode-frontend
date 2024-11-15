@@ -76,6 +76,7 @@ function DepartmentsPage(props) {
             alert(
               `Department with DeptNo ${deptNo} has been deleted successfully`
             );
+            navigate(0);
           }
         })
         .catch((err) => {

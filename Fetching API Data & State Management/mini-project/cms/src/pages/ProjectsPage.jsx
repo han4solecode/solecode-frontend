@@ -66,6 +66,7 @@ function ProjectsPage(props) {
             alert(
               `Project with projNo ${projNo} has been deleted successfully`
             );
+            navigate(0);
           }
         })
         .catch((err) => {

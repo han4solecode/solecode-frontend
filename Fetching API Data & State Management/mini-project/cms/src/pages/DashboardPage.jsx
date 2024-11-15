@@ -14,7 +14,7 @@ function DashboardPage(props) {
   const [departments, setDepartments] = useState([]);
   const [projects, setProjects] = useState([]);
   const [assignments, setAssignments] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setLoading(true);

@@ -83,6 +83,7 @@ function AssignmentsPage(props) {
             alert(
               `Assignment of employee empNo ${empNo} in project projNo ${projNo} has been deleted successfully`
             );
+            navigate(0);
           }
         })
         .catch((err) => {
