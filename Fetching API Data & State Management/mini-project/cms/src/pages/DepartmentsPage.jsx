@@ -8,6 +8,7 @@ import PaginationBar from "../components/Fragments/PaginationBar";
 import {
   deleteDepartment,
   getAllDepartment,
+  getAllDepartmentNoPaging,
 } from "../services/departments.service";
 
 function DepartmentsPage(props) {
@@ -20,6 +21,7 @@ function DepartmentsPage(props) {
   };
 
   const [departments, setDepartments] = useState([]);
+  const [allDepartments, setAllDepartments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
   const [perPage, setPerPage] = useState(3);
@@ -28,15 +30,20 @@ function DepartmentsPage(props) {
 
   useEffect(() => {
     setLoading(true);
-    const fetchDepartments = async (perPage, page) => {
-      const res = await getAllDepartment(perPage, page);
-      if (res.status === 200) {
-        setDepartments(res.data);
-        console.log(res.data);
+    Promise.all([
+      getAllDepartment(perPage, page + 1),
+      getAllDepartmentNoPaging(),
+    ])
+      .then((res) => {
+        setDepartments(res[0].data);
+        setAllDepartments(res[1].data);
+      })
+      .catch((err) => {
+        console.log(err[0], err[1]);
+      })
+      .finally(() => {
         setLoading(false);
-      }
-    };
-    fetchDepartments(perPage, page + 1);
+      });
   }, []);
 
   useEffect(() => {
@@ -144,7 +151,10 @@ function DepartmentsPage(props) {
         Add a New Department
       </Button>
       <DataTable header={tableHeader} body={<TableBody />}></DataTable>
-      <PaginationBar pageCount={10} setPage={setPage}></PaginationBar>
+      <PaginationBar
+        pageCount={Math.ceil(allDepartments.length / perPage)}
+        setPage={setPage}
+      ></PaginationBar>
     </PageLayout>
   );
 }
