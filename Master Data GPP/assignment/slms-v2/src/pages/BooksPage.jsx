@@ -3,9 +3,10 @@ import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
 import PaginationBar from "../components/Fragments/PaginationBar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllBooks, deleteBook } from "../services/books.service";
+import { deleteBook, searchBooks } from "../services/books.service";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
 
 function BooksPage(props) {
   const {} = props;
@@ -16,38 +17,26 @@ function BooksPage(props) {
     navigate("/books/add");
   };
 
-  const [books, setBooks] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [paginatedBooks, setPaginatedBooks] = useState([]);
-  const [page, setPage] = useState(0);
-  const perPage = 5;
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(2);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  let ths = ["ID", "Title", "Author", "Publication Date", "ISBN", "Action"];
+  const fetchBooks = async ({ pageNumber, pageSize, searchQuery }) => {
+    const { data } = await searchBooks({
+      pageNumber: pageNumber,
+      pageSize: pageSize,
+      keyword: searchQuery,
+    });
+    return data;
+  };
 
-  useEffect(() => {
-    setIsLoading(true);
-    const fetchBooks = async () => {
-      const books = await getAllBooks();
-      if (books) {
-        setBooks(books);
-        setIsLoading(false);
-        setPaginatedBooks(
-          books.filter((item, index) => {
-            return (index >= page * perPage) & (index < (page + 1) * perPage);
-          })
-        );
-      }
-    };
-    fetchBooks();
-  }, []);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["books", pageNumber, pageSize, searchQuery],
+    queryFn: () => fetchBooks({ pageNumber, pageSize, searchQuery }),
+    placeholderData: keepPreviousData,
+  });
 
-  useEffect(() => {
-    setPaginatedBooks(
-      books.filter((item, index) => {
-        return (index >= page * perPage) & (index < (page + 1) * perPage);
-      })
-    );
-  }, [page]);
+  let ths = ["ID", "Title", "Author", "Category", "ISBN", "Action"];
 
   const handleEditBookButtonClick = (id) => {
     navigate(`/books/edit/${id}`);
@@ -67,29 +56,36 @@ function BooksPage(props) {
     }
   };
 
+  const handleSearchClick = (e) => {
+    e.preventDefault();
+
+    setSearchQuery(e.target.value);
+    setPageNumber(1);
+  };
+
   const TableBody = () => {
-    return books.length !== 0 ? (
+    return data.total !== 0 ? (
       <tbody>
-        {paginatedBooks.map((book) => (
+        {data.data.map((book) => (
           <tr
-            key={book.bookid}
+            key={book.id}
             className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
           >
-            <td>{book.bookid}</td>
+            <td>{book.id}</td>
             <td>{book.title}</td>
             <td>{book.author}</td>
-            <td>{book.publicationyear}</td>
+            <td>{book.category}</td>
             <td>{book.isbn}</td>
             <td className="flex gap-2 justify-center">
               <Button
                 styleName="bg-green-700"
-                onClick={() => handleEditBookButtonClick(book.bookid)}
+                onClick={() => handleEditBookButtonClick(book.id)}
               >
                 Edit
               </Button>
               <Button
                 styleName="bg-red-700"
-                onClick={() => handleDeleteBook(book.bookid)}
+                onClick={() => handleDeleteBook(book.id)}
               >
                 Delete
               </Button>
@@ -120,13 +116,38 @@ function BooksPage(props) {
 
   return (
     <PageLayout pageTitle="Books Page">
-      <Button onClick={handleAddBookButtonClick} type="button">
-        Add a New Book
-      </Button>
+      <div className="flex justify-between items-center">
+        <Button onClick={handleAddBookButtonClick} type="button">
+          Add a New Book
+        </Button>
+        <div className="flex gap-4 items-center">
+          <div>
+            <label htmlFor="pageSize">Items per page: </label>
+            <input
+              type="number"
+              className="w-10"
+              min="0"
+              value={pageSize}
+              onChange={(e) => setPageSize(e.target.value)}
+            />
+          </div>
+          <div className="space-x-1">
+            <label htmlFor="searchQuery">Search: </label>
+            <input
+              type="text"
+              className="w-30 border border-gray-800 rounded p-1"
+              value={searchQuery}
+              onChange={handleSearchClick}
+              placeholder=""
+            />
+          </div>
+        </div>
+      </div>
       <DataTable header={ths} body={<TableBody />}></DataTable>
       <PaginationBar
-        pageCount={Math.ceil(books.length / perPage)}
-        setPage={setPage}
+        pageCount={Math.ceil(data.total / pageSize)}
+        currentPage={pageNumber}
+        setPage={setPageNumber}
       ></PaginationBar>
     </PageLayout>
   );
