@@ -6,7 +6,11 @@ import PaginationBar from "../components/Fragments/PaginationBar";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { deleteBook, searchBooks } from "../services/books.service";
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import {
+  useQuery,
+  keepPreviousData,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
 
 function BooksPage(props) {
   const {} = props;
@@ -18,25 +22,43 @@ function BooksPage(props) {
   };
 
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(2);
+  const [pageSize, setPageSize] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortField, setSortField] = useState("id");
+  const [sortOrder, setSortOrder] = useState("asc");
 
-  const fetchBooks = async ({ pageNumber, pageSize, searchQuery }) => {
+  const fetchBooks = async ({
+    pageNumber,
+    pageSize,
+    searchQuery,
+    sortField,
+    sortOrder,
+  }) => {
     const { data } = await searchBooks({
       pageNumber: pageNumber,
       pageSize: pageSize,
       keyword: searchQuery,
+      sortBy: sortField,
+      sortOrder: sortOrder,
     });
     return data;
   };
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["books", pageNumber, pageSize, searchQuery],
-    queryFn: () => fetchBooks({ pageNumber, pageSize, searchQuery }),
+    queryKey: [
+      "books",
+      pageNumber,
+      pageSize,
+      searchQuery,
+      sortField,
+      sortOrder,
+    ],
+    queryFn: () =>
+      fetchBooks({ pageNumber, pageSize, searchQuery, sortField, sortOrder }),
     placeholderData: keepPreviousData,
   });
 
-  let ths = ["ID", "Title", "Author", "Category", "ISBN", "Action"];
+  let ths = ["ID", "Title", "Author", "ISBN", "Action"];
 
   const handleEditBookButtonClick = (id) => {
     navigate(`/books/edit/${id}`);
@@ -63,6 +85,18 @@ function BooksPage(props) {
     setPageNumber(1);
   };
 
+  const handleSort = (field) => {
+    if (field === sortField) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
+    }
+  };
+
+  console.log(`sort order: ${sortOrder}`);
+  console.log(`sort field: ${sortField}`);
+
   const TableBody = () => {
     return data.total !== 0 ? (
       <tbody>
@@ -74,7 +108,7 @@ function BooksPage(props) {
             <td>{book.id}</td>
             <td>{book.title}</td>
             <td>{book.author}</td>
-            <td>{book.category}</td>
+            {/* <td>{book.category}</td> */}
             <td>{book.isbn}</td>
             <td className="flex gap-2 justify-center">
               <Button
@@ -143,7 +177,13 @@ function BooksPage(props) {
           </div>
         </div>
       </div>
-      <DataTable header={ths} body={<TableBody />}></DataTable>
+      <DataTable
+        header={ths}
+        body={<TableBody />}
+        handleSort={handleSort}
+        sortField={sortField}
+        sortOrder={sortOrder}
+      ></DataTable>
       <PaginationBar
         pageCount={Math.ceil(data.total / pageSize)}
         currentPage={pageNumber}
