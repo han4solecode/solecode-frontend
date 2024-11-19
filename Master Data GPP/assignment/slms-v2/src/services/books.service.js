@@ -11,23 +11,9 @@ export const getAllBooks = async () => {
   }
 };
 
-export const searchBooks = async (
-  pageNumber,
-  PageSize,
-  keyword,
-  sortBy,
-  sortOrder,
-  title,
-  author,
-  isbn
-) => {
+export const searchBooks = async (params) => {
   try {
-    const res = await axios.get(
-      `/api/book/s?pageNumber=${pageNumber}&pageSize=${PageSize}&keyword=${keyword}&sortBy=${sortBy}&sortOrder=${sortOrder}&title=${title}&author=${author}&isbn=${isbn}`
-    );
-    console.log(res.data);
-    const data = res.data;
-    return data;
+    return await axios.get(`/api/book/s`, { params });
   } catch (error) {
     console.log(`Error: ${error}`);
   }
