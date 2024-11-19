@@ -14,7 +14,7 @@ function DataTable(props) {
                   className="p-3 text-sm font-semibold tracking-wide"
                   key={key}
                 >
-                  <div className="flex justify-center items-center space-x-2">
+                  <div className="flex justify-center items-center gap-1">
                     {th}
                     <button onClick={() => handleSort(th.toLowerCase())}>
                       <SortIcon
