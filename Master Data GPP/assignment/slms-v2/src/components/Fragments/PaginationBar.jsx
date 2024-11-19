@@ -2,7 +2,7 @@ import ReactPaginate from "react-paginate";
 import { BsChevronLeft, BsChevronRight } from "react-icons/bs";
 
 function PaginationBar(props) {
-  const { pageCount, setPage } = props;
+  const { pageCount, currentPage, setPage } = props;
   return (
     <div>
       <ReactPaginate
@@ -26,7 +26,8 @@ function PaginationBar(props) {
         containerClassName="flex items-center justify-center mt-8 mb-4 space-x-2"
         pageClassName="block border border-gray-800  hover:bg-gray-800 hover:text-white w-10 h-10 flex items-center justify-center rounded-md"
         activeClassName="bg-gray-800 text-white"
-        onPageChange={(e) => setPage(e.selected)}
+        onPageChange={(e) => setPage(e.selected + 1)}
+        forcePage={currentPage - 1}
       />
     </div>
   );
