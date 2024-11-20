@@ -175,6 +175,11 @@ function BooksPage(props) {
               placeholder=""
             />
           </div>
+          <div>
+            <Button onClick={() => navigate("/books/search")}>
+              Advance Search
+            </Button>
+          </div>
         </div>
       </div>
       <DataTable
