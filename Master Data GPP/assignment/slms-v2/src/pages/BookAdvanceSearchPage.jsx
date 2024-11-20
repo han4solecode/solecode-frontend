@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { searchBooks } from "../services/books.service";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -11,8 +10,6 @@ import PaginationBar from "../components/Fragments/PaginationBar";
 
 function BookAdvanceSearchPage(props) {
   const {} = props;
-
-  const navigate = useNavigate();
 
   const initialFilterQuery = {
     title: "",
@@ -70,6 +67,9 @@ function BookAdvanceSearchPage(props) {
   };
 
   const handleSearchButtonClick = () => {
+    if (!selectedFilter) {
+      setSearchQuery(searchInput);
+    }
     setFilterQuery({ ...filterQuery, [selectedFilter]: searchInput });
     setPageNumber(1);
   };
@@ -142,6 +142,7 @@ function BookAdvanceSearchPage(props) {
                 isbn={book.isbn}
                 category={book.category}
                 to={`/books/detail/${book.id}`}
+                key={book.id}
               ></BookSearchResultCard>
             ))}
           </div>
