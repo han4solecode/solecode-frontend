@@ -1,8 +1,10 @@
 import axios from "axios";
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (recordsPerPage, currentPage) => {
   try {
-    const res = await axios.get("/api/user");
+    const res = await axios.get(
+      `/api/user?recordsPerPage=${recordsPerPage}&currentPage=${currentPage}`
+    );
     console.log(res.data);
     const data = res.data;
     return data;

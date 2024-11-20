@@ -19,32 +19,32 @@ function MembersPage(props) {
   const [members, setMembers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [paginatedMembers, setPaginatedMembers] = useState([]);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const perPage = 5;
 
   let ths = ["Member ID", "Full Name", "Email", "Address", "Action"];
 
   useEffect(() => {
     setIsLoading(true);
-    const fetchMembers = async () => {
-      const members = await getAllUsers();
+    const fetchMembers = async (perPage, page) => {
+      const members = await getAllUsers(perPage, page);
       if (members) {
         setMembers(members);
         setIsLoading(false);
         setPaginatedMembers(
           members.filter((item, index) => {
-            return (index >= page * perPage) & (index < (page + 1) * perPage);
+            return (index >= page * perPage) & (index < page * perPage);
           })
         );
       }
     };
-    fetchMembers();
+    fetchMembers(perPage, page);
   }, []);
 
   useEffect(() => {
     setPaginatedMembers(
       members.filter((item, index) => {
-        return (index >= page * perPage) & (index < (page + 1) * perPage);
+        return (index >= page * perPage) & (index < page * perPage);
       })
     );
   }, [page]);
@@ -74,25 +74,27 @@ function MembersPage(props) {
   const TableBody = () => {
     return members.length !== 0 ? (
       <tbody>
-        {paginatedMembers.map((member) => (
+        {members.map((member) => (
           <tr
-            key={member.userid}
+            key={member.id}
             className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
           >
-            <td>{member.userid}</td>
-            <td>{member.name}</td>
+            <td>{member.id}</td>
+            <td>
+              {member.firstName} {member.lastName}
+            </td>
             <td>{member.email}</td>
             <td>{member.address}</td>
             <td className="space-x-2">
               <Button
                 styleName="bg-green-700"
-                onClick={() => handleEditMemberButtonClick(member.userid)}
+                onClick={() => handleEditMemberButtonClick(member.id)}
               >
                 Edit
               </Button>
               <Button
                 styleName="bg-red-700"
-                onClick={() => handleDeleteMember(member.userid)}
+                onClick={() => handleDeleteMember(member.id)}
               >
                 Delete
               </Button>
@@ -130,6 +132,7 @@ function MembersPage(props) {
       <PaginationBar
         pageCount={Math.ceil(members.length / perPage)}
         setPage={setPage}
+        currentPage={page}
       ></PaginationBar>
     </PageLayout>
   );
