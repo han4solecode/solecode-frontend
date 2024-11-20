@@ -9,11 +9,13 @@ import "./index.css";
 import MainLayout from "./components/Layouts/MainLayout";
 import HomePage from "./pages/HomePage";
 import BooksPage from "./pages/BooksPage";
+import BookAdvanceSearchPage from "./pages/BookAdvanceSearchPage";
 import BookFormPage from "./pages/BookFormPage";
 import MembersPage from "./pages/MembersPage";
 import MemberFormPage from "./pages/MemberFormPage";
 import BorrowPage from "./pages/BorrowPage";
 import ReturnPage from "./pages/ReturnPage";
+// import InfiniteScrollList from "./pages/InfiniteScrollList";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +30,10 @@ const router = createBrowserRouter([
       {
         path: "/books",
         element: <BooksPage></BooksPage>,
+      },
+      {
+        path: "/books/search",
+        element: <BookAdvanceSearchPage></BookAdvanceSearchPage>,
       },
       {
         path: "/books/add",
@@ -59,6 +65,10 @@ const router = createBrowserRouter([
       },
     ],
   },
+  // {
+  //   path: "/inf",
+  //   element: <BookSearchResultCard></BookSearchResultCard>,
+  // },
 ]);
 
 const queryClient = new QueryClient();
