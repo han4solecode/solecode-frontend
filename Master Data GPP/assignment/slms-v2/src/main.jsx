@@ -9,6 +9,7 @@ import "./index.css";
 import MainLayout from "./components/Layouts/MainLayout";
 import HomePage from "./pages/HomePage";
 import BooksPage from "./pages/BooksPage";
+import BookDetailPage from "./pages/BookDetailPage";
 import BookAdvanceSearchPage from "./pages/BookAdvanceSearchPage";
 import BookFormPage from "./pages/BookFormPage";
 import MembersPage from "./pages/MembersPage";
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: "/books",
         element: <BooksPage></BooksPage>,
+      },
+      {
+        path: "/books/detail/:id",
+        element: <BookDetailPage></BookDetailPage>,
       },
       {
         path: "/books/search",
