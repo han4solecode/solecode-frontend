@@ -69,3 +69,13 @@ export const deleteEmployee = async (employeeId) => {
     console.log(`Error: ${error}`);
   }
 };
+
+export const deactivateEmployee = async (employeeId, reason) => {
+  try {
+    const res = await axios.patch(`/api/employee/${employeeId}`, reason);
+    console.log(res);
+    return res;
+  } catch (error) {
+    console.log(`Error: ${error}`);
+  }
+};
