@@ -1,14 +1,15 @@
 import SortIcon from "../Elements/SortIcon";
 
 function DataTable(props) {
-  const { header, body, sortField, sortOrder, handleSort } = props;
+  const { header, body, sortField, sortOrder, handleSort, enableSorting } =
+    props;
 
   return (
     <table className="my-3 shadow-lg rouned table-fixed">
       <thead className="bg-gray-800 text-white">
         <tr>
           {header.map((th, key) => {
-            if (th !== "Action") {
+            if (th !== "Action" && enableSorting === true) {
               return (
                 <th
                   className="p-3 text-sm font-semibold tracking-wide"
