@@ -72,7 +72,10 @@ export const deleteEmployee = async (employeeId) => {
 
 export const deactivateEmployee = async (employeeId, reason) => {
   try {
-    const res = await axios.patch(`/api/employee/${employeeId}`, reason);
+    const res = await axios.patch(
+      `/api/employee/${employeeId}/deactive`,
+      reason
+    );
     console.log(res);
     return res;
   } catch (error) {
