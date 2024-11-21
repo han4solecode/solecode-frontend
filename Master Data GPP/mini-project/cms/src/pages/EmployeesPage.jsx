@@ -24,6 +24,7 @@ function EmployeesPage(props) {
     position: "",
     level: "",
     employementtype: "",
+    status: "Active",
   };
 
   const filters = ["Name", "Department Name", "Position", "Level"];
@@ -88,7 +89,7 @@ function EmployeesPage(props) {
     placeholderData: keepPreviousData,
   });
 
-  // console.log(data);
+  console.log(data);
   // console.log(searchInput);
   // console.log(filterQuery);
 
@@ -154,6 +155,11 @@ function EmployeesPage(props) {
     setSearchQuery("");
     setSearchInput("");
     setSelectedFilter("");
+  };
+
+  const handleEmployeeStatusSelectChange = (e) => {
+    const { value } = e.target;
+    setFilterQuery({ ...filterQuery, status: value });
   };
 
   const TableBody = () => {
@@ -226,42 +232,55 @@ function EmployeesPage(props) {
       <Button onClick={handleAddEmployeeButtonClick} type="button">
         Add a New Employee
       </Button>
-      <div className="flex items-center gap-3">
-        <div>
-          <select
-            name="filter"
-            id="filter"
-            className="border rounded w-fit p-2 text-lg"
-            value={selectedFilter}
-            onChange={handleChangeFilter}
-          >
-            <option value="" disabled hidden>
-              Select Filter
-            </option>
-            {filters.map((filter, key) => (
-              <option value={filter.toLocaleLowerCase()} key={key}>
-                {filter}
+      <div className="flex flex-row items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div>
+            <select
+              name="filter"
+              id="filter"
+              className="border rounded w-fit p-2 text-lg"
+              value={selectedFilter}
+              onChange={handleChangeFilter}
+            >
+              <option value="" disabled hidden>
+                Select Filter
               </option>
-            ))}
+              {filters.map((filter, key) => (
+                <option value={filter.toLocaleLowerCase()} key={key}>
+                  {filter}
+                </option>
+              ))}
+            </select>
+          </div>
+          <FormInput
+            name="searchInput"
+            type="text"
+            onChange={(e) => handleSearchInputChange(e)}
+            value={searchInput}
+            placeholder="keyword"
+          ></FormInput>
+          <Button type="submit" onClick={handleSearchButtonClick}>
+            Search
+          </Button>
+          <Button
+            type="reset"
+            styleName="bg-gray-500"
+            onClick={handleResetButtonClick}
+          >
+            Reset
+          </Button>
+        </div>
+        <div className="">
+          <select
+            name="status"
+            id="status"
+            className="border rounded w-fit p-2 text-lg"
+            onChange={handleEmployeeStatusSelectChange}
+          >
+            <option value="Active">Active Employee</option>
+            <option value="Not Active">Inactive Employee</option>
           </select>
         </div>
-        <FormInput
-          name="searchInput"
-          type="text"
-          onChange={(e) => handleSearchInputChange(e)}
-          value={searchInput}
-          placeholder="keyword"
-        ></FormInput>
-        <Button type="submit" onClick={handleSearchButtonClick}>
-          Search
-        </Button>
-        <Button
-          type="reset"
-          styleName="bg-gray-500"
-          onClick={handleResetButtonClick}
-        >
-          Reset
-        </Button>
       </div>
       <DataTable
         header={tableHeader}
