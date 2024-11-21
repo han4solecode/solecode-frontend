@@ -12,6 +12,14 @@ export const getAllEmployees = async (recordsPerPage, currentPage) => {
   }
 };
 
+export const searchEmployees = async (params) => {
+  try {
+    return await axios.get(`/api/employee/s`, { params });
+  } catch (error) {
+    console.log(`Error: ${error}`);
+  }
+};
+
 export const getAllEmployeesNoPaging = async () => {
   try {
     const res = await axios.get(`/api/employee/all`);
