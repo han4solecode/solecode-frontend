@@ -23,7 +23,7 @@ function PaginationBar(props) {
         }
         pageRangeDisplayed={3}
         pageCount={pageCount}
-        containerClassName="flex items-center justify-center mt-8 mb-4 space-x-2"
+        containerClassName="flex items-start justify-center mt-3 mb-3 space-x-2"
         pageClassName="block border border-gray-800  hover:bg-gray-800 hover:text-white w-10 h-10 flex items-center justify-center rounded-md"
         activeClassName="bg-gray-800 text-white"
         onPageChange={(e) => setPage(e.selected + 1)}
