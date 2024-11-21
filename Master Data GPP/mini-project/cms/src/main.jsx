@@ -10,6 +10,7 @@ import MainLayout from "./components/Layouts/MainLayout";
 import DashboardPage from "./pages/DashboardPage";
 import DepartmentsPage from "./pages/DepartmentsPage";
 import DepartmentDetailPage from "./pages/DepartmentDetailPage";
+import EmployeeDeactivationFormPage from "./pages/EmployeeDeactivationFormPage";
 import DepartmentFormPage from "./pages/DepartmentFormPage";
 import EmployeesPage from "./pages/EmployeesPage";
 import EmployeeDetailPage from "./pages/EmployeeDetailPage";
@@ -55,6 +56,15 @@ const router = createBrowserRouter([
       {
         path: "/employees/:id/detail",
         element: <EmployeeDetailPage></EmployeeDetailPage>,
+        errorElement: (
+          <div className="flex justify-center items-center h-screen text-3xl font-bold">
+            Error 404
+          </div>
+        ),
+      },
+      {
+        path: "/employees/:id/deactivate",
+        element: <EmployeeDeactivationFormPage></EmployeeDeactivationFormPage>,
         errorElement: (
           <div className="flex justify-center items-center h-screen text-3xl font-bold">
             Error 404
