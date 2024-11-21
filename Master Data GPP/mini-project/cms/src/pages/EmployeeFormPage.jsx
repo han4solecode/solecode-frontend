@@ -35,6 +35,7 @@ function EmployeeFormPage(props) {
     salary: "",
     supervisorempno: "",
     level: "",
+    // status: "",
   };
 
   const [formValues, setFormValues] = useState(initialValues);
@@ -70,6 +71,7 @@ function EmployeeFormPage(props) {
           if (res.status === 200) {
             setFormValues(res.data);
           }
+          console.log(res);
         })
         .catch((err) => {
           console.log(err);
@@ -229,6 +231,12 @@ function EmployeeFormPage(props) {
         let updatedEmployee = {
           ...formValues,
           deptno: Number(formValues.deptno),
+          salary: Number(formValues.salary),
+          supervisorempno:
+            formValues.supervisorempno === null
+              ? formValues.supervisorempno
+              : Number(formValues.supervisorempno),
+          level: Number(formValues.level),
         };
 
         updateEmployee(Number(id), updatedEmployee)
