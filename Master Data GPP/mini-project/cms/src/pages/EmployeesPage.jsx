@@ -89,7 +89,7 @@ function EmployeesPage(props) {
     placeholderData: keepPreviousData,
   });
 
-  console.log(data);
+  // console.log(data);
   // console.log(searchInput);
   // console.log(filterQuery);
 
@@ -151,7 +151,7 @@ function EmployeesPage(props) {
   };
 
   const handleResetButtonClick = () => {
-    setFilterQuery(initialFilterQuery);
+    setFilterQuery({ ...initialFilterQuery, status: filterQuery.status });
     setSearchQuery("");
     setSearchInput("");
     setSelectedFilter("");
@@ -276,6 +276,7 @@ function EmployeesPage(props) {
             id="status"
             className="border rounded w-fit p-2 text-lg"
             onChange={handleEmployeeStatusSelectChange}
+            value={filterQuery.status}
           >
             <option value="Active">Active Employee</option>
             <option value="Not Active">Inactive Employee</option>
