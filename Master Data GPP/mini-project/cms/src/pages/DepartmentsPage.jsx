@@ -23,17 +23,14 @@ function DepartmentsPage(props) {
   const [departments, setDepartments] = useState([]);
   const [allDepartments, setAllDepartments] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(0);
-  const [perPage, setPerPage] = useState(3);
+  const [page, setPage] = useState(1);
+  const [perPage, setPerPage] = useState(5);
 
   const tableHeader = ["ID", "Department Name", "Manager", "Action"];
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([
-      getAllDepartment(perPage, page + 1),
-      getAllDepartmentNoPaging(),
-    ])
+    Promise.all([getAllDepartment(perPage, page), getAllDepartmentNoPaging()])
       .then((res) => {
         setDepartments(res[0].data);
         setAllDepartments(res[1].data);
@@ -55,7 +52,7 @@ function DepartmentsPage(props) {
         setLoading(false);
       }
     };
-    fetchDepartments(perPage, page + 1);
+    fetchDepartments(perPage, page);
   }, [page, perPage]);
 
   const handleDetailButtonClick = (id) => {
@@ -167,6 +164,7 @@ function DepartmentsPage(props) {
       <PaginationBar
         pageCount={Math.ceil(allDepartments.length / perPage)}
         setPage={setPage}
+        currentPage={page}
       ></PaginationBar>
     </PageLayout>
   );
