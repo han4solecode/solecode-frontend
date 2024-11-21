@@ -16,7 +16,7 @@ function FormInput(props) {
   } = props;
 
   return (
-    <div className="mb-3">
+    <div className="mb-3 w-full">
       <Label htmlFor={name} label={children}></Label>
       {!isTextarea ? (
         <Input
