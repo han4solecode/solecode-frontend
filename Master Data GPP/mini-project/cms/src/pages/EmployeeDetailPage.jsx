@@ -105,15 +105,32 @@ function EmployeeDetailPage(props) {
             <span>Home Address: {employee.address}</span>
           </div>
         </div>
+        {employee.status === "Not Active" ? (
+          <div className="border rounded p-1 border-gray-200 mb-2">
+            <div className="mb-2">
+              <span className="text-gray-600 text-lg">Deactivation Info</span>
+            </div>
+            <div className="flex flex-wrap items-center text-md justify-between text-gray-800">
+              <span>Deactivation Reason: {employee.deactreason}</span>
+              <span>Date of Deactivation: {employee.deactivatedAt}</span>
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
       <div className="space-x-2">
         <Button onClick={() => navigate("/employees")}>Go Back</Button>
-        <Button
-          styleName="bg-red-600"
-          onClick={() => navigate(`/employees/${employee.empno}/deactivate`)}
-        >
-          Deactivate
-        </Button>
+        {employee.status === "Active" ? (
+          <Button
+            styleName="bg-red-600"
+            onClick={() => navigate(`/employees/${employee.empno}/deactivate`)}
+          >
+            Deactivate
+          </Button>
+        ) : (
+          ""
+        )}
       </div>
     </PageLayout>
   );
