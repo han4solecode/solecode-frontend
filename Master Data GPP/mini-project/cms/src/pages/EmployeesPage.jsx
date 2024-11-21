@@ -1,15 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Button from "../components/Elements/Button";
 import DataTable from "../components/Fragments/DataTable";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
 import PaginationBar from "../components/Fragments/PaginationBar";
-import {
-  deleteEmployee,
-  getAllEmployees,
-  getAllEmployeesNoPaging,
-} from "../services/employees.service";
+import { deleteEmployee, searchEmployees } from "../services/employees.service";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import FormInput from "../components/Fragments/FormInput";
 
 function EmployeesPage(props) {
   const {} = props;
@@ -20,49 +18,79 @@ function EmployeesPage(props) {
     navigate("/employees/new");
   };
 
-  const [employees, setEmployees] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(0);
-  const [perPage, setPerPage] = useState(3);
-  const [allEmployees, setAllEmployees] = useState([]);
+  const initialFilterQuery = {
+    name: "",
+    departmentname: "",
+    position: "",
+    level: "",
+    employementtype: "",
+  };
+
+  const filters = ["Name", "Department Name", "Position", "Level"];
+
+  const [pageNumber, setPageNumber] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortField, setSortField] = useState("empNo");
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [selectedFilter, setSelectedFilter] = useState("");
+  const [filterQuery, setFilterQuery] = useState(initialFilterQuery);
+  const [searchInput, setSearchInput] = useState("");
 
   const tableHeader = [
-    "ID",
-    "Full Name",
-    "Address",
-    "DOB",
-    "Sex",
-    "Position",
+    "Employee Name",
     "Department",
+    "Job Position",
+    "Level",
+    "Employement Type",
+    "Last Update Date",
     "Action",
   ];
 
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([getAllEmployees(perPage, page + 1), getAllEmployeesNoPaging()])
-      .then((res) => {
-        setEmployees(res[0].data);
-        setAllEmployees(res[1].data);
-      })
-      .catch((err) => {
-        console.log(err[0], err[1]);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  const fetchEmployees = async ({
+    pageNumber,
+    pageSize,
+    searchQuery,
+    sortField,
+    sortOrder,
+    filterQuery,
+  }) => {
+    const { data } = await searchEmployees({
+      pageNumber: pageNumber,
+      pageSize: pageSize,
+      keyword: searchQuery,
+      sortBy: sortField,
+      sortOrder: sortOrder,
+      ...filterQuery,
+    });
+    return data;
+  };
 
-  useEffect(() => {
-    const fetchEmployees = async (perPage, page) => {
-      const res = await getAllEmployees(perPage, page);
-      if (res.status === 200) {
-        console.log(res.data);
-        setEmployees(res.data);
-        setLoading(false);
-      }
-    };
-    fetchEmployees(perPage, page + 1);
-  }, [page, perPage]);
+  const { data, isLoading, isError } = useQuery({
+    queryKey: [
+      "employees",
+      pageNumber,
+      pageSize,
+      searchQuery,
+      sortField,
+      sortOrder,
+      filterQuery,
+    ],
+    queryFn: () =>
+      fetchEmployees({
+        pageNumber,
+        pageSize,
+        searchQuery,
+        sortField,
+        sortOrder,
+        filterQuery,
+      }),
+    placeholderData: keepPreviousData,
+  });
+
+  // console.log(data);
+  // console.log(searchInput);
+  // console.log(filterQuery);
 
   const handleEditEmployeeButtonClick = (id) => {
     navigate(`/employees/${id}`);
@@ -88,23 +116,62 @@ function EmployeesPage(props) {
     }
   };
 
+  const handleSort = (field) => {
+    if (field === sortField) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
+    }
+  };
+
+  const handleChangeFilter = (e) => {
+    const { value } = e.target;
+    setFilterQuery(initialFilterQuery);
+    setSelectedFilter(value);
+    setSearchQuery("");
+    setSearchInput("");
+  };
+
+  const handleSearchInputChange = (e) => {
+    const { value } = e.target;
+    setSearchInput(value);
+  };
+
+  const handleSearchButtonClick = () => {
+    if (!selectedFilter) {
+      setSearchQuery(searchInput);
+    }
+    setFilterQuery({
+      ...filterQuery,
+      [selectedFilter.replaceAll(" ", "")]: searchInput,
+    });
+    setPageNumber(1);
+  };
+
+  const handleResetButtonClick = () => {
+    setFilterQuery(initialFilterQuery);
+    setSearchQuery("");
+    setSearchInput("");
+    setSelectedFilter("");
+  };
+
   const TableBody = () => {
-    return employees.length !== 0 ? (
+    return data.total !== 0 ? (
       <tbody>
-        {employees.map((emp) => (
+        {data.data.map((emp) => (
           <tr
             key={emp.empno}
             className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
           >
-            <td>{emp.empno}</td>
             <td>
               {emp.fname} {emp.lname}
             </td>
-            <td>{emp.address}</td>
-            <td>{emp.dob}</td>
-            <td>{emp.sex}</td>
-            <td>{emp.position}</td>
             <td>{emp.deptnoNavigation.deptname}</td>
+            <td>{emp.position}</td>
+            <td>{emp.level}</td>
+            <td>{emp.employmenttype}</td>
+            <td>{emp.updatedAt}</td>
             <td className="flex gap-2 justify-center">
               <Button
                 onClick={() => navigate(`/employees/${emp.empno}/detail`)}
@@ -138,7 +205,7 @@ function EmployeesPage(props) {
     );
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <LoadingAnimation></LoadingAnimation>
@@ -146,28 +213,83 @@ function EmployeesPage(props) {
     );
   }
 
+  if (isError) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <span className="text-2xl">Error Fetching Data</span>
+      </div>
+    );
+  }
+
   return (
     <PageLayout pageTitle="Employees">
-      <div className="flex justify-between items-center">
-        <Button onClick={handleAddEmployeeButtonClick} type="button">
-          Add a New Employee
-        </Button>
+      <Button onClick={handleAddEmployeeButtonClick} type="button">
+        Add a New Employee
+      </Button>
+      <div className="flex items-center gap-3">
         <div>
+          <select
+            name="filter"
+            id="filter"
+            className="border rounded w-fit p-2 text-lg"
+            value={selectedFilter}
+            onChange={handleChangeFilter}
+          >
+            <option value="" disabled hidden>
+              Select Filter
+            </option>
+            {filters.map((filter, key) => (
+              <option value={filter.toLocaleLowerCase()} key={key}>
+                {filter}
+              </option>
+            ))}
+          </select>
+        </div>
+        <FormInput
+          name="searchInput"
+          type="text"
+          onChange={(e) => handleSearchInputChange(e)}
+          value={searchInput}
+          placeholder="keyword"
+        ></FormInput>
+        <Button type="submit" onClick={handleSearchButtonClick}>
+          Search
+        </Button>
+        <Button
+          type="reset"
+          styleName="bg-gray-500"
+          onClick={handleResetButtonClick}
+        >
+          Reset
+        </Button>
+      </div>
+      <DataTable
+        header={tableHeader}
+        body={<TableBody />}
+        handleSort={handleSort}
+        sortField={sortField}
+        sortOrder={sortOrder}
+        enableSorting={true}
+      ></DataTable>
+      <div className="grid grid-cols-3 items-center">
+        <div className="">
           <label htmlFor="perPage">Items per page: </label>
           <input
             type="number"
             className="w-10"
             min="0"
-            value={perPage}
-            onChange={(e) => setPerPage(e.target.value)}
+            value={pageSize}
+            onChange={(e) => setPageSize(e.target.value)}
           />
         </div>
+        <div>
+          <PaginationBar
+            pageCount={Math.ceil(data.total / pageSize)}
+            currentPage={pageNumber}
+            setPage={setPageNumber}
+          ></PaginationBar>
+        </div>
       </div>
-      <DataTable header={tableHeader} body={<TableBody />}></DataTable>
-      <PaginationBar
-        pageCount={Math.ceil(allEmployees.length / perPage)}
-        setPage={setPage}
-      ></PaginationBar>
     </PageLayout>
   );
 }
