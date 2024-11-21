@@ -258,8 +258,8 @@ function EmployeeFormPage(props) {
           deptno: Number(formValues.deptno),
           salary: Number(formValues.salary),
           supervisorempno:
-            formValues.supervisorempno === null
-              ? formValues.supervisorempno
+            formValues.supervisorempno === ""
+              ? null
               : Number(formValues.supervisorempno),
           level: Number(formValues.level),
           status: "Active",
