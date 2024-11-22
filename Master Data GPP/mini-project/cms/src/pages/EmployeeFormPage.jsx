@@ -44,6 +44,16 @@ function EmployeeFormPage(props) {
   const [loading, setLoading] = useState(false);
   const [availableSupervisors, setAvailableSupervisors] = useState([]);
 
+  // employee dependent states
+  const initialEDValues = {
+    name: "",
+    dob: "",
+    sex: "",
+    relationship: "",
+  };
+  const [edFormValues, setEDFormValues] = useState(initialEDValues);
+  const [employeeDependents, setEmployeeDependents] = useState([]);
+
   useEffect(() => {
     setLoading(true);
     getAllDepartmentNoPaging()
@@ -70,6 +80,7 @@ function EmployeeFormPage(props) {
         .then((res) => {
           if (res.status === 200) {
             setFormValues(res.data);
+            setEmployeeDependents(res.data.empdependents);
           }
           console.log(res);
         })
@@ -89,7 +100,12 @@ function EmployeeFormPage(props) {
     getDepartmentById(Number(formValues.deptno))
       .then((res) => {
         // console.log(res.data);
-        setAvailableSupervisors(res.data.employees);
+        setAvailableSupervisors(
+          res.data.employees?.filter((emp) => {
+            return emp.status === "Active";
+          })
+        );
+        // setAvailableSupervisors(res.data.employees);
       })
       .catch((err) => {
         console.log(err);
@@ -111,7 +127,7 @@ function EmployeeFormPage(props) {
     }
   };
 
-  console.log(formValues);
+  console.log(availableSupervisors);
 
   const handleClearForm = (e) => {
     e.preventDefault();
@@ -237,6 +253,8 @@ function EmployeeFormPage(props) {
               ? formValues.supervisorempno
               : Number(formValues.supervisorempno),
           level: Number(formValues.level),
+          empdependents:
+            employeeDependents.length === 0 ? null : employeeDependents,
         };
 
         updateEmployee(Number(id), updatedEmployee)
@@ -263,6 +281,8 @@ function EmployeeFormPage(props) {
               : Number(formValues.supervisorempno),
           level: Number(formValues.level),
           status: "Active",
+          empdependents:
+            employeeDependents.length === 0 ? null : employeeDependents,
         };
         addEmployee(newEmployee)
           .then((res) => {
@@ -280,6 +300,34 @@ function EmployeeFormPage(props) {
       }
     }
   };
+
+  const handleEDInputChange = (e) => {
+    const { name, value } = e.target;
+    setEDFormValues({ ...edFormValues, [name]: value });
+  };
+
+  const handleClearEDForm = (e) => {
+    e.preventDefault();
+    setEDFormValues(initialEDValues);
+  };
+
+  const handleEDFormSubmit = (e) => {
+    e.preventDefault();
+    setEmployeeDependents([...employeeDependents, edFormValues]);
+    setEDFormValues(initialEDValues);
+  };
+
+  const handleRemoveEDButtonClick = (index, e) => {
+    e.preventDefault();
+    const newEDArray = [
+      ...employeeDependents.slice(0, index),
+      ...employeeDependents.slice(index + 1),
+    ];
+    setEmployeeDependents(newEDArray);
+  };
+
+  console.log(edFormValues);
+  console.log(employeeDependents);
 
   if (loading) {
     return (
@@ -518,9 +566,158 @@ function EmployeeFormPage(props) {
               <span className="text-red-600">No Supervisor Available</span>
             )}
           </div>
-          <div className="mt-3 space-x-2">
+          <div className="mb-3 w-full">
+            <div className="my-3">
+              <span className="text-xl font-semibold">
+                Add Employee Dependent
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <form autoComplete="off">
+                <FormInput
+                  name="name"
+                  type="text"
+                  onChange={(e) => handleEDInputChange(e)}
+                  value={edFormValues.name}
+                  // errorMessage={errors.email}
+                  // placeholder="example@email.com"
+                >
+                  Name
+                </FormInput>
+                <FormInput
+                  name="dob"
+                  type="date"
+                  onChange={(e) => handleEDInputChange(e)}
+                  value={edFormValues.dob}
+                  // errorMessage={errors.email}
+                  // placeholder="example@email.com"
+                >
+                  Date of Birth
+                </FormInput>
+                <div className="mb-3">
+                  <label
+                    htmlFor="sex"
+                    className="block text-black mb-2 text-lg text-semibold"
+                  >
+                    Sex
+                  </label>
+                  <div className="flex items-center ps-4">
+                    <input
+                      id="bordered-radio-1"
+                      type="radio"
+                      value="Male"
+                      name="sex"
+                      className="w-6 h-6"
+                      checked={edFormValues.sex === "Male"}
+                      onChange={(e) => handleEDInputChange(e)}
+                    />
+                    <label
+                      htmlFor="bordered-radio-1"
+                      className="w-full py-4 ms-2 text-lg font-medium"
+                    >
+                      Male
+                    </label>
+                  </div>
+                  <div className="flex items-center ps-4">
+                    <input
+                      id="bordered-radio-2"
+                      type="radio"
+                      value="Female"
+                      name="sex"
+                      className="w-6 h-6"
+                      checked={edFormValues.sex === "Female"}
+                      onChange={(e) => handleEDInputChange(e)}
+                    />
+                    <label
+                      htmlFor="bordered-radio-2"
+                      className="w-full py-4 ms-2 text-lg font-medium"
+                    >
+                      Female
+                    </label>
+                  </div>
+                  {/* {errors.sex && (
+                    <small className="text-red-600">{errors.sex}</small>
+                  )} */}
+                </div>
+                <FormInput
+                  name="relationship"
+                  type="text"
+                  onChange={(e) => handleEDInputChange(e)}
+                  value={edFormValues.relationship}
+                  // errorMessage={errors.email}
+                  // placeholder="example@email.com"
+                >
+                  Relationship
+                </FormInput>
+                <div className="mt-3 space-x-2">
+                  <Button type="submit" onClick={handleEDFormSubmit}>
+                    Add Dependent
+                  </Button>
+                  <Button
+                    type="reset"
+                    styleName="bg-gray-600"
+                    onClick={handleClearEDForm}
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </form>
+              <div>
+                <table className="shadow-lg rounded table-fixed w-full">
+                  <thead className="bg-gray-800 text-white">
+                    <tr>
+                      <th>No</th>
+                      <th>Name</th>
+                      <th>Date of Birth</th>
+                      <th>Sex</th>
+                      <th>Relationship</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  {employeeDependents.length !== 0 ? (
+                    <tbody>
+                      {employeeDependents.map((ed, index) => (
+                        <tr
+                          key={index}
+                          className="text-center align-middle odd:bg-white even:bg-slate-200 text-black"
+                        >
+                          <td>{index + 1}</td>
+                          <td>{ed.name}</td>
+                          <td>{ed.dob}</td>
+                          <td>{ed.sex}</td>
+                          <td>{ed.relationship}</td>
+                          <td>
+                            <Button
+                              styleName="bg-red-700"
+                              onClick={(e) =>
+                                handleRemoveEDButtonClick(index, e)
+                              }
+                            >
+                              Remove
+                            </Button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  ) : (
+                    <tbody>
+                      <tr className="bg-slate-500">
+                        <td
+                          colSpan="6"
+                          className="text-black text-center text-xl py-10"
+                        >
+                          No Employee Dependent Added
+                        </td>
+                      </tr>
+                    </tbody>
+                  )}
+                </table>
+              </div>
+            </div>
+          </div>
+          <div className="mt-3 space-x-2 flex justify-end">
             <Button type="submit" onClick={handleFormSubmit}>
-              {isEditing ? "Edit" : "Add"}
+              {isEditing ? "Edit" : "Add New Employee"}
             </Button>
             <Button
               type="reset"
