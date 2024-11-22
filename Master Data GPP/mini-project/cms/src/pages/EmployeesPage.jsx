@@ -160,6 +160,7 @@ function EmployeesPage(props) {
   const handleEmployeeStatusSelectChange = (e) => {
     const { value } = e.target;
     setFilterQuery({ ...filterQuery, status: value });
+    setPageNumber(1);
   };
 
   const TableBody = () => {
