@@ -26,7 +26,13 @@ function DepartmentsPage(props) {
   const [page, setPage] = useState(1);
   const [perPage, setPerPage] = useState(5);
 
-  const tableHeader = ["ID", "Department Name", "Manager", "Action"];
+  const tableHeader = [
+    "ID",
+    "Department Name",
+    "Manager",
+    "Location",
+    "Action",
+  ];
 
   useEffect(() => {
     setLoading(true);
@@ -103,6 +109,11 @@ function DepartmentsPage(props) {
               <td>
                 {dept.mgrempnoNavigation.fname} {dept.mgrempnoNavigation.lname}
               </td>
+            )}
+            {dept.locations.length !== 0 ? (
+              <td>{dept.locations[0].address}</td>
+            ) : (
+              <td className="text-red-500">Not Assigned Yet</td>
             )}
             <td className="flex gap-2 justify-center">
               <Button onClick={() => handleDetailButtonClick(dept.deptno)}>
