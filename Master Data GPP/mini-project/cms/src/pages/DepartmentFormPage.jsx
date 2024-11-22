@@ -88,6 +88,12 @@ function DepartmentFormPage(props) {
       errorMessages.deptname = "";
     }
 
+    if (!formValues.address.trim()) {
+      errorMessages.address = "Department address is required";
+    } else {
+      errorMessages.address = "";
+    }
+
     setErrors(errorMessages);
 
     let formValid = true;
