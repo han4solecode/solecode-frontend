@@ -20,6 +20,7 @@ function DepartmentFormPage(props) {
     // deptNo: 0,
     deptname: "",
     mgrempno: "",
+    address: "",
   };
 
   const [formValues, setFormValues] = useState(initialValues);
@@ -35,8 +36,13 @@ function DepartmentFormPage(props) {
       getDepartmentById(Number(id))
         .then((res) => {
           if (res.status === 200) {
-            // setDepartments(res.data);
-            setFormValues(res.data);
+            setFormValues({
+              ...res.data,
+              address:
+                res.data.locations.length === 0
+                  ? ""
+                  : res.data.locations[0].address,
+            });
             setEmployees(res.data.employees);
           }
         })
@@ -61,8 +67,9 @@ function DepartmentFormPage(props) {
     } else {
       setFormValues({ ...formValues, [name]: value });
     }
-    console.log(formValues);
   };
+
+  console.log(formValues);
 
   const handleClearForm = (e) => {
     e.preventDefault();
@@ -98,6 +105,7 @@ function DepartmentFormPage(props) {
             formValues.mgrempno === null
               ? formValues.mgrempno
               : Number(formValues.mgrempno),
+          locations: [{ address: formValues.address }],
         };
 
         updateDepartment(Number(id), updatedDepartment)
@@ -114,7 +122,10 @@ function DepartmentFormPage(props) {
             );
           });
       } else {
-        let newDepartment = { deptname: formValues.deptname };
+        let newDepartment = {
+          deptname: formValues.deptname,
+          locations: [{ address: formValues.address }],
+        };
         addDepartment(newDepartment)
           .then((res) => {
             if (res.status === 201) {
@@ -156,6 +167,16 @@ function DepartmentFormPage(props) {
             errorMessage={errors.deptname}
           >
             Department Name
+          </FormInput>
+          <FormInput
+            name="address"
+            type="text"
+            onChange={(e) => handleInputChange(e)}
+            value={formValues.address}
+            errorMessage={errors.address}
+            isTextarea={true}
+          >
+            Department Address
           </FormInput>
           <div className="mb-3">
             <label
