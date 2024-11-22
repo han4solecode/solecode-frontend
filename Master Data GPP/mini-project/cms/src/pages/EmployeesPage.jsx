@@ -128,7 +128,7 @@ function EmployeesPage(props) {
 
   const handleChangeFilter = (e) => {
     const { value } = e.target;
-    setFilterQuery(initialFilterQuery);
+    setFilterQuery({ ...initialFilterQuery, status: filterQuery.status });
     setSelectedFilter(value);
     setSearchQuery("");
     setSearchInput("");
