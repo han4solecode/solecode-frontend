@@ -12,7 +12,7 @@ const register = async (userData) => {
 const login = async (userData) => {
   try {
     const res = await api.post("/auth/login", userData);
-    if (res.data.token) {
+    if (res.data.user) {
       localStorage.setItem("user", JSON.stringify(res.data));
     }
     return res.data;
