@@ -26,7 +26,7 @@ function LoginPage(props) {
     }
 
     if (isSuccess || user) {
-      navigate("/profile");
+      navigate("/");
     }
     // if (isSuccess) {
     //   navigate("/profile");
