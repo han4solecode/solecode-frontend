@@ -8,5 +8,10 @@ export default defineConfig({
   //     "/api": "http://localhost:5167",
   //   },
   // },
+  // server: {
+  //   fs: {
+  //     cachedChecks: false,
+  //   },
+  // },
   plugins: [react()],
 });
