@@ -1,8 +1,9 @@
 import axios from "axios";
+import api from "../Api";
 
 export const getAllProjects = async (recordsPerPage, currentPage) => {
   try {
-    const res = await axios.get(
+    const res = await api.get(
       `/api/project?recordsPerPage=${recordsPerPage}&currentPage=${currentPage}`
     );
     console.log(res);
@@ -14,7 +15,7 @@ export const getAllProjects = async (recordsPerPage, currentPage) => {
 
 export const getAllProjectsNoPaging = async () => {
   try {
-    const res = await axios.get(`/api/project/all`);
+    const res = await api.get(`/api/project/all`);
     console.log(res);
     return res;
   } catch (error) {
@@ -24,7 +25,7 @@ export const getAllProjectsNoPaging = async () => {
 
 export const getProjectById = async (projectId) => {
   try {
-    const res = await axios.get(`/api/project/${projectId}`);
+    const res = await api.get(`/api/project/${projectId}`);
     console.log(res);
     return res;
   } catch (error) {
@@ -34,7 +35,7 @@ export const getProjectById = async (projectId) => {
 
 export const addProject = async (project) => {
   try {
-    const res = await axios.post("/api/project", project);
+    const res = await api.post("/api/project", project);
     console.log(res);
     return res;
   } catch (error) {
@@ -44,7 +45,7 @@ export const addProject = async (project) => {
 
 export const updateProject = async (projectId, updatedProject) => {
   try {
-    const res = await axios.put(`/api/project/${projectId}`, updatedProject);
+    const res = await api.put(`/api/project/${projectId}`, updatedProject);
     console.log(res);
     return res;
   } catch (error) {
@@ -54,7 +55,7 @@ export const updateProject = async (projectId, updatedProject) => {
 
 export const deleteProject = async (projectId) => {
   try {
-    const res = await axios.delete(`/api/project/${projectId}`);
+    const res = await api.delete(`/api/project/${projectId}`);
     console.log(res);
     return res;
   } catch (error) {

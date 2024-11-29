@@ -134,7 +134,7 @@ function ProjectsPage(props) {
 
   return (
     <PageLayout pageTitle="Projects">
-      <div className="flex justify-between items-center">
+      {/* <div className="flex justify-between items-center">
         <Button onClick={handleAddProjectButtonClick} type="button">
           Add a New Project
         </Button>
@@ -153,7 +153,7 @@ function ProjectsPage(props) {
       <PaginationBar
         pageCount={Math.ceil(allProjects.length / perPage)}
         setPage={setPage}
-      ></PaginationBar>
+      ></PaginationBar> */}
     </PageLayout>
   );
 }

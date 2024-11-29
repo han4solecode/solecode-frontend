@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import PageLayout from "../components/Layouts/PageLayout";
 import Card from "../components/Fragments/Card";
 import LoadingAnimation from "../components/Elements/LoadingAnimation";
@@ -9,6 +11,8 @@ import { getAllAssignmentsNoPaging } from "../services/assignments.service";
 
 function DashboardPage(props) {
   const {} = props;
+  const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -17,6 +21,12 @@ function DashboardPage(props) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log(user);
+
+    if (!user) {
+      navigate("/login");
+    }
+
     setLoading(true);
     Promise.all([
       getAllEmployeesNoPaging(),

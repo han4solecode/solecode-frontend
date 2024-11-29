@@ -2,11 +2,15 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Provider } from "react-redux";
+import { store } from "./store";
 
 import "./index.css";
 // import App from "./App.jsx";
 
 import MainLayout from "./components/Layouts/MainLayout";
+import LoginLayout from "./components/Layouts/LoginLayout";
+import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import DepartmentsPage from "./pages/DepartmentsPage";
 import DepartmentDetailPage from "./pages/DepartmentDetailPage";
@@ -21,11 +25,23 @@ import ProjectFormPage from "./pages/ProjectFormPage";
 import AssignmentsPage from "./pages/AssignmentsPage";
 import AssignmentFormPage from "./pages/AssignmentFormPage";
 import AssignmentDetailPage from "./pages/AssignmentDetailPage";
+import ProfilePage from "./pages/ProfilePage";
+import UnauthorizedPage from "./pages/UnauthorizedPage";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <MainLayout></MainLayout>,
+    // path: "/",
+    element: (
+      <MainLayout
+        allowedRoles={[
+          "Administrator",
+          "HR Manager",
+          "Department Manager",
+          "Employee Supervisor",
+          "Employee",
+        ]}
+      ></MainLayout>
+    ),
     errorElement: (
       <div className="flex justify-center items-center h-screen text-3xl font-bold">
         Error 404
@@ -33,123 +49,109 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "",
+        path: "/profile",
+        element: <ProfilePage></ProfilePage>,
+      },
+      {
+        path: "/dashboard",
         element: <DashboardPage></DashboardPage>,
       },
-      {
-        path: "/employees",
-        element: <EmployeesPage></EmployeesPage>,
-      },
+    ],
+  },
+  {
+    element: (
+      <MainLayout allowedRoles={["Administrator", "HR Manager"]}></MainLayout>
+    ),
+    children: [
       {
         path: "/employees/new",
-        element: <EmployeeFormPage></EmployeeFormPage>,
+        element: <EmployeeFormPage isEditing={false}></EmployeeFormPage>,
       },
       {
         path: "/employees/:id",
         element: <EmployeeFormPage isEditing={true}></EmployeeFormPage>,
-        errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl font-bold">
-            Error 404
-          </div>
-        ),
       },
-      {
-        path: "/employees/:id/detail",
-        element: <EmployeeDetailPage></EmployeeDetailPage>,
-        errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl font-bold">
-            Error 404
-          </div>
-        ),
-      },
-      {
-        path: "/employees/:id/deactivate",
-        element: <EmployeeDeactivationFormPage></EmployeeDeactivationFormPage>,
-        errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl font-bold">
-            Error 404
-          </div>
-        ),
-      },
+    ],
+  },
+  {
+    element: (
+      <MainLayout
+        allowedRoles={["Administrator", "Employee", "Employee Supervisor"]}
+      ></MainLayout>
+    ),
+    children: [
       {
         path: "/departments",
         element: <DepartmentsPage></DepartmentsPage>,
       },
-      {
-        path: "/departments/:id/detail",
-        element: <DepartmentDetailPage></DepartmentDetailPage>,
-        errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl font-bold">
-            Error 404
-          </div>
-        ),
-      },
-      {
-        path: "/departments/new",
-        element: <DepartmentFormPage></DepartmentFormPage>,
-      },
-      {
-        path: "/departments/:id",
-        element: <DepartmentFormPage isEditing={true}></DepartmentFormPage>,
-        errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl font-bold">
-            Error 404
-          </div>
-        ),
-      },
+    ],
+  },
+  {
+    element: (
+      <MainLayout
+        allowedRoles={[
+          "Administrator",
+          "Department Manager",
+          "Employee Supervisor",
+        ]}
+      ></MainLayout>
+    ),
+    children: [
       {
         path: "/projects",
         element: <ProjectsPage></ProjectsPage>,
       },
-      {
-        path: "/projects/:id/detail",
-        element: <ProjectDetailPage></ProjectDetailPage>,
-        errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl font-bold">
-            Error 404
-          </div>
-        ),
-      },
-      {
-        path: "/projects/new",
-        element: <ProjectFormPage></ProjectFormPage>,
-      },
-      {
-        path: "/projects/:id",
-        element: <ProjectFormPage isEditing={true}></ProjectFormPage>,
-        errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl font-bold">
-            Error 404
-          </div>
-        ),
-      },
+    ],
+  },
+  {
+    element: (
+      <MainLayout
+        allowedRoles={[
+          "Administrator",
+          "HR Manager",
+          "Department Manager",
+          "Employee Supervisor",
+          "Employee",
+        ]}
+      ></MainLayout>
+    ),
+    children: [
       {
         path: "/assignments",
         element: <AssignmentsPage></AssignmentsPage>,
       },
+    ],
+  },
+  {
+    element: (
+      <MainLayout
+        allowedRoles={[
+          "Administrator",
+          "HR Manager",
+          "Department Manager",
+          "Employee Supervisor",
+        ]}
+      ></MainLayout>
+    ),
+    children: [
       {
-        path: "/assignments/new",
-        element: <AssignmentFormPage></AssignmentFormPage>,
-      },
-      {
-        path: "/assignments/:empNo/:projNo",
-        element: <AssignmentFormPage isEditing={true}></AssignmentFormPage>,
-        errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl font-bold">
-            Error 404
-          </div>
-        ),
-      },
-      {
-        path: "/assignments/:empNo/:projNo/detail",
-        element: <AssignmentDetailPage></AssignmentDetailPage>,
-        errorElement: (
-          <div className="flex justify-center items-center h-screen text-3xl font-bold">
-            Error 404
-          </div>
-        ),
+        path: "/employees",
+        element: <EmployeesPage></EmployeesPage>,
       },
     ],
+  },
+  {
+    element: <LoginLayout></LoginLayout>,
+    children: [
+      {
+        path: "/login",
+        element: <LoginPage></LoginPage>,
+      },
+    ],
+  },
+  {
+    element: <UnauthorizedPage></UnauthorizedPage>,
+    path: "/unauthorized",
   },
 ]);
 
@@ -159,7 +161,9 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     {/* <App /> */}
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router}></RouterProvider>
+      <Provider store={store}>
+        <RouterProvider router={router}></RouterProvider>
+      </Provider>
     </QueryClientProvider>
   </StrictMode>
 );

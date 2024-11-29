@@ -1,8 +1,9 @@
 import axios from "axios";
+import api from "../Api";
 
 export const getAllEmployees = async (recordsPerPage, currentPage) => {
   try {
-    const res = await axios.get(
+    const res = await api.get(
       `/api/employee?recordsPerPage=${recordsPerPage}&currentPage=${currentPage}`
     );
     console.log(res);
@@ -21,8 +22,18 @@ export const searchEmployees = async (params) => {
 };
 
 export const getAllEmployeesNoPaging = async () => {
+  // try {
+  // } catch (error) {
+  //   console.log(`Error: ${error}`);
+  // }
+  const res = await axios.get(`/api/employee/all`);
+  console.log(res);
+  return res;
+};
+
+export const getEmployeeById = async (employeeId) => {
   try {
-    const res = await axios.get(`/api/employee/all`);
+    const res = await api.get(`/api/employee/${employeeId}`);
     console.log(res);
     return res;
   } catch (error) {
@@ -30,10 +41,9 @@ export const getAllEmployeesNoPaging = async () => {
   }
 };
 
-export const getEmployeeById = async (employeeId) => {
+export const getEmployeeProfile = async () => {
   try {
-    const res = await axios.get(`/api/employee/${employeeId}`);
-    console.log(res);
+    const res = await api.get("/api/employee/profile");
     return res;
   } catch (error) {
     console.log(`Error: ${error}`);
@@ -42,7 +52,7 @@ export const getEmployeeById = async (employeeId) => {
 
 export const addEmployee = async (employee) => {
   try {
-    const res = await axios.post("/api/employee", employee);
+    const res = await api.post("/api/employee", employee);
     console.log(res);
     return res;
   } catch (error) {
@@ -52,7 +62,7 @@ export const addEmployee = async (employee) => {
 
 export const updateEmployee = async (employeeId, updatedEmployee) => {
   try {
-    const res = await axios.put(`/api/employee/${employeeId}`, updatedEmployee);
+    const res = await api.put(`/api/employee/${employeeId}`, updatedEmployee);
     console.log(res);
     return res;
   } catch (error) {
@@ -62,7 +72,7 @@ export const updateEmployee = async (employeeId, updatedEmployee) => {
 
 export const deleteEmployee = async (employeeId) => {
   try {
-    const res = await axios.delete(`/api/employee/${employeeId}`);
+    const res = await api.delete(`/api/employee/${employeeId}`);
     console.log(res);
     return res;
   } catch (error) {
@@ -72,10 +82,7 @@ export const deleteEmployee = async (employeeId) => {
 
 export const deactivateEmployee = async (employeeId, reason) => {
   try {
-    const res = await axios.patch(
-      `/api/employee/${employeeId}/deactive`,
-      reason
-    );
+    const res = await api.patch(`/api/employee/${employeeId}/deactive`, reason);
     console.log(res);
     return res;
   } catch (error) {

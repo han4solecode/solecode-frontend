@@ -167,7 +167,7 @@ function AssignmentsPage(props) {
 
   return (
     <PageLayout pageTitle="Assignments">
-      <div className="flex justify-between items-center">
+      {/* <div className="flex justify-between items-center">
         <Button onClick={handleAddAssignmentButtonClick} type="button">
           Add a New Assignment
         </Button>
@@ -186,7 +186,7 @@ function AssignmentsPage(props) {
       <PaginationBar
         pageCount={Math.ceil(allAssingments.length / perPage)}
         setPage={setPage}
-      ></PaginationBar>
+      ></PaginationBar> */}
     </PageLayout>
   );
 }

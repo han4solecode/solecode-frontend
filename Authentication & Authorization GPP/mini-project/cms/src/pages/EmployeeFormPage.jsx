@@ -13,12 +13,19 @@ import {
   getAllDepartmentNoPaging,
   getDepartmentById,
 } from "../services/departments.service";
+import { useDispatch, useSelector } from "react-redux";
+import { register, reset } from "../slices/authSlice";
 
 function EmployeeFormPage(props) {
   const { isEditing } = props;
   const { id } = useParams();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
 
   const initialValues = {
     fname: "",
@@ -26,7 +33,7 @@ function EmployeeFormPage(props) {
     address: "",
     dob: "",
     sex: "",
-    position: "",
+    // position: "",
     deptno: "",
     ssn: "",
     phonenumber: "",
@@ -36,6 +43,8 @@ function EmployeeFormPage(props) {
     supervisorempno: "",
     level: "",
     // status: "",
+    username: "",
+    password: "",
   };
 
   const [formValues, setFormValues] = useState(initialValues);
@@ -55,18 +64,34 @@ function EmployeeFormPage(props) {
   const [employeeDependents, setEmployeeDependents] = useState([]);
 
   useEffect(() => {
+    if (isError) {
+      alert(message);
+    }
+
+    if (isSuccess) {
+      alert("A new employee has been created successfully");
+      navigate("/employees");
+    }
+
+    dispatch(reset());
+  }, [isError, isSuccess, message, navigate, dispatch]);
+
+  useEffect(() => {
     setLoading(true);
     getAllDepartmentNoPaging()
       .then((res) => {
-        if (res.status === 200) {
-          setDepartments(res.data);
-        }
+        // if (res.status === 200) {
+        // }
+        console.log(res);
+
+        setDepartments(res.data);
       })
       .catch((err) => {
         console.log(err);
         alert(
           `Error occurred. Please try again or contact admin. ERROR ${err}`
         );
+        navigate("/dashboard");
       })
       .finally(() => {
         setLoading(false);
@@ -97,22 +122,24 @@ function EmployeeFormPage(props) {
   }, []);
 
   useEffect(() => {
-    getDepartmentById(Number(formValues.deptno))
-      .then((res) => {
-        // console.log(res.data);
-        setAvailableSupervisors(
-          res.data.employees?.filter((emp) => {
-            return emp.status === "Active";
-          })
-        );
-        // setAvailableSupervisors(res.data.employees);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert(
-          `Error occurred. Please try again or contact admin. ERROR ${err}`
-        );
-      });
+    if (formValues.deptno !== 0) {
+      getDepartmentById(Number(formValues.deptno))
+        .then((res) => {
+          // console.log(res.data);
+          setAvailableSupervisors(
+            res.data.employees?.filter((emp) => {
+              return emp.status === "Active";
+            })
+          );
+          // setAvailableSupervisors(res.data.employees);
+        })
+        .catch((err) => {
+          console.log(err);
+          // alert(
+          //   `Error occurred. Please try again or contact admin. ERROR ${err}`
+          // );
+        });
+    }
   }, [formValues.deptno]);
 
   const handleInputChange = (e) => {
@@ -127,7 +154,7 @@ function EmployeeFormPage(props) {
     }
   };
 
-  console.log(availableSupervisors);
+  console.log(formValues);
 
   const handleClearForm = (e) => {
     e.preventDefault();
@@ -181,11 +208,11 @@ function EmployeeFormPage(props) {
       errorMessages.sex = "";
     }
 
-    if (!formValues.position) {
-      errorMessages.position = "Position is required";
-    } else {
-      errorMessages.position = "";
-    }
+    // if (!formValues.position) {
+    //   errorMessages.position = "Position is required";
+    // } else {
+    //   errorMessages.position = "";
+    // }
 
     if (!formValues.deptno) {
       errorMessages.deptno = "Department is required";
@@ -233,6 +260,28 @@ function EmployeeFormPage(props) {
       errorMessages.level = "";
     }
 
+    if (!formValues.username.trim()) {
+      errorMessages.username = "Username is required";
+    } else if (formValues.username.length > 50) {
+      errorMessages.username = "Username cannot exceed 50 characters";
+    } else {
+      errorMessages.username = "";
+    }
+
+    if (!formValues.password) {
+      errorMessages.password = "Passwword is required";
+    } else if (formValues.password.length < 8) {
+      errorMessages.password = "Passwword must be atleast 8 character long";
+    } else if (
+      !/[A-Z]/.test(formValues.password) ||
+      !/[a-z]/.test(formValues.password)
+    ) {
+      errorMessages.password =
+        "Passwword must contain uppercase and lowercase letter";
+    } else {
+      errorMessages.password = "";
+    }
+
     setErrors(errorMessages);
 
     let formValid = true;
@@ -278,25 +327,26 @@ function EmployeeFormPage(props) {
           supervisorempno:
             formValues.supervisorempno === ""
               ? null
-              : Number(formValues.supervisorempno),
+              : formValues.supervisorempno,
           level: Number(formValues.level),
           status: "Active",
-          empdependents:
-            employeeDependents.length === 0 ? null : employeeDependents,
+          empdependent:
+            employeeDependents.length === 0 ? [] : employeeDependents,
         };
-        addEmployee(newEmployee)
-          .then((res) => {
-            if (res.status === 201) {
-              alert("A new employee has been created successfully");
-              navigate("/employees");
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            alert(
-              `Error occurred. Please try again or contact admin. ERROR ${err}`
-            );
-          });
+        // addEmployee(newEmployee)
+        //   .then((res) => {
+        //     if (res.status === 201) {
+        //       alert("A new employee has been created successfully");
+        //       navigate("/employees");
+        //     }
+        //   })
+        //   .catch((err) => {
+        //     console.log(err);
+        //     alert(
+        //       `Error occurred. Please try again or contact admin. ERROR ${err}`
+        //     );
+        //   });
+        dispatch(register(newEmployee));
       }
     }
   };
@@ -343,6 +393,26 @@ function EmployeeFormPage(props) {
     >
       <div className="w-full">
         <form autoComplete="off">
+          <div className="flex gap-4">
+            <FormInput
+              name="username"
+              type="text"
+              onChange={(e) => handleInputChange(e)}
+              value={formValues.username}
+              errorMessage={errors.username}
+            >
+              Username
+            </FormInput>
+            <FormInput
+              name="password"
+              type="password"
+              onChange={(e) => handleInputChange(e)}
+              value={formValues.password}
+              errorMessage={errors.password}
+            >
+              Password
+            </FormInput>
+          </div>
           <div className="flex gap-4">
             <FormInput
               name="fname"
@@ -484,7 +554,7 @@ function EmployeeFormPage(props) {
             )}
           </div>
           <div className="flex items-center gap-4">
-            <FormInput
+            {/* <FormInput
               name="position"
               type="text"
               onChange={(e) => handleInputChange(e)}
@@ -492,7 +562,7 @@ function EmployeeFormPage(props) {
               errorMessage={errors.position}
             >
               Position
-            </FormInput>
+            </FormInput> */}
             <div className="mb-3 w-full">
               <label
                 htmlFor="employmenttype"
@@ -557,7 +627,7 @@ function EmployeeFormPage(props) {
                   Select Supervisor
                 </option>
                 {availableSupervisors.map((sup) => (
-                  <option value={sup.empno} key={sup.empno}>
+                  <option value={sup.id} key={sup.id}>
                     {sup.fname} {sup.lname}
                   </option>
                 ))}
@@ -717,7 +787,11 @@ function EmployeeFormPage(props) {
           </div>
           <div className="mt-3 space-x-2 flex justify-end">
             <Button type="submit" onClick={handleFormSubmit}>
-              {isEditing ? "Edit" : "Add New Employee"}
+              {isEditing
+                ? "Edit"
+                : isLoading
+                ? "Creating Employee..."
+                : "Add New Employee"}
             </Button>
             <Button
               type="reset"

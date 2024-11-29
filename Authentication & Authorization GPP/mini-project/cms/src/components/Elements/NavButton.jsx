@@ -9,7 +9,7 @@ function NavButton(props) {
       className={({ isActive }) => {
         return isActive
           ? "rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-900"
-          : "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white";
+          : "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-white hover:text-gray-900";
       }}
       aria-current="page"
     >
