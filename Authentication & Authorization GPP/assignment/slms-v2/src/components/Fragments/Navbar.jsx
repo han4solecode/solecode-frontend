@@ -2,12 +2,20 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../slices/authSlice";
 import Button from "../Elements/Button";
+import { useEffect, useState } from "react";
 
 function Navbar(props) {
   const {} = props;
-  const { user: currentUser } = useSelector((state) => state.auth);
+  const {
+    user: currentUser,
+    isError,
+    message,
+    isLoading,
+  } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [user, setUser] = useState({});
 
   const menuItems = [
     {
@@ -64,6 +72,11 @@ function Navbar(props) {
   //   }
   // }, [navigate, dispatch, currentUser]);
 
+  useEffect(() => {
+    console.log(currentUser);
+    setUser(currentUser);
+  }, [currentUser]);
+
   const isMenuVisible = (item) => {
     if (item.visibleForAll) {
       return true;
@@ -88,9 +101,14 @@ function Navbar(props) {
 
   const handleLogoutButtonClick = (e) => {
     e.preventDefault();
-
     dispatch(logout());
-    navigate("/");
+
+    if (isError) {
+      alert(message);
+      // navigate(0);
+    } else {
+      navigate("/");
+    }
   };
 
   return (
@@ -113,64 +131,26 @@ function Navbar(props) {
               {item.label}
             </NavLink>
           ))}
-          {/* <NavLink
-            to="/books"
-            className={({ isActive }) => {
-              return isActive
-                ? "rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-900"
-                : "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white";
-            }}
-            aria-current="page"
-          >
-            Books
-          </NavLink>
-          <NavLink
-            to="/members"
-            className={({ isActive }) => {
-              return isActive
-                ? "rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-900"
-                : "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white";
-            }}
-            aria-current="page"
-          >
-            Members
-          </NavLink>
-          <NavLink
-            to="/borrow"
-            className={({ isActive }) => {
-              return isActive
-                ? "rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-900"
-                : "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white";
-            }}
-            aria-current="page"
-          >
-            Borrow
-          </NavLink>
-          <NavLink
-            to="/return"
-            className={({ isActive }) => {
-              return isActive
-                ? "rounded-md bg-white px-3 py-2 text-sm font-medium text-gray-900"
-                : "rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white";
-            }}
-            aria-current="page"
-          >
-            Return
-          </NavLink> */}
         </div>
         <div className="space-x-4 flex items-center">
           <h1 className="text-lg text-white">{getCurrentDate()}</h1>
-          {currentUser && (
+          {user && (
             <h1 className="text-lg text-white">
-              Welcome, <strong>{currentUser.user?.userName}</strong>
+              Welcome, <strong>{user.user?.userName}</strong>
+              {/* Welcome,{" "}
+              <strong>
+                {currentUser && currentUser.user
+                  ? currentUser.user.userName
+                  : "Loading"}
+              </strong> */}
             </h1>
           )}
-          {currentUser && (
+          {user && (
             <Button
               onClick={handleLogoutButtonClick}
               styleName="bg-gray-900 text-white hover:bg-white hover:text-gray-900"
             >
-              Logout
+              {isLoading ? "Logging out..." : "Logout"}
             </Button>
           )}
         </div>

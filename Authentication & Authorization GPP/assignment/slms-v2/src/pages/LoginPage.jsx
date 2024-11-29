@@ -15,6 +15,7 @@ function LoginPage(props) {
   };
 
   const [formValues, setFormValues] = useState(initialValues);
+  const [errors, setErrors] = useState(initialValues);
 
   const { user, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.auth
@@ -26,12 +27,12 @@ function LoginPage(props) {
     }
 
     if (isSuccess || user) {
-      navigate("/");
+      navigate("/profile");
     }
     // if (isSuccess) {
     //   navigate("/profile");
     // }
-
+    setFormValues(initialValues);
     dispatch(reset());
   }, [user, isError, isSuccess, message, navigate, dispatch]);
 
@@ -45,7 +46,33 @@ function LoginPage(props) {
   const handleFormSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(login(formValues));
+    // validation
+    let errorMessages = {};
+
+    if (!formValues.username) {
+      errorMessages.username = "Username is required";
+    } else {
+      errorMessages.username = "";
+    }
+
+    if (!formValues.password) {
+      errorMessages.password = "Password is required";
+    } else {
+      errorMessages.password = "";
+    }
+
+    setErrors(errorMessages);
+
+    let formValid = true;
+    for (let propName in errorMessages) {
+      if (errorMessages[propName].length > 0) {
+        formValid = false;
+      }
+    }
+
+    if (formValid) {
+      dispatch(login(formValues));
+    }
   };
 
   //   if (isLoading) {
@@ -71,7 +98,7 @@ function LoginPage(props) {
               type="text"
               onChange={(e) => handleInputChange(e)}
               value={formValues.username}
-              //   errorMessage={errors.isbn}
+              errorMessage={errors.username}
             >
               Username
             </FormInput>
@@ -80,7 +107,7 @@ function LoginPage(props) {
               type="password"
               onChange={(e) => handleInputChange(e)}
               value={formValues.password}
-              //   errorMessage={errors.isbn}
+              errorMessage={errors.password}
             >
               Password
             </FormInput>
@@ -89,6 +116,7 @@ function LoginPage(props) {
                 type="submit"
                 disabled={isLoading}
                 onClick={handleFormSubmit}
+                styleName={isLoading ? "bg-gray-600" : "bg-gray-800"}
               >
                 {isLoading ? "Logging in..." : "Login"}
               </Button>
