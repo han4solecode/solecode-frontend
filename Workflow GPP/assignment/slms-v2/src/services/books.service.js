@@ -76,3 +76,8 @@ export const getBookRequestProcessById = async (id) => {
   const res = await api.get(`/api/book/request/${id}`);
   return res;
 };
+
+export const reviewBookRequest = async (reviewData) => {
+  const res = await api.post("/api/book/request/review", reviewData);
+  return res;
+};

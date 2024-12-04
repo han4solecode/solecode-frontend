@@ -157,7 +157,19 @@ function BookRequestListPage(props) {
             <td>{proc.bookRequestNavigation?.author}</td>
             <td>{proc.bookRequestNavigation?.isbn}</td>
             <td>{proc.bookRequestNavigation?.publisher}</td>
-            <td>{proc.status}</td>
+            <td>
+              <span
+                className={`text-sm font-medium me-2 px-2.5 py-0.5 rounded ${
+                  proc.status.includes("Pending")
+                    ? "bg-yellow-200 text-yellow-800"
+                    : proc.status.includes("Approve")
+                    ? "bg-green-200 text-green-800"
+                    : "bg-red-200 text-red-800"
+                }`}
+              >
+                {proc.status}
+              </span>
+            </td>
             <td className="flex justify-center p-1 items-center">
               <Button
                 onClick={() =>
