@@ -27,6 +27,7 @@ import AssignmentFormPage from "./pages/AssignmentFormPage";
 import AssignmentDetailPage from "./pages/AssignmentDetailPage";
 import ProfilePage from "./pages/ProfilePage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
+import RequestLeavePage from "./pages/RequestLeavePage";
 
 const router = createBrowserRouter([
   {
@@ -162,7 +163,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/employees/request/leave",
-        element: "Employee Leave Request Page",
+        element: <RequestLeavePage></RequestLeavePage>,
       },
     ],
   },
