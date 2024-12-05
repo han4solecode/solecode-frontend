@@ -5,7 +5,7 @@ function DataTable(props) {
     props;
 
   return (
-    <table className="my-3 shadow-lg rouned table-fixed">
+    <table className="my-3 shadow-lg rouned table-fixed min-w-full">
       <thead className="bg-gray-800 text-white">
         <tr>
           {header.map((th, key) => {
