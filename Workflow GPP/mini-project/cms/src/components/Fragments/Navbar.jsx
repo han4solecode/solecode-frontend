@@ -69,6 +69,16 @@ function Navbar(props) {
         "Employee",
       ],
     },
+    {
+      label: "Request Leave",
+      path: "/employees/request/leave",
+      visibleForRoles: ["Employee"],
+    },
+    {
+      label: "Leave Request List",
+      path: "/employees/requests/leave",
+      visibleForRoles: ["HR Manager", "Employee Supervisor"],
+    },
   ];
 
   const isMenuVisible = (item) => {
@@ -112,15 +122,8 @@ function Navbar(props) {
           </h1>
         </div>
         <div className="space-x-4 flex justify-center items-center">
-          {/* <NavButton to="/employees">Employees</NavButton>
-          <NavButton to="/departments">Departments</NavButton>
-          <NavButton to="/projects">Projects</NavButton>
-          <NavButton to="/assignments">Assignments</NavButton> */}
           {menuItems.filter(isMenuVisible).map(
             (item, index) =>
-              // <NavButton key={index} to={item.path}>
-              //   {item.label}
-              // </NavButton>
               item.label && (
                 <NavButton key={index} to={item.path}>
                   {item.label}
