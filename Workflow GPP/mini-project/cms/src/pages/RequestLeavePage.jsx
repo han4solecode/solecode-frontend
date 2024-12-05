@@ -20,7 +20,7 @@ function RequestLeavePage(props) {
   const [errors, setErrors] = useState(initialValues);
   const [isLoading, setIsLoading] = useState(false);
 
-  const leaveTypes = ["Sick Leave", "Personal Leave"];
+  const leaveTypes = ["Annual Leave", "Sick Leave", "Personal Leave"];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -50,17 +50,17 @@ function RequestLeavePage(props) {
     if (!formValues.startDate) {
       errorMessages.startDate = "Start date is required";
     } else if (formValues.startDate < currentDate) {
-      errorMessages.startDate = "Start date must be greater than current date";
+      errorMessages.startDate =
+        "Start date must be equal or greater than current date";
     } else {
       errorMessages.startDate = "";
     }
 
-    if (!formValues.startDate) {
+    if (!formValues.endDate) {
       errorMessages.endDate = "End date is required";
-    } else if (formValues.endDate < currentDate) {
-      errorMessages.endDate = "End date must be greater than current date";
     } else if (formValues.endDate < formValues.startDate) {
-      errorMessages.endDate = "End date must be greater than start date";
+      errorMessages.endDate =
+        "End date must be equal or greater than start date";
     } else {
       errorMessages.endDate = "";
     }
