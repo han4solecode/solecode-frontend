@@ -83,9 +83,10 @@ function LeaveRequestListPage(props) {
           var requestDate = new Date(leave.requestDate).toLocaleDateString();
           var startDate = new Date(leave.leaveRequestNavigation?.startDate);
           var endDate = new Date(leave.leaveRequestNavigation?.endDate);
-          var daysTotal = Math.round(
-            (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)
-          );
+          var daysTotal =
+            Math.round(
+              (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)
+            ) + 1;
           return (
             <tr
               key={leave.processId}
