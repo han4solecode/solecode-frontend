@@ -89,3 +89,19 @@ export const deactivateEmployee = async (employeeId, reason) => {
     console.log(`Error: ${error}`);
   }
 };
+
+export const requestLeave = async (requestedLeaveData) => {
+  return await api.post("/api/employee/request/leave", requestedLeaveData);
+};
+
+export const searchLeaveRequest = async (params) => {
+  return await api.get("/api/employee/requests/leave", { params });
+};
+
+export const getLeaveRequestProcessById = async (id) => {
+  return await api.get(`api/employee/request/leave/${id}`);
+};
+
+export const reviewLeaveRequest = async (reviewData) => {
+  return await api.post("/api/employee/request/leave/review", reviewData);
+};
