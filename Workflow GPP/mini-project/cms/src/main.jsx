@@ -141,6 +141,32 @@ const router = createBrowserRouter([
     ],
   },
   {
+    element: (
+      <MainLayout
+        allowedRoles={["HR Manager", "Employee Supervisor"]}
+      ></MainLayout>
+    ),
+    children: [
+      {
+        path: "/employees/requests/leave",
+        element: "Employee Leave Request List Page",
+      },
+      {
+        path: "/employees/requests/leave/review/:processId",
+        element: "Employee Leave Request Review Page",
+      },
+    ],
+  },
+  {
+    element: <MainLayout allowedRoles={["Employee"]}></MainLayout>,
+    children: [
+      {
+        path: "/employees/request/leave",
+        element: "Employee Leave Request Page",
+      },
+    ],
+  },
+  {
     element: <LoginLayout></LoginLayout>,
     children: [
       {
