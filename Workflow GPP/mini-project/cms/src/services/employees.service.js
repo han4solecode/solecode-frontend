@@ -1,5 +1,6 @@
 import axios from "axios";
 import api from "../Api";
+import AxiosInstance from "../Api";
 
 export const getAllEmployees = async (recordsPerPage, currentPage) => {
   try {
@@ -43,7 +44,7 @@ export const getEmployeeById = async (employeeId) => {
 
 export const getEmployeeProfile = async () => {
   try {
-    const res = await api.get("/api/employee/profile");
+    const res = await AxiosInstance.api.get("/api/employee/profile");
     return res;
   } catch (error) {
     console.log(`Error: ${error}`);
@@ -91,17 +92,25 @@ export const deactivateEmployee = async (employeeId, reason) => {
 };
 
 export const requestLeave = async (requestedLeaveData) => {
-  return await api.post("/api/employee/request/leave", requestedLeaveData);
+  return await AxiosInstance.apiFormData.post(
+    "/api/employee/request/leave",
+    requestedLeaveData
+  );
 };
 
 export const searchLeaveRequest = async (params) => {
-  return await api.get("/api/employee/requests/leave", { params });
+  return await AxiosInstance.api.get("/api/employee/requests/leave", {
+    params,
+  });
 };
 
 export const getLeaveRequestProcessById = async (id) => {
-  return await api.get(`api/employee/request/leave/${id}`);
+  return await AxiosInstance.api.get(`api/employee/request/leave/${id}`);
 };
 
 export const reviewLeaveRequest = async (reviewData) => {
-  return await api.post("/api/employee/request/leave/review", reviewData);
+  return await AxiosInstance.api.post(
+    "/api/employee/request/leave/review",
+    reviewData
+  );
 };
