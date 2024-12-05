@@ -28,6 +28,7 @@ import AssignmentDetailPage from "./pages/AssignmentDetailPage";
 import ProfilePage from "./pages/ProfilePage";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import RequestLeavePage from "./pages/RequestLeavePage";
+import LeaveRequestListPage from "./pages/LeaveRequestListPage";
 
 const router = createBrowserRouter([
   {
@@ -150,7 +151,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/employees/requests/leave",
-        element: "Employee Leave Request List Page",
+        element: <LeaveRequestListPage></LeaveRequestListPage>,
       },
       {
         path: "/employees/requests/leave/review/:processId",
