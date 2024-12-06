@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  downloadMedicalCertificate,
   getLeaveRequestProcessById,
   reviewLeaveRequest,
 } from "../services/employees.service";
@@ -53,6 +54,18 @@ function LeaveRequestReviewPage(props) {
     e.preventDefault();
     setFormValues(initialValues);
   };
+
+  //   const handleMedCertClick = (e) => {
+  //     e.preventDefault();
+  //     console.log(e.target.value);
+
+  //     downloadMedicalCertificate(e.target.value)
+  //       .then(() => {})
+  //       .catch((err) => {
+  //         console.log(err);
+  //         alert(err.response.data.message);
+  //       });
+  //   };
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -218,6 +231,24 @@ function LeaveRequestReviewPage(props) {
               <strong>Reason: </strong>
               {leaveRequestData?.reason}
             </span>
+            {leaveRequestData?.medicalCertificate ? (
+              <span className="">
+                <strong>Medical Certificate: </strong>
+                <a
+                  href={`${
+                    import.meta.env.VITE_API_URL
+                  }/api/employee/request/leave/med-cert/dl/${
+                    leaveRequestData?.processId
+                  }`}
+                  download
+                  className="hover:text-blue-600"
+                >
+                  {leaveRequestData?.medicalCertificate}
+                </a>
+              </span>
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <div>
