@@ -218,7 +218,7 @@ function BookRequestReviewPage(props) {
       <form autoComplete="off" className="mt-3 w-3/4">
         <div className="mb-3">
           <label
-            htmlFor="sex"
+            htmlFor="action"
             className="block text-black mb-2 text-lg text-semibold"
           >
             Action
