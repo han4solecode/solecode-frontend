@@ -1,5 +1,7 @@
 import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 import Navbar from "../Fragments/Navbar";
 import Footer from "../Fragments/Footer";
@@ -35,6 +37,18 @@ function MainLayout(props) {
 
   return user ? (
     <div className="flex flex-col min-h-screen justify-between">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable={false}
+        pauseOnHover
+        theme="dark"
+      />
       <Navbar></Navbar>
       <Outlet></Outlet>
       <Footer></Footer>

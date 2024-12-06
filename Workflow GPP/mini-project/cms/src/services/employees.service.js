@@ -114,3 +114,9 @@ export const reviewLeaveRequest = async (reviewData) => {
     reviewData
   );
 };
+
+export const downloadMedicalCertificate = async (processId) => {
+  return await AxiosInstance.apiOctet.get(
+    `request/leave/med-cert/dl/${processId}`
+  );
+};
