@@ -21,7 +21,8 @@ function Navbar(props) {
     {
       label: "Dashboard",
       path: "/",
-      visibleForAll: true,
+      // visibleForAll: true,
+      visibleForRoles: ["Librarian", "Library Manager"],
     },
     {
       label: "Profile",
@@ -42,6 +43,11 @@ function Navbar(props) {
       label: "Members",
       path: "/members",
       visibleForRoles: ["Library Manager"],
+    },
+    {
+      label: "Reports",
+      path: "/reports",
+      visibleForRoles: ["Librarian", "Library Manager"],
     },
     {
       label: "Search Book",
@@ -126,7 +132,7 @@ function Navbar(props) {
       <div className="mx-auto max-w-7xl flex justify-between items-center">
         <div className="space-x-4">
           <h1 className="text-3xl text-white">
-            <Link to="/">SLMS</Link>
+            <Link to={currentUser ? "/" : "/login"}>SLMS</Link>
           </h1>
         </div>
         <div className="space-x-4">

@@ -25,6 +25,7 @@ import UploadFilePage from "./pages/UploadFilePage";
 import RequestBookPage from "./pages/RequestBookPage";
 import BookRequestListPage from "./pages/BookRequestListPage";
 import BookRequestReviewPage from "./pages/BookRequestReviewPage";
+import ReportPage from "./pages/ReportPage";
 
 const router = createBrowserRouter([
   {
@@ -50,12 +51,20 @@ const router = createBrowserRouter([
     errorElement: <div>Error</div>,
     children: [
       {
+        path: "/",
+        element: <HomePage></HomePage>,
+      },
+      {
         path: "/books/requests",
         element: <BookRequestListPage></BookRequestListPage>,
       },
       {
         path: "/books/review-request/:processId",
         element: <BookRequestReviewPage></BookRequestReviewPage>,
+      },
+      {
+        path: "/reports",
+        element: <ReportPage></ReportPage>,
       },
     ],
   },
@@ -124,10 +133,10 @@ const router = createBrowserRouter([
         path: "/register",
         element: <RegisterPage></RegisterPage>,
       },
-      {
-        path: "/",
-        element: <HomePage></HomePage>,
-      },
+      // {
+      //   path: "/",
+      //   element: <HomePage></HomePage>,
+      // },
       {
         path: "/unauthorized",
         element: "Unauthorized",
