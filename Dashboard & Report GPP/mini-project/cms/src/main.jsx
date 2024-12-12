@@ -30,6 +30,7 @@ import UnauthorizedPage from "./pages/UnauthorizedPage";
 import RequestLeavePage from "./pages/RequestLeavePage";
 import LeaveRequestListPage from "./pages/LeaveRequestListPage";
 import LeaveRequestReviewPage from "./pages/LeaveRequestReviewPage";
+import ReportPage from "./pages/ReportPage";
 
 const router = createBrowserRouter([
   {
@@ -140,6 +141,10 @@ const router = createBrowserRouter([
       {
         path: "/employees",
         element: <EmployeesPage></EmployeesPage>,
+      },
+      {
+        path: "/reports",
+        element: <ReportPage></ReportPage>,
       },
     ],
   },

@@ -79,6 +79,11 @@ function Navbar(props) {
       path: "/employees/requests/leave",
       visibleForRoles: ["HR Manager", "Employee Supervisor"],
     },
+    {
+      label: "Reports",
+      path: "/reports",
+      visibleForRoles: ["HR Manager", "Employee Supervisor"],
+    },
   ];
 
   const isMenuVisible = (item) => {
